@@ -1,0 +1,13 @@
+{
+  "theme": "Standard",
+  "encoding": "utf-8",
+  "protocol": "HTTPS",
+  "timelineEnabled": false,
+  "offlineMode": true,
+  "thumbnailForBase64": false,
+  "documentTitle": "PlaywrightUIAutomation Test Execution Report",
+  "reportName": "<img src='../ValueMomentum-logo.png' style='width:100px;height:30px;background-color: #ffffff;' /> SpecflowUIAutomation Test Execution Report",
+  "timeStampFormat": "MMM dd, yyyy HH:mm:ss",
+  "js": "",
+  "css": ""
+}

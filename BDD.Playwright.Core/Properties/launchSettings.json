@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BDD.Playwright.POM": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

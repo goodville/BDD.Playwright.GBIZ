@@ -1,0 +1,109 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+		<SccProjectName></SccProjectName>
+		<SccProvider></SccProvider>
+		<SccAuxPath></SccAuxPath>
+		<SccLocalPath></SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<RootNamespace>BDD.Playwright.Core</RootNamespace>
+		<UserSecretsId>a49e06aa-9092-48d8-8aa0-ca0b3233c8b9</UserSecretsId>
+		<SonarQubeTestProject>true</SonarQubeTestProject>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+	</PropertyGroup>
+	<PropertyGroup>
+		<IsTestProject>true</IsTestProject>
+		<CollectCoverage>true</CollectCoverage>
+		<CoverletOutputFormat>opencover</CoverletOutputFormat>
+	</PropertyGroup>
+	<PropertyGroup>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="BusinessTransactions\APRGL.cs" />
+		<Compile Remove="BusinessTransactions\APRProperty.cs" />
+		<Compile Remove="BusinessTransactions\Endorsement.cs" />
+		<Compile Remove="BusinessTransactions\PINOT.cs" />
+		<Compile Remove="Helpers\AlertHelper.cs" />
+		<Compile Remove="Helpers\GenericHelper.cs" />
+		<Compile Remove="Pages\Policy\AddlInterestsPage.cs" />
+		<Compile Remove="Pages\Policy\BuildingPage.cs" />
+		<Compile Remove="Pages\Policy\CGLPage.cs" />
+		<Compile Remove="Pages\Policy\EndorsementPage.cs" />
+		<Compile Remove="Pages\Policy\EquipmentBreakdownPage.cs" />
+		<Compile Remove="Pages\Policy\ExposurePage.cs" />
+		<Compile Remove="Pages\Policy\LocationSchedulePage.cs" />
+		<Compile Remove="Pages\Policy\LoginPage.cs" />
+		<Compile Remove="Pages\Policy\ManuscriptEndPage.cs" />
+		<Compile Remove="Pages\Policy\NewQuotePage.cs" />
+		<Compile Remove="Pages\Policy\OptionalCoveragePage.cs" />
+		<Compile Remove="Pages\Policy\PaymentDetailsPage.cs" />
+		<Compile Remove="Pages\Policy\PolicyCoverage.cs" />
+		<Compile Remove="Pages\Policy\PolicyCoveragePage.cs" />
+		<Compile Remove="Pages\Policy\PolicyInfo.cs" />
+		<Compile Remove="Pages\Policy\PolicyInfoPage.cs" />
+		<Compile Remove="Pages\Policy\PolicyUnderwrtingPage.cs" />
+		<Compile Remove="Pages\Policy\PricingPage.cs" />
+		<Compile Remove="Pages\Policy\TransACTPage.cs" />
+		<Compile Remove="Pages\Policy\UnderlyingPolicyInformationPage.cs" />
+		<Compile Remove="Pages\SeleniumFunctions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="spark-config.json" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="AWSSDK.S3" Version="4.0.1.3" />
+		<PackageReference Include="Azure.Identity" Version="1.14.2" />
+		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+		<PackageReference Include="coverlet.msbuild" Version="6.0.4">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="ExtentReports" Version="5.0.4" />
+		<PackageReference Include="FluentAssertions.Analyzers" Version="0.34.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
+		<PackageReference Include="log4net" Version="3.1.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageReference Include="Microsoft.Playwright" Version="1.52.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+		<PackageReference Include="Reqnroll" Version="2.4.1" />
+		<PackageReference Include="Reqnroll.NUnit" Version="2.4.1" />
+		<PackageReference Include="RestSharp" Version="112.1.0" />
+		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Drawing.Common" Version="9.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+		
+		<None Update="logo.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>

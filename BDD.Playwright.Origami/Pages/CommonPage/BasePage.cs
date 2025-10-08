@@ -1,5 +1,5 @@
 ﻿using BDD.Playwright.Core.Loggers;
-using BDD.Playwright.Origami.PageElements;
+using BDD.Playwright.GBIZ.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
 
@@ -61,7 +61,7 @@ namespace BDD.Playwright.Origami.Pages.CommonPage
             TextArea = new TextArea(_scenarioContext);
         }
 
-        protected async Task navigateToURLAsync(string url)
+        protected async Task NavigateToURLAsync(string url)
         {
             await page.GotoAsync(url);
         }

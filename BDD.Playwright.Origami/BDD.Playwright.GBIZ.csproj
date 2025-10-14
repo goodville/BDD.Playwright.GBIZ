@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="PageElements\" />
+    <Folder Include="Pages\AgentPages\" />
     <Folder Include="Pages\PublicPages\" />
   </ItemGroup>
 

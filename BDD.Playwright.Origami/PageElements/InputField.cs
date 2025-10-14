@@ -1,465 +1,496 @@
-﻿using System;
-using System.Threading.Tasks;
+using BDD.Playwright.Origami.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
+using System.Threading.Tasks;
 
-namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
-    public class InputField : BaseElement
+    public class InputField(ScenarioContext scenarioContext): BaseElement(scenarioContext)
     {
-        private new readonly ScenarioContext _scenarioContext;
-
+       
+       
         /// <summary>
         /// Initializes a new instance of the <see cref="InputField"/> class.
+        /// helps to enter a value into input field(TextBox).
         /// </summary>
-        /// <param name="scenarioContext">The scenario context.</param>
-        public InputField(ScenarioContext scenarioContext) : base(scenarioContext)
+        /// <param name="labelname"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        public async Task SetInputFieldAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            _scenarioContext = scenarioContext;
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' input field - value is empty");
+                return;
+            }
+
+            var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+            await element.ClearAsync();
+            await element.FillAsync(value);
+            var Enteredvalue = await element.GetAttributeAsync("value");
+            if (string.IsNullOrEmpty(Enteredvalue))
+            {
+                await Task.Delay(1000);
+                await element.FillAsync(value);
+            }
+
+            Enteredvalue = await element.GetAttributeAsync("value");
+            logger.WriteLine($"✓ Set '{labelnameorlocator1}' input field with value: {value}");
         }
 
-        /// <summary>
-        /// Sets value in an input field (TextBox).
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetInputFieldAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        public async Task SetInputFieldReplaceValueAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' input field replace - value is empty");
+                return;
+            }
+
+            var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+            await element.PressAsync("Control+A");
             await element.FillAsync(value);
-            await element.PressAsync("Tab");
-            
-            // Verify the value was entered
-            var enteredValue = await element.InputValueAsync();
-            if (string.IsNullOrEmpty(enteredValue))
+            var Enteredvalue = await element.GetAttributeAsync("value");
+            if (string.IsNullOrEmpty(Enteredvalue))
             {
                 await Task.Delay(2000);
                 await element.FillAsync(value);
             }
-            
-            _applicationLogger.WriteLine($"Entered value '{value}' to Input field with locator '{displayText}'");
+
+            Enteredvalue = await element.GetAttributeAsync("value");
+            logger.WriteLine($"✓ Replaced '{labelnameorlocator1}' input field with value: {value}");
         }
 
         /// <summary>
-        /// Sets value by replacing existing content using select all and type.
+        /// helps to enter a value into input field(TextBox).
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetInputFieldReplaceValueAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        public async Task SetDropdownFieldAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-            await element.PressAsync("Control+a"); // Select all
-            await element.TypeAsync(value);
-            
-            var enteredValue = await element.InputValueAsync();
-            if (string.IsNullOrEmpty(enteredValue))
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
             {
-                await Task.Delay(2000);
-                await element.TypeAsync(value);
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' dropdown field - value is empty");
+                return;
             }
-            
-            _applicationLogger.WriteLine($"Entered value '{value}' to Input field with locator '{displayText}'");
-        }
 
-        /// <summary>
-        /// Sets value in a dropdown field.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetDropdownFieldAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
-        {
-            var element = GetDropDownByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
-            
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+            var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
+            await element.ClearAsync();
+            await element.FillAsync("");
             await element.FillAsync(value);
-            await Task.Delay(2000);
+            await Task.Delay(2000); 
             await element.PressAsync("Tab");
-            
-            var enteredValue = await element.InputValueAsync();
-            if (string.IsNullOrEmpty(enteredValue))
+            var Enteredvalue = await element.GetAttributeAsync("value");
+            if (string.IsNullOrEmpty(Enteredvalue))
             {
                 await Task.Delay(2000);
                 await element.FillAsync(value);
             }
+
+            Enteredvalue = await element.GetAttributeAsync("value");
+            logger.WriteLine($"✓ Set '{labelnameorlocator1}' dropdown field with value: {value}");
+        }
+
+        public async Task SetDropdownFieldForListLoadAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
+        {
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             
-            _applicationLogger.WriteLine($"Entered value '{value}' to Dropdown field with locator '{displayText}'");
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' dropdown field for list load - value is empty");
+                return;
+            }
+
+            var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
+            await element.ClearAsync();
+            await element.FillAsync("");
+            await element.FillAsync(value);
+            try
+            {
+                await element.Page.WaitForSelectorAsync(".ac_results", new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+            }
+            catch (TimeoutException)
+            {
+                logger.WriteLine("No suggestion list appeared for the entered value.");
+            }
+
+            await element.PressAsync("Tab");
+            var Enteredvalue = await element.GetAttributeAsync("value");
+            if (string.IsNullOrEmpty(Enteredvalue))
+            {
+                await Task.Delay(2000);
+                await element.FillAsync(value);
+            }
+
+            Enteredvalue = await element.GetAttributeAsync("value");
+            logger.WriteLine($"✓ Set '{labelnameorlocator1}' dropdown field with list load - value: {value}");
         }
 
         /// <summary>
-        /// Sets value in a hyperlink input field.
+        /// helps to enter a value into custom input field (TextBox) like VIN,SSN etc
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetHyperLinkInputFieldAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        public async Task SetHyperLinkInputFieldAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var displayText = displayName ?? labelNameOrLocator;
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             if (!string.IsNullOrEmpty(value))
             {
-                var element = GetHyperLinkInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+                var element = await GetHyperLinkInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+                await element.ClearAsync();
+                await element.FillAsync("");
                 await element.FillAsync(value);
                 await element.PressAsync("Tab");
-                
-                var enteredValue = await element.InputValueAsync();
-                if (string.IsNullOrEmpty(enteredValue))
+                var Enteredvalue = await element.GetAttributeAsync("value");
+                if (string.IsNullOrEmpty(Enteredvalue))
                 {
-                    await Task.Delay(2000);
+                    Thread.Sleep(2000);
                     await element.FillAsync(value);
                 }
-                
-                _applicationLogger.WriteLine($"Entered value '{value}' to Hyperlink Input field with locator '{displayText}'");
+
+                Enteredvalue = await element.GetAttributeAsync("value");
+                logger.WriteLine($"✓ Set '{labelnameorlocator1}' hyperlink input field with value: {value}");
+            }
+            else
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' hyperlink input field - value is empty");
             }
         }
 
         /// <summary>
-        /// Sets value in a textarea input field.
+        /// helps to enter a value into custom input field (TextArea) like VIN,SSN etc
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetTextAreaInputFieldAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        public async Task SetTextAreaInputFieldAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var displayText = displayName ?? labelNameOrLocator;
+           var labelnameorlocator1 = displayname ?? labelnameorlocator;
             if (!string.IsNullOrEmpty(value))
             {
-                var element = GetTextAreaInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+                var element = await GetTextAreaInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+                await element.ClearAsync();
+                await element.FillAsync("");
                 await element.FillAsync(value);
                 await element.PressAsync("Tab");
-                
-                _applicationLogger.WriteLine($"Entered value '{value}' to Text Area Input field with locator '{displayText}'");
+                logger.WriteLine($"✓ Set '{labelnameorlocator1}' text area input field with value: {value}");
+            }
+            else
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' text area input field - value is empty");
             }
         }
 
-        /// <summary>
-        /// Types input character by character with delay.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to type.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task TypeInputFieldAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        public async Task TextAreaInputFieldWithoutClearingDataAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var displayText = displayName ?? labelNameOrLocator;
+           var labelnameorlocator1 = displayname ?? labelnameorlocator;
             if (!string.IsNullOrEmpty(value))
             {
-                var element = GetTextAreaInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-                await element.ClickAsync();
-                await element.TypeAsync(value, new LocatorTypeOptions { Delay = 100 });
-                
-                _applicationLogger.WriteLine($"Typed value '{value}' to Text Area Input field with locator '{displayText}'");
-            }
-        }
-
-        /// <summary>
-        /// Sets input field value using JavaScript.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to set.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetInputFieldByJavaScriptAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
-        {
-            var displayText = displayName ?? labelNameOrLocator;
-            if (!string.IsNullOrEmpty(value))
-            {
-                var element = GetTextAreaInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-                await element.EvaluateAsync("(el, value) => el.value = value", value);
-                await element.PressAsync("Enter");
+                var element = await GetTextAreaInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+                await element.FillAsync(value);
                 await element.PressAsync("Tab");
-                
-                _applicationLogger.WriteLine($"Set value '{value}' to Text Area Input field with locator '{displayText}' using JavaScript");
+                logger.WriteLine($"✓ Appended to '{labelnameorlocator1}' text area input field with value: {value}");
+            }
+            else
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' text area append - value is empty");
             }
         }
 
         /// <summary>
-        /// Adds text to textarea without clearing existing content.
+        /// helps to validate the text available in input field with expected value.
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to add.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task TextAreaInputFieldWithoutClearingDataAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="expectedText"></param>
+        public async Task <bool> VerifyInputFieldValueAsync(string labelnameorlocator, string expectedText, bool islocator = false, int index = 1, string displayname = null)
         {
-            var displayText = displayName ?? labelNameOrLocator;
-            if (!string.IsNullOrEmpty(value))
+            var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+           var labelnameorlocator1 = displayname ?? labelnameorlocator;
+           var actualValue = await element.GetAttributeAsync("value");
+            if (actualValue != expectedText) 
             {
-                var element = GetTextAreaInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-                await element.TypeAsync(value);
-                await element.PressAsync("Tab");
-                
-                _applicationLogger.WriteLine($"Entered value '{value}' to Text Area Input field without clearing existing data with locator '{displayText}'");
-            }
-        }
-
-        /// <summary>
-        /// Verifies the input field value matches expected text.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="expectedText">The expected text.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>True if values match, false otherwise.</returns>
-        public async Task<bool> VerifyInputFieldValueAsync(string labelNameOrLocator, string expectedText, bool isLocator = false, int index = 1, string? displayName = null)
-        {
-            var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
-            
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-            var actualValue = await element.InputValueAsync();
-            
-            if (actualValue.Equals(expectedText))
-            {
-                _applicationLogger.WriteLine($"'{displayText}' Input field validation success");
+                logger.WriteLine(string.Format("'{0}' Input field Validation success", labelnameorlocator1));
                 return true;
             }
             else
             {
-                _applicationLogger.WriteLine($"'{displayText}' Input field validation failed. Expected: '{expectedText}', Actual: '{actualValue}'");
+                logger.WriteLine(string.Format("'{0}' Input field Validation is not success ", labelnameorlocator1));
                 return false;
             }
         }
 
         /// <summary>
-        /// Verifies if the input field exists.
+        /// helps to validate the element existance or not with expected value
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>True if element exists, false otherwise.</returns>
-        public async Task<bool> VerifyInputFieldExistAsync(string labelNameOrLocator, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        public async Task <bool> VerifyInputFieldExistAsync(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null)
         {
+           var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+           var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            if (element != null)
+            {
+                logger.WriteLine(string.Format("'{0}' Text box exist ", labelnameorlocator1));
+                return true;
+            }
+            else
+            {
+                logger.WriteLine(string.Format("'{0}' Text box does not exist ", labelnameorlocator1));
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// helps to formulate the xpath for input field(TextBox).
+        /// </summary>
+        /// <param name="labelname"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException"></exception>
+        private async Task <ILocator> GetInputFieldByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
+        {
+            var XPathLocator = string.Empty;
             try
             {
-                var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-                var displayText = displayName ?? labelNameOrLocator;
-                
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Attached, Timeout = 5000 });
-                var isVisible = await element.IsVisibleAsync();
-                
-                if (isVisible)
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//*[contains(text(),\"{0}\")]//following::input)[{1}]", labelnameorlocator, index);
+
+                ILocator element;
+                if (_frameLocator != null)
                 {
-                    _applicationLogger.WriteLine($"'{displayText}' Text box exists");
-                    return true;
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
                 }
                 else
                 {
-                    _applicationLogger.WriteLine($"'{displayText}' Text box does not exist");
-                    return false;
+                    element = _page.Locator($"xpath={XPathLocator}");
                 }
+
+                await element.WaitForAsync(new() 
+                { 
+                  Timeout = 10000,
+                  State = WaitForSelectorState.Visible });
+                return element;
             }
-            catch
+            catch (Exception ex)
             {
-                _applicationLogger.WriteLine($"'{displayName ?? labelNameOrLocator}' Text box does not exist");
-                return false;
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
             }
         }
 
         /// <summary>
-        /// Verifies if the dropdown field exists.
+        /// helps to formulate the xpath for custom input field(TextBox).
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>True if element exists, false otherwise.</returns>
-        public async Task<bool> VerifyDropdownFieldExistAsync(string labelNameOrLocator, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException"></exception>
+        private async Task <ILocator> GetHyperLinkInputFieldByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
         {
+            var XPathLocator = string.Empty;
             try
             {
-                var element = GetDropDownByLabel(labelNameOrLocator, isLocator, index);
-                var displayText = displayName ?? labelNameOrLocator;
-                
-                await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Attached, Timeout = 5000 });
-                var isVisible = await element.IsVisibleAsync();
-                
-                if (isVisible)
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//label/a[contains(text(),\"{0}\")]/../../following-sibling::div//input)[{1}]", labelnameorlocator, index);
+
+                ILocator element;
+                if (_frameLocator != null)
                 {
-                    _applicationLogger.WriteLine($"'{displayText}' Dropdown Field exists");
-                    return true;
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
                 }
                 else
                 {
-                    _applicationLogger.WriteLine($"'{displayText}' Dropdown Field does not exist");
-                    return false;
+                    element = _page.Locator($"xpath={XPathLocator}");
                 }
+
+                await element.WaitForAsync(new()
+                {
+                    State = WaitForSelectorState.Visible
+                });
+
+                return element;
             }
-            catch
+            catch (Exception ex)
             {
-                _applicationLogger.WriteLine($"'{displayName ?? labelNameOrLocator}' Dropdown Field does not exist");
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the drop down by label.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        /// <returns>IWebElement response</returns>
+        private async Task <ILocator> GetDropDownByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
+        {
+            var XPathLocator = string.Empty;
+            try
+            {
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//label[contains(text(),\"{0}\")]/../following-sibling::div//input[@type='text'])[1]", labelnameorlocator);
+
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
+
+                await element.WaitForAsync(new()
+                {
+                    Timeout = 10000,
+                    State = WaitForSelectorState.Visible
+                });
+                return element;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
+            }
+        }
+
+        public async Task <bool> VerifyDropdownFieldExistAsync(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null)
+        {
+            var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            if (element != null)
+            {
+                logger.WriteLine(string.Format("'{0}' Dropdown Field exist", labelnameorlocator1));
+                return true;
+            }
+            else
+            {
+                logger.WriteLine(string.Format("'{0}' Dropdown Field does not exist ", labelnameorlocator1));
                 return false;
             }
         }
 
         /// <summary>
-        /// Sets input field without clearing first.
+        /// helps to formulate the xpath for custom input field(TextBox).
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetInputFieldWithoutClearAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException"></exception>
+        private async Task <ILocator> GetTextAreaInputFieldByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
         {
-            var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
-            
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-            await element.TypeAsync(value);
-            await element.PressAsync("Tab");
-            
-            _applicationLogger.WriteLine($"Entered value '{value}' to Input field with locator '{displayText}'");
+            var XPathLocator = string.Empty;
+            try
+            {
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//*[contains(text(),\"{0}\")]//following::textarea)[{1}]", labelnameorlocator, index);
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
+
+                await element.WaitForAsync(new()
+                {
+                    Timeout = 10000,
+                    State = WaitForSelectorState.Visible
+                });
+                return element;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
+            }
         }
 
         /// <summary>
-        /// Sets input field with explicit clear.
+        /// helps to enter a value into input field(TextBox).
         /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="value">The value to enter.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <param name="displayName">Display name for logging.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SetInputFieldWithClearAsync(string labelNameOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="labelname"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        public async Task SetInputFieldWithoutClearAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var element = GetInputFieldByLabel(labelNameOrLocator, isLocator, index);
-            var displayText = displayName ?? labelNameOrLocator;
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             
-            await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' input field without clear - value is empty");
+                return;
+            }
+
+            var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+            await element.FillAsync("");
             await element.FillAsync(value);
             await element.PressAsync("Tab");
+            logger.WriteLine($"✓ Set '{labelnameorlocator1}' input field without clear - value: {value}");
+        }
+        
+        public async Task SetInputFieldWithClearAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
+        {
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
             
-            _applicationLogger.WriteLine($"Entered value '{value}' to Input field with locator '{displayText}'");
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
+            {
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' input field with clear - value is empty");
+                return;
+            }
+
+            var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
+            await element.ClearAsync();
+            await element.FillAsync("");
+            await element.FillAsync(value);
+            await element.PressAsync("Tab");
+            logger.WriteLine($"✓ Set '{labelnameorlocator1}' input field with clear - value: {value}");
         }
 
-        #region Private Helper Methods
-
-        /// <summary>
-        /// Gets input field locator by label.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <returns>ILocator for the input field.</returns>
-        private ILocator GetInputFieldByLabel(string labelNameOrLocator, bool isLocator = false, int index = 1)
+        internal async Task GetTextAreaInputFieldByLabelAsync(string item1, string item2)
         {
-            try
-            {
-                return isLocator
-                    ? (index > 1 ? _page.Locator($"({labelNameOrLocator}) >> nth={index - 1}") : _page.Locator(labelNameOrLocator))
-                    : (index > 1 ? _page.Locator($"text='{labelNameOrLocator}' >> .. >> input >> nth={index - 1}") : _page.Locator($"text='{labelNameOrLocator}' >> .. >> input"));
-            }
-            catch (Exception ex)
-            {
-                _applicationLogger.WriteLine($"Error: Element locator {labelNameOrLocator} did not match any elements. {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Gets hyperlink input field locator by label.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <returns>ILocator for the hyperlink input field.</returns>
-        private ILocator GetHyperLinkInputFieldByLabel(string labelNameOrLocator, bool isLocator = false, int index = 1)
-        {
-            try
+        internal async Task<bool>WaitForElementAsync(ILocator element)
+        { 
             {
-                return isLocator
-                    ? (index > 1 ? _page.Locator($"({labelNameOrLocator}) >> nth={index - 1}") : _page.Locator(labelNameOrLocator))
-                    : (index > 1 ? _page.Locator($"label >> text='{labelNameOrLocator}' >> .. >> .. >> div >> input >> nth={index - 1}") : _page.Locator($"label >> text='{labelNameOrLocator}' >> .. >> .. >> div >> input"));
-            }
-            catch (Exception ex)
-            {
-                _applicationLogger.WriteLine($"Error: Element locator {labelNameOrLocator} did not match any elements. {ex.Message}");
-                throw;
+                try
+                {
+                    await element.WaitForAsync(new()
+                    { State = WaitForSelectorState.Visible });
+
+                    var isVisible = await element.IsVisibleAsync();
+                    var isEnabled = await element.IsEnabledAsync();
+
+                    return isVisible && isEnabled;
+                   
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
-
-        /// <summary>
-        /// Gets dropdown locator by label.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <returns>ILocator for the dropdown.</returns>
-        private ILocator GetDropDownByLabel(string labelNameOrLocator, bool isLocator = false, int index = 1)
-        {
-            try
-            {
-                return isLocator
-                    ? (index > 1 ? _page.Locator($"({labelNameOrLocator}) >> nth={index - 1}") : _page.Locator(labelNameOrLocator))
-                    : _page.Locator($"label:has-text('{labelNameOrLocator}') >> .. >> div >> input[type='text']");
-            }
-            catch (Exception ex)
-            {
-                _applicationLogger.WriteLine($"Error: Element locator {labelNameOrLocator} did not match any elements. {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Gets textarea input field locator by label.
-        /// </summary>
-        /// <param name="labelNameOrLocator">The label name or locator.</param>
-        /// <param name="isLocator">Whether the parameter is a locator.</param>
-        /// <param name="index">The index when multiple elements match.</param>
-        /// <returns>ILocator for the textarea.</returns>
-        private ILocator GetTextAreaInputFieldByLabel(string labelNameOrLocator, bool isLocator = false, int index = 1)
-        {
-            try
-            {
-                return isLocator
-                    ? (index > 1 ? _page.Locator($"({labelNameOrLocator}) >> nth={index - 1}") : _page.Locator(labelNameOrLocator))
-                    : (index > 1 ? _page.Locator($"text='{labelNameOrLocator}' >> .. >> textarea >> nth={index - 1}") : _page.Locator($"text='{labelNameOrLocator}' >> .. >> textarea"));
-            }
-            catch (Exception ex)
-            {
-                _applicationLogger.WriteLine($"Error: Element locator {labelNameOrLocator} did not match any elements. {ex.Message}");
-                throw;
-            }
-        }
-
-        #endregion
     }
 }

@@ -1,149 +1,204 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using BDD.Playwright.Origami.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
+using System.Collections.ObjectModel;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
-    public class DropDown : BaseElement
+    public class DropDown(ScenarioContext scenarioContext) : BaseElement(scenarioContext)
     {
-        public DropDown(ScenarioContext scenarioContext) : base(scenarioContext) { }
-
-        // Backward-compatible sync wrappers
-        public void SelectDropDown(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null) => SelectAsync(labelnameorlocator, value, islocator, index, displayname).GetAwaiter().GetResult();
-        public bool VerifyDropDownValue(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null) => VerifyValueAsync(labelnameorlocator, value, islocator, index, displayname).GetAwaiter().GetResult();
-        public bool VerifyDropDownExist(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null) => VerifyExistAsync(labelnameorlocator, islocator, index, displayname).GetAwaiter().GetResult();
-        public void VerifyDropDownValues(string labelnameorlocator, string expectedList, bool islocator = false, string displayname = null) => VerifyValuesAsync(labelnameorlocator, expectedList, islocator, displayname).GetAwaiter().GetResult();
-        public void SelectDropDownByValue(string labelOrLocator, string value, bool isLocator = false, int index = 1) => SelectByValueAsync(labelOrLocator, value, isLocator, index).GetAwaiter().GetResult();
-
-        public async Task SelectAsync(string labelOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        public async Task SelectDropDownAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var select = await ResolveSelectAsync(labelOrLocator, isLocator, index);
-            var name = displayName ?? labelOrLocator;
-            if (select == null)
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            
+            // Skip if value is null or empty
+            if (string.IsNullOrEmpty(value))
             {
-                _applicationLogger.WriteLine($"DropDown: Unable to locate '{name}'.");
+                logger.WriteLine($"⊘ Skipped '{labelnameorlocator1}' dropdown - value is empty");
                 return;
             }
 
+            var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
             try
             {
-                if (value.StartsWith("#") && int.TryParse(value[1..], out var idx))
+                if (value.StartsWith("#") && int.TryParse(value.Substring(1), out var count))
                 {
-                    await select.SelectOptionAsync(new SelectOptionValue { Index = idx - 1 });
+                    count--;
+                    await element.SelectOptionAsync(new SelectOptionValue { Index = count });
                 }
                 else
                 {
-                    var optionTexts = await select.Locator("option").AllInnerTextsAsync();
-                    string Normalize(string s) => Regex.Replace((s ?? string.Empty).Replace("\u00A0", " "), "\\s+", " ").Trim().ToLowerInvariant();
-                    var normValue = Normalize(value);
-                    var match = optionTexts.Select((t, i) => new { Text = t, Index = i })
-                                           .FirstOrDefault(o => Normalize(o.Text) == normValue)
-                               ?? optionTexts.Select((t, i) => new { Text = t, Index = i })
-                                             .FirstOrDefault(o => Normalize(o.Text).Contains(normValue));
-                    if (match != null)
-                    {
-                        await select.SelectOptionAsync(new SelectOptionValue { Index = match.Index });
-                    }
-                    else
-                    {
-                        throw new Exception($"Option '{value}' not found. Available: {string.Join(" | ", optionTexts)}");
-                    }
+                    await element.SelectOptionAsync(new SelectOptionValue { Label = value });
                 }
 
-                _applicationLogger.WriteLine($"DropDown: Selected '{value}' in '{name}'.");
+                logger.WriteLine($"✓ Selected '{value}' from '{labelnameorlocator1}' dropdown");
             }
             catch (Exception ex)
             {
-                _applicationLogger.WriteLine($"DropDown: Error selecting '{value}' in '{name}' -> {ex.Message}");
-                throw;
+                logger.WriteLine("Error @ DropDown.SelectDropDown. Didn't match any element with locator " + labelnameorlocator1 + ". Error Message : " + ex.Message);
+                throw ex;
             }
         }
 
-        public async Task SelectByValueAsync(string labelOrLocator, string value, bool isLocator = false, int index = 1)
+        // Replace usage of SelectElement with Playwright API to get selected option text
+        public async Task<bool> VerifyDropDownValueAsync(string labelnameorlocator, string value, bool islocator = false, int index = 1, string displayname = null)
         {
-            var select = await ResolveSelectAsync(labelOrLocator, isLocator, index);
-            if (select == null)
+            var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            var selectedOptions = await element.Locator("checked").AllAsync();
+            string selectedvalue = null;
+            if (selectedOptions != null && selectedOptions.Count > 0)
             {
-                _applicationLogger.WriteLine($"DropDown: Unable to locate '{labelOrLocator}'.");
-                return;
+                selectedvalue = await selectedOptions[0].TextContentAsync();
             }
 
-            if (value.StartsWith("#") && int.TryParse(value[1..], out var idx))
+            if (selectedvalue != null && selectedvalue.Equals(value))
             {
-                await select.SelectOptionAsync(new SelectOptionValue { Index = idx - 1 });
+                logger.WriteLine(string.Format("Value '{0}' is identified as selected in '{1}' dropdown", value, labelnameorlocator1));
+                return true;
             }
             else
             {
-                await select.SelectOptionAsync(new SelectOptionValue { Value = value });
-            }
-
-            _applicationLogger.WriteLine($"DropDown: Selected value '{value}' in '{labelOrLocator}'.");
-        }
-
-        public async Task<bool> VerifyValueAsync(string labelOrLocator, string expected, bool isLocator = false, int index = 1, string? displayName = null)
-        {
-            var select = await ResolveSelectAsync(labelOrLocator, isLocator, index);
-            var name = displayName ?? labelOrLocator;
-            if (select == null)
-            {
+                logger.WriteLine(string.Format("Value '{0}' is not identified as selected in '{1}' dropdown", value, labelnameorlocator1));
                 return false;
             }
-
-            var selected = await select.EvaluateAsync<string>("e => e.options[e.selectedIndex].text");
-            var ok = string.Equals(selected?.Trim(), expected?.Trim(), StringComparison.OrdinalIgnoreCase);
-            _applicationLogger.WriteLine(ok
-                ? $"DropDown: Value '{expected}' is selected in '{name}'."
-                : $"DropDown: Expected '{expected}' but found '{selected}' in '{name}'.");
-            return ok;
         }
 
-        public async Task VerifyValuesAsync(string labelOrLocator, string expectedPipeList, bool isLocator = false, string? displayName = null)
+        /// <summary>
+        /// Verifies the drop down values.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="expectedList">The expected list.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        public async Task VerifyDropDownValuesAsync(string labelnameorlocator, string expectedList, bool islocator = false, string displayname = null)
         {
-            var select = await ResolveSelectAsync(labelOrLocator, isLocator, 1);
-            var name = displayName ?? labelOrLocator;
-            if (select == null)
-            {
-                return;
+            string actualtext = null;
+            var options = expectedList.Split("|").ToList();
+            var dropdownList = await GetDropDownOptionsByLabelAsync(labelnameorlocator, islocator);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            foreach (var option in options)
+            { 
+                var found = false;
+                foreach (var a in dropdownList)
+                {
+                    var text = await a.GetAttributeAsync("text");
+                    if (text == option)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    actualtext += option + "|";
+                }
             }
 
-            var expected = expectedPipeList.Split('|').Select(v => v.Trim()).Where(v => v.Length > 0).ToList();
-            var actual = await select.Locator("option").AllInnerTextsAsync();
-            var missing = expected.Where(e => !actual.Contains(e)).ToList();
-            if (missing.Any())
+            if (actualtext != null)
             {
-                _applicationLogger.WriteLine($"DropDown: Missing options in '{name}': {string.Join(", ", missing)}");
+                logger.WriteLine(string.Format("Drop down options '{1}' are not identified these options '{0}' dropdown", labelnameorlocator1, actualtext));
             }
             else
             {
-                _applicationLogger.WriteLine($"DropDown: All expected options present in '{name}'.");
+                logger.WriteLine(string.Format("All options '{0}' are identified in '{1}' dropdown", expectedList, labelnameorlocator1));
             }
         }
 
-        public async Task<bool> VerifyExistAsync(string labelOrLocator, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <summary>
+        /// Verifies the drop down exist.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        /// <returns>bool value</returns>
+        public async Task <bool> VerifyDropDownExistAsync(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null)
         {
-            var select = await ResolveSelectAsync(labelOrLocator, isLocator, index);
-            var name = displayName ?? labelOrLocator;
-            var exists = select != null && await select.CountAsync() > 0;
-            _applicationLogger.WriteLine(exists
-                ? $"DropDown: '{name}' exists."
-                : $"DropDown: '{name}' NOT found.");
-            return exists;
-        }
-
-        private async Task<ILocator?> ResolveSelectAsync(string labelOrLocator, bool isLocator, int index)
-        {
-            if (isLocator)
+            var element = GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            if (element != null)
             {
-                var loc = _page.Locator($"({labelOrLocator})[{index}]");
-                return await loc.CountAsync() > 0 ? loc.First : null;
+                logger.WriteLine(string.Format("'{0}' Drop down exist ", labelnameorlocator1));
+                return true;
             }
+            else
+            {
+                logger.WriteLine(string.Format("'{0}' Drop down does not exist ", labelnameorlocator1));
+                return false;
+            }
+        }
 
-            var locator = _page.Locator($"(//select[@aria-label=normalize-space('{labelOrLocator}')] | //*[normalize-space(.)='{labelOrLocator}']/../descendant::select)[{index}]");
-            return await locator.CountAsync() == 0 ? null : locator.First;
+        // Replace the following method to fix CS0266
+
+        /// <summary>
+        /// Gets the drop down options by label.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <returns>  IReadOnlyList<ILocator> </returns>
+        private async Task<IReadOnlyList<ILocator>> GetDropDownOptionsByLabelAsync(string labelnameorlocator, bool islocator = false)
+        {
+            var XPathLocator = string.Empty;
+
+            try
+            {
+                XPathLocator = islocator
+                    ? string.Format("{0}//option", labelnameorlocator)
+                    : string.Format("(//select[@aria-label=normalize-space(\"{0}\")]//option | //*[.=normalize-space(\"{0}\")]/../descendant-or-self::select)[1]//option", labelnameorlocator);
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
+
+                return await element.AllAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the drop down by label.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        /// <returns>IWebElement response</returns>
+        private async Task<ILocator> GetDropDownByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
+        {
+            var XPathLocator = string.Empty;
+            await Task.Delay(1000);
+            try
+            {
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//label[.=normalize-space(\"{0}\")]/../following-sibling::div//input[@type='text'])[1]", labelnameorlocator);
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
+
+                await element.WaitForAsync(new LocatorWaitForOptions
+                { State = WaitForSelectorState.Visible
+                });
+                return element;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
+            }
         }
     }
 }

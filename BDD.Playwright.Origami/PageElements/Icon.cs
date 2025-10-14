@@ -1,65 +1,89 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Playwright;
 using Reqnroll;
+using BDD.Playwright.Origami.PageElements;
+using Microsoft.Playwright;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
-    /// <summary>
-    /// Playwright migration of Selenium Icon element.
-    /// </summary>
-    public class Icon : BaseElement
+    public class Icon(ScenarioContext scenarioContext) : BaseElement(scenarioContext)
     {
-        public Icon(ScenarioContext scenarioContext) : base(scenarioContext)
+        
+       
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Icon"/> class.
+        
+        /// Clicks the icon.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="action">The action.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        public async Task ClickIconAsync(string labelnameorlocator, ActionType action = ActionType.Click, bool islocator = false, int index = 1, string displayname = null)
         {
+            var element = await GetIconByLabelAsync(labelnameorlocator, islocator, index);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            if (element != null)
+            {
+                await element.ClickAsync();
+                logger.WriteLine(string.Format("Icon click performed with value '{0}' on Button field with locator '{1}'", action, labelnameorlocator));
+            }
         }
 
-        // Backward-compatible sync wrappers
-        public void ClickIcon(string labelnameorlocator, ActionType action = ActionType.Click, bool islocator = false, int index = 1, string displayname = null) => ClickAsync(labelnameorlocator, action, islocator, index, displayname).GetAwaiter().GetResult();
-        public bool VerifyIconExist(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null) => VerifyExistAsync(labelnameorlocator, islocator, index, displayname).GetAwaiter().GetResult();
-
-        public async Task ClickAsync(string labelOrLocator, ActionType action = ActionType.Click, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <summary>
+        /// Verifies the icon exist.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        /// <returns>bool value</returns>
+        public async Task <bool> VerifyIconExistAsync(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null)
         {
-            var icon = await ResolveIconAsync(labelOrLocator, isLocator, index);
-            var name = displayName ?? labelOrLocator;
-            if (icon == null)
+           var element = GetIconByLabelAsync(labelnameorlocator, islocator, index);
+           var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            if (element != null)
             {
-                _applicationLogger.WriteLine($"Icon: '{name}' not found.");
-                return;
+                logger.WriteLine(string.Format("'{0}' Icon exist ", labelnameorlocator));
+                return true;
             }
-
-            if (action == ActionType.Click)
+            else
             {
-                await icon.ClickAsync();
+                logger.WriteLine(string.Format("'{0}' Icon does not exist ", labelnameorlocator));
+                return false;
             }
-            else if (action == ActionType.Hover)
-            {
-                await icon.HoverAsync();
-            }
-
-            _applicationLogger.WriteLine($"Icon: Performed {action} on '{name}'.");
         }
 
-        public async Task<bool> VerifyExistAsync(string labelOrLocator, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <summary>
+        /// Gets the icon by label.
+        /// </summary>
+        /// <param name="labelnameorlocator">The labelnameorlocator.</param>
+        /// <param name="islocator">if set to <c>true</c> [islocator].</param>
+        /// <param name="index">The index.</param>
+        /// <returns>IWebElement response</returns>
+        private async Task <ILocator> GetIconByLabelAsync(string labelnameorlocator, bool islocator = false, int index = 1)
         {
-            var icon = await ResolveIconAsync(labelOrLocator, isLocator, index);
-            var name = displayName ?? labelOrLocator;
-            var exists = icon != null && await icon.CountAsync() > 0;
-            _applicationLogger.WriteLine(exists
-                ? $"Icon: '{name}' exists."
-                : $"Icon: '{name}' NOT found.");
-            return exists;
-        }
-
-        private async Task<ILocator?> ResolveIconAsync(string labelOrLocator, bool isLocator, int index)
-        {
-            if (isLocator)
+            var XPathLocator = string.Empty;
+            try
             {
-                var loc = _page.Locator($"({labelOrLocator})[{index}]");
-                return await loc.CountAsync() > 0 ? loc.First : null;
-            }
+                XPathLocator = islocator
+                    ? string.Format("({0})[{1}]", labelnameorlocator, index)
+                    : string.Format("(//*[.=normalize-space(\"{0}\")]/../../descendant::div[contains(@class,'gw-icon gw-icon--expand')])[{1}]", labelnameorlocator, index);
 
-            var locator = _page.Locator($"(//*[normalize-space(.)='{labelOrLocator}']/../../descendant::div[contains(@class,'gw-icon gw-icon--expand')])[{index}]");
-            return await locator.CountAsync() == 0 ? null : locator.First;
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
+
+                return element;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements." + ex);
+                return null;
+            }
         }
     }
 }

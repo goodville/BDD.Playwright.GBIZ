@@ -1,135 +1,144 @@
-﻿using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using BDD.Playwright.Origami.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
-    /// <summary>
-    /// Playwright migration of legacy Selenium DatePicker.
-    /// Supports selection by label, verification and popup calendar interactions.
-    /// </summary>
-    public class DatePicker : BaseElement
+    public class DatePicker(ScenarioContext scenarioContext) : BaseElement(scenarioContext)
     {
-        public DatePicker(ScenarioContext scenarioContext) : base(scenarioContext) { }
-
-        // --- Original Selenium style synchronous wrappers for backward compatibility ---
-        public void SelectDate(string labelname, string value, int index = 1) => SelectDateAsync(labelname, value, false, index).GetAwaiter().GetResult();
-        public bool VerifyLabelText(string labelname, string expectedText, int index = 1) => VerifyLabelTextAsync(labelname, expectedText, false, index).GetAwaiter().GetResult();
-        public bool VerifyLabelExist(string labelname, int index = 1) => VerifyExistAsync(labelname, false, index).GetAwaiter().GetResult();
-        // -------------------------------------------------------------------------------
 
         /// <summary>
-        /// Select date given label text (label for input) and value (supports MM/dd/yyyy or dd/MM/yyyy or yyyy/MM/dd with / - . separators).
+        /// Initializes a new instance of the <see cref="DatePicker"/> class.
         /// </summary>
-        public async Task SelectDateAsync(string labelOrLocator, string value, bool isLocator = false, int index = 1, string? displayName = null)
+        /// <param name="driver">The driver.</param>
+        /// <param name="ReqnrollOutputHelper">The spec flow output helper.</param>
+        /// <param name="driverwait">The driverwait.</param>
+      
+
+        /// <summary>
+        /// Selects the date.
+        /// </summary>
+        /// <param name="labelname">The labelname.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="index">The index.</param>
+        public async Task SelectDateAsync(string labelname, string value, int index = 1)
         {
             try
             {
-                var trigger = await GetDatePickerButtonAsync(labelOrLocator, isLocator, index);
-                if (trigger == null)
+                var element = await GetDatePickerByLabelAsync(labelname, index);
+
+                if (element != null)
                 {
-                    _applicationLogger.WriteLine($"DatePicker: Unable to resolve locator for '{labelOrLocator}'.");
-                    return;
+                    await element.ClickAsync();
                 }
 
-                await trigger.ClickAsync();
+                var datelist = value.Split("/");
 
-                var parts = value.Split('/', '-', '.');
-                if (parts.Length != 3)
-                {
-                    throw new ArgumentException($"Unsupported date format: {value}");
-                }
-
-                var year = Array.Find(parts, p => p.Length == 4) ?? parts[2];
-                var month = parts[0].Length <= 2 && parts[0] != year ? parts[0] : parts[1];
-                var day = parts[0] == month ? parts[1] : parts[0];
-
-                await SelectCalendarDateAsync(year, month, day);
-                _applicationLogger.WriteLine($"DatePicker: Selected '{value}' for '{displayName ?? labelOrLocator}'.");
+                await SelectCalenderDateAsync(datelist[2], datelist[1], datelist[0]);
             }
             catch (Exception ex)
             {
-                _applicationLogger.WriteLine($"DatePicker: Failed selecting '{value}' -> {ex.Message}");
+                logger.WriteLine(string.Format("Unable to select date '{0}' in calender\n Error : {1}", value, ex.Message));
             }
         }
 
-        private async Task SelectCalendarDateAsync(string year, string month, string day)
+        private async Task SelectCalenderDateAsync(string year, string month, string date)
         {
-            var yearLocator = _page.Locator("div#ui-datepicker-div select.ui-datepicker-year");
-            if (await yearLocator.CountAsync() > 0)
-            {
-                await yearLocator.SelectOptionAsync(new SelectOptionValue { Label = year });
-            }
+           
+            var yearLocator = _page.Locator("//div[@id='ui-datepicker-div']//select[@class='ui-datepicker-year']");
+            await yearLocator.SelectOptionAsync(new SelectOptionValue { Label = year });
 
-            var monthLocator = _page.Locator("div#ui-datepicker-div select.ui-datepicker-month");
-            if (await monthLocator.CountAsync() > 0)
+            var monthLocator = _page.Locator("//div[@id='ui-datepicker-div']//select[@class='ui-datepicker-month']");
+            await monthLocator.SelectOptionAsync(new SelectOptionValue { Label = month });
+
+            var dateLocator = _page.Locator($"//table[@class='ui-datepicker-calendar']//td/span[contains(text(),\"{date}\")]");
+            await dateLocator.ClickAsync();
+        }
+
+        /// <summary>
+        /// Verifies the label text.
+        /// </summary>
+        /// <param name="labelname">The labelname.</param>
+        /// <param name="expectedText">The expected text.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>bool value</returns>
+        public async Task<bool> VerifyLabelTextAsync(string labelname, string expectedText, int index = 1)
+        {
+            var element = await GetDatePickerByLabelAsync(labelname, index);
+
+            if (element != null)
             {
-                if (Regex.IsMatch(month, "^\\d{1,2}$"))
+                var actualText = await element.TextContentAsync();
+                if (actualText != null && actualText.Equals(expectedText))
                 {
-                    var m = int.Parse(month, CultureInfo.InvariantCulture) - 1; // jQuery UI months 0-11
-                    await monthLocator.SelectOptionAsync(new SelectOptionValue { Value = m.ToString(CultureInfo.InvariantCulture) });
+                    logger.WriteLine(string.Format("'{0}' DatePicker Value validation is success", labelname));
+                    return true;
                 }
                 else
                 {
-                    await monthLocator.SelectOptionAsync(new SelectOptionValue { Label = month });
+                    logger.WriteLine(string.Format("'{0}' DatePicker value validation is not success ", labelname));
+                    return false;
                 }
             }
-
-            var dayCell = _page.Locator($"//table[contains(@class,'ui-datepicker-calendar')]//td[not(contains(@class,'ui-datepicker-other-month'))]//*[text()='{day}']");
-            await dayCell.First.ClickAsync();
-        }
-
-        public async Task<bool> VerifyLabelTextAsync(string labelOrLocator, string expectedText, bool isLocator = false, int index = 1)
-        {
-            var input = await GetDatePickerInputAsync(labelOrLocator, isLocator, index);
-            if (input == null)
+            else
             {
+                logger.WriteLine(string.Format("'{0}' DatePicker element not found ", labelname));
                 return false;
             }
-
-            var actual = await input.InputValueAsync();
-            var ok = string.Equals(actual, expectedText, StringComparison.OrdinalIgnoreCase);
-            _applicationLogger.WriteLine(ok
-                ? $"DatePicker: Value validation success for '{labelOrLocator}'."
-                : $"DatePicker: Value validation FAILED for '{labelOrLocator}'. Expected '{expectedText}' got '{actual}'.");
-            return ok;
         }
 
-        public async Task<bool> VerifyExistAsync(string labelOrLocator, bool isLocator = false, int index = 1)
+        /// <summary>
+        /// Verifies the label exist.
+        /// </summary>
+        /// <param name="labelname">The labelname.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>bool value</returns>
+        public async Task<bool> VerifyLabelExistAsync(string labelname, int index = 1)
         {
-            var input = await GetDatePickerInputAsync(labelOrLocator, isLocator, index);
-            var exists = input != null && await input.CountAsync() > 0;
-            _applicationLogger.WriteLine(exists
-                ? $"DatePicker: '{labelOrLocator}' exists."
-                : $"DatePicker: '{labelOrLocator}' NOT found.");
-            return exists;
-        }
+            var element = await GetDatePickerByLabelAsync(labelname, index);
 
-        private async Task<ILocator?> GetDatePickerButtonAsync(string labelOrLocator, bool isLocator, int index)
-        {
-            if (isLocator)
+            if (element != null)
             {
-                var loc = _page.Locator($"({labelOrLocator})[{index}]");
-                return await loc.CountAsync() > 0 ? loc.First : null;
+                logger.WriteLine(string.Format("'{0}' Date picker exist ", labelname));
+                return true;
             }
-
-            var locator = _page.Locator($"(//label[normalize-space(.)='{labelOrLocator}']/..//input)[{index}]//following-sibling::button");
-            return await locator.CountAsync() == 0 ? null : locator.First;
+            else
+            {
+                logger.WriteLine(string.Format("'{0}' Date picker does not exist ", labelname));
+                return false;
+            }
         }
 
-        private async Task<ILocator?> GetDatePickerInputAsync(string labelOrLocator, bool isLocator, int index)
+        private async Task<ILocator> GetDatePickerByLabelAsync(string labelname, int index = 1)
         {
-            if (isLocator)
+            try
             {
-                var loc = _page.Locator($"({labelOrLocator})[{index}]");
-                return await loc.CountAsync() > 0 ? loc.First : null;
-            }
+                var XPathLocator = $"(//label[normalize-space(text())=\"{labelname}\"]/..//input)[{index}]/following-sibling::button";
+                ILocator element;
+                if (_frameLocator != null)
+                {
+                    element = _frameLocator.Locator($"xpath={XPathLocator}");
+                }
+                else
+                {
+                    element = _page.Locator($"xpath={XPathLocator}");
+                }
 
-            var locator = _page.Locator($"(//label[normalize-space(.)='{labelOrLocator}']/..//input)[{index}]");
-            return await locator.CountAsync() == 0 ? null : locator.First;
+                if (await element.CountAsync() > 0)
+                {
+                    return element;
+                }
+                else
+                {
+                    logger.WriteLine("Error:Element locator " + labelname + " did not match any elements.");
+                    throw new Exception("Element not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelname + " did not match any elements.");
+                throw new Exception(ex.Message, ex.InnerException);
+            }
         }
     }
 }

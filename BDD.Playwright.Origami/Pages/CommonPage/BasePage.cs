@@ -3,7 +3,7 @@ using BDD.Playwright.GBIZ.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
 
-namespace BDD.Playwright.Origami.Pages.CommonPage
+namespace BDD.Playwright.GBIZ.Pages.CommonPage
 {
     public class BasePage
     {

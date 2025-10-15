@@ -1,8 +1,7 @@
-﻿using BDD.Playwright.Origami.PageElements;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Reqnroll;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
     public class MenuItem(ScenarioContext scenarioContext) : BaseElement(scenarioContext)
     {

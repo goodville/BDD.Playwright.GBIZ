@@ -1,9 +1,8 @@
-﻿using BDD.Playwright.Origami.PageElements;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Reqnroll;
 using System.Threading.Tasks;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
     public class TextArea(ScenarioContext scenarioContext):BaseElement(scenarioContext)
     {

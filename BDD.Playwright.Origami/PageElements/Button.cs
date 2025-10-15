@@ -1,10 +1,9 @@
-﻿using BDD.Playwright.Origami.PageElements;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Reqnroll;
 using BDD.Playwright.Core.Loggers;
 using BDD.Playwright.Core.Enums;
 
-namespace BDD.Playwright.Origami.PageElements
+namespace BDD.Playwright.GBIZ.PageElements
 {
     public class Button : BaseElement
     {

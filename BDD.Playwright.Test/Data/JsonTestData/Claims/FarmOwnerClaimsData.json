@@ -1,0 +1,26 @@
+{
+  "FarmOwnerClaims": {
+    "Date": "01/15/2024",
+    "Type": "Property Damage",
+    "Amount": "5000.00",
+    "Description": "Storm damage to barn structure - roof repair needed"
+  },
+  "FarmOwnerClaims_Fire": {
+    "Date": "02/20/2024",
+    "Type": "Fire",
+    "Amount": "15000.00",
+    "Description": "Fire damage to equipment shed - total loss"
+  },
+  "FarmOwnerClaims_Liability": {
+    "Date": "03/10/2024",
+    "Type": "Liability",
+    "Amount": "8000.00",
+    "Description": "Injury on farm property - medical expenses"
+  },
+  "FarmOwnerClaims_Theft": {
+    "Date": "04/05/2024",
+    "Type": "Theft",
+    "Amount": "3500.00",
+    "Description": "Agricultural equipment stolen from storage area"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "BindingData": {
+    "BindingProducer_Dropdown": "Test Producer",
+    "AgentEmail_Input": "test@example.com",
+    "NumberOfYearsExperience_input": "10",
+    "Subcontractwork_radioButton": "No",
+    "DroneUse_radioButton": "No",
+    "AsbestosWork_radioButton": "No",
+    "RoofOnly_radioButton": "No",
+    "Demolition_radioButton": "No",
+    "Eifs_radioButton": "No"
+  }
+}

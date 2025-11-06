@@ -1,0 +1,15 @@
+{
+  "LocationData": {
+    "LocationProtection": "Public",
+    "LocationStreetAddress": "456 Business Ave",
+    "LocationCity": "Chicago",
+    "LocationZipCode": "60602",
+    "MilesToFireDept": "2",
+    "RespondingFireDept": "Chicago Fire Department",
+    "TrampolineOrPool": "No",
+    "PassagewaysLit": "Yes",
+    "PorchHandrails": "Yes",
+    "StairwayHandrails": "Yes",
+    "InsuredWithin70Mi": "Yes"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "AgentProduction": {
+    "NoOfCarriers": "2",
+    "Carrier1": "State Farm",
+    "Premium1": "500000",
+    "Carrier2": "Allstate",
+    "Premium2": "350000"
+  },
+  "SingleCarrier": {
+    "NoOfCarriers": "1",
+    "Carrier1": "Progressive",
+    "Premium1": "250000"
+  },
+  "MultiCarrier": {
+    "NoOfCarriers": "3",
+    "Carrier1": "Liberty Mutual",
+    "Premium1": "600000",
+    "Carrier2": "Travelers",
+    "Premium2": "450000",
+    "Carrier3": "Nationwide",
+    "Premium3": "400000"
+  },
+  "HighVolumeCarriers": {
+    "NoOfCarriers": "2",
+    "Carrier1": "GEICO",
+    "Premium1": "1000000",
+    "Carrier2": "Farmers Insurance",
+    "Premium2": "850000"
+  },
+  "LowVolumeCarriers": {
+    "NoOfCarriers": "2",
+    "Carrier1": "The Hartford",
+    "Premium1": "100000",
+    "Carrier2": "American Family",
+    "Premium2": "75000"
+  },
+  "FiveCarriers": {
+    "NoOfCarriers": "5",
+    "Carrier1": "State Farm",
+    "Premium1": "500000",
+    "Carrier2": "Allstate",
+    "Premium2": "350000",
+    "Carrier3": "Progressive",
+    "Premium3": "300000",
+    "Carrier4": "GEICO",
+    "Premium4": "275000",
+    "Carrier5": "Liberty Mutual",
+    "Premium5": "250000"
+  },
+  "MixedVolumeCarriers": {
+    "NoOfCarriers": "4",
+    "Carrier1": "USAA",
+    "Premium1": "800000",
+    "Carrier2": "Chubb",
+    "Premium2": "50000",
+    "Carrier3": "MetLife",
+    "Premium3": "400000",
+    "Carrier4": "Safeco",
+    "Premium4": "150000"
+  },
+  "RegionalCarriers": {
+    "NoOfCarriers": "3",
+    "Carrier1": "Erie Insurance",
+    "Premium1": "200000",
+    "Carrier2": "Auto-Owners Insurance",
+    "Premium2": "180000",
+    "Carrier3": "Acuity Insurance",
+    "Premium3": "150000"
+  },
+  "NationalCarriers": {
+    "NoOfCarriers": "4",
+    "Carrier1": "State Farm",
+    "Premium1": "900000",
+    "Carrier2": "Allstate",
+    "Premium2": "750000",
+    "Carrier3": "Progressive",
+    "Premium3": "650000",
+    "Carrier4": "GEICO",
+    "Premium4": "600000"
+  },
+  "MinimalData": {
+    "NoOfCarriers": "1",
+    "Carrier1": "Test Carrier",
+    "Premium1": "50000"
+  },
+  "EmptyData": {
+    "NoOfCarriers": "0"
+  }
+}

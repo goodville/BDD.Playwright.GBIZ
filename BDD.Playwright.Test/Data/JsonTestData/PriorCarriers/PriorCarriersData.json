@@ -1,0 +1,162 @@
+{
+  "PriorCarriers": {
+    "LossYear": "2023",
+    "CarrierName": "ABC Insurance Company",
+    "PolicyNumber": "POL-2023-001234",
+    "AnnualPremium": "5000",
+    "ModFactor": "1.0",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_HighPremium": {
+    "LossYear": "2023",
+    "CarrierName": "XYZ Mutual Insurance",
+    "PolicyNumber": "XYZ-2023-567890",
+    "AnnualPremium": "15000",
+    "ModFactor": "1.25",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_LowModFactor": {
+    "LossYear": "2022",
+    "CarrierName": "Goodville Mutual Casualty Company",
+    "PolicyNumber": "GMC-2022-445566",
+    "AnnualPremium": "7500",
+    "ModFactor": "0.85",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_MultiYear": {
+    "LossYear": "2021",
+    "CarrierName": "National Workers Comp Insurance",
+    "PolicyNumber": "NWCI-2021-998877",
+    "AnnualPremium": "12000",
+    "ModFactor": "1.15",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_MinimalData": {
+    "LossYear": "2023",
+    "CarrierName": "Basic Insurance Co",
+    "PolicyNumber": "BIC-2023-111222",
+    "AnnualPremium": "3000",
+    "ModFactor": "1.0",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_NewCarrier": {
+    "LossYear": "2024",
+    "CarrierName": "First Time Insurance Provider",
+    "PolicyNumber": "FTIP-2024-001001",
+    "AnnualPremium": "4500",
+    "ModFactor": "1.0",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_ExperiencedMod": {
+    "LossYear": "2023",
+    "CarrierName": "Safety First Insurance",
+    "PolicyNumber": "SFI-2023-778899",
+    "AnnualPremium": "8500",
+    "ModFactor": "0.75",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_HighRisk": {
+    "LossYear": "2022",
+    "CarrierName": "High Risk Underwriters",
+    "PolicyNumber": "HRU-2022-334455",
+    "AnnualPremium": "25000",
+    "ModFactor": "1.85",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_Empty": {
+    "LossYear": "",
+    "CarrierName": "",
+    "PolicyNumber": "",
+    "AnnualPremium": "",
+    "ModFactor": "",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_PartialData": {
+    "LossYear": "2023",
+    "CarrierName": "Partial Data Insurance",
+    "PolicyNumber": "",
+    "AnnualPremium": "6000",
+    "ModFactor": "",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_LongTermCarrier": {
+    "LossYear": "2020",
+    "CarrierName": "Legacy Workers Compensation Insurance Group LLC",
+    "PolicyNumber": "LWCIG-2020-887766",
+    "AnnualPremium": "18500",
+    "ModFactor": "0.95",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_RecentPolicy": {
+    "LossYear": "2024",
+    "CarrierName": "Current Coverage Insurance",
+    "PolicyNumber": "CCI-2024-202401",
+    "AnnualPremium": "9500",
+    "ModFactor": "1.05",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_StandardCommercial": {
+    "LossYear": "2023",
+    "CarrierName": "Standard Commercial Insurance Agency",
+    "PolicyNumber": "SCIA-2023-456789",
+    "AnnualPremium": "11000",
+    "ModFactor": "1.10",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_SmallBusiness": {
+    "LossYear": "2023",
+    "CarrierName": "Small Business Protection Insurance",
+    "PolicyNumber": "SBPI-2023-123456",
+    "AnnualPremium": "2500",
+    "ModFactor": "0.90",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_MediumRisk": {
+    "LossYear": "2022",
+    "CarrierName": "Balanced Risk Insurance Partners",
+    "PolicyNumber": "BRIP-2022-654321",
+    "AnnualPremium": "13500",
+    "ModFactor": "1.20",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_PreferredRate": {
+    "LossYear": "2023",
+    "CarrierName": "Preferred Rate Workers Comp",
+    "PolicyNumber": "PRWC-2023-789012",
+    "AnnualPremium": "5500",
+    "ModFactor": "0.80",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_StateSpecific_IL": {
+    "LossYear": "2023",
+    "CarrierName": "Illinois Workers Compensation Fund",
+    "PolicyNumber": "ILWCF-2023-IL1234",
+    "AnnualPremium": "10500",
+    "ModFactor": "1.00",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_StateSpecific_PA": {
+    "LossYear": "2023",
+    "CarrierName": "Pennsylvania State Workers Insurance Fund",
+    "PolicyNumber": "PSWIF-2023-PA5678",
+    "AnnualPremium": "14000",
+    "ModFactor": "1.15",
+    "QuestionAnswer": "Yes"
+  },
+  "PriorCarriers_Renewal": {
+    "LossYear": "2023",
+    "CarrierName": "Renewal Insurance Corporation",
+    "PolicyNumber": "RIC-2023-RNW001",
+    "AnnualPremium": "9000",
+    "ModFactor": "1.02",
+    "QuestionAnswer": "No"
+  },
+  "PriorCarriers_ClaimsHistory": {
+    "LossYear": "2021",
+    "CarrierName": "Claims Management Insurance Group",
+    "PolicyNumber": "CMIG-2021-CLM999",
+    "AnnualPremium": "22000",
+    "ModFactor": "1.65",
+    "QuestionAnswer": "Yes"
+  }
+}

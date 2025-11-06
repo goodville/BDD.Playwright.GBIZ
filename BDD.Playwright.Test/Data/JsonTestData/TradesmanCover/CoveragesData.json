@@ -1,0 +1,23 @@
+{
+  "CoveragesData": {
+    "NumberOfOwners": "1",
+    "NumberOfFullTimeEmployees": "5",
+    "NumberOfPartTimeEmployees": "2",
+    "SnowRemoval": "No",
+    "MedicalPaymentsLimit": "$5,000",
+    "FireLegalLimit": "$10,000",
+    "LiabilityLimit": "$1,000,000"
+  },
+
+  "EnhancementInformation": {
+    "CommLiabEE": "No",
+    "PremierCommLiabEE": "No",
+    "CommPropEE": "No",
+    "PremierCommPropEE": "No"
+  },
+
+  "ToolsEquipmentInformation": {
+    "ToolsEquipmentLimit": "25000",
+    "ToolsEquipmentDeductible": "$500"
+  }
+}

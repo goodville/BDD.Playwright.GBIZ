@@ -1,0 +1,47 @@
+{
+  "BuildingData": {
+    "BuildingDropdown": "",
+    "BuildingDescription": "Main office and workshop building",
+    "LocatedInTheBuilding": "Office",
+    "ExclusiveOffice": "Yes",
+    "InsuredOwnBuilding": "Yes",
+    "SquareFootage": "5000",
+    "ConstructionType": "Frame",
+    "CondoUnit": "No",
+    "NumberOfStories": "2"
+  },
+
+  "BuildingLimitData": {
+    "BuildingLimit": "500000",
+    "BuildingDeductible": "$1,000",
+    "PersonalPropertyLimit": "100000",
+    "PersonalPropertyDeductible": "$500"
+  },
+
+  "BuildingRatingInforamtion": {
+    "Buildingsprinklers_RadioButton": "",
+    "BuildingElectricalService_RadioButton": "",
+    "BuildingSourceOfHeat_CheckBox": "",
+    "BuildingOccupancy_CheckBox": "",
+    "BuildingYearHeatSourceUpdated_Input": "",
+    "BuildingPropertyManager_RadioButton": "",
+    "BuildingYearOfConstruction_Input": "",
+    "ValueOfBuilding_RadioButton": "",
+    "RoofPeaked_RadioButton": "",
+    "RoofFlat_RadioButton": "",
+    "NearFloodZoneRadioButton": "",
+    "BuildingIsMobileHome_RadioButton": "",
+    "BuildingIsTownHouse_RadioButton": "",
+    "HasAsbestos_RadioButton": "",
+    "ExtendedUnoccupied_RadioButton": "",
+    "DoorsWindowsGoodRepair_RadioButton": "",
+    "OtherOccupanciesOnPremises_RadioButton": "",
+    "TotalSquareFootage_Input": "",
+    "WorkingSmokeDetectorsInPlace_RadioButton": "",
+    "FireExtinguishersInPlace_RadioButton": "",
+    "SecuritySystem2_RadioButton": ""
+  }
+}
+
+
+   

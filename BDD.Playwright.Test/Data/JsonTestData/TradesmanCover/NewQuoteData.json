@@ -1,0 +1,29 @@
+{
+  "NewQuoteData": {
+    "QuoteDescription": "TCQTest",
+    "EffectiveDate": "0",
+    "BookCode": "37ZZ",
+    "Office": "Main Office",
+    "Producer": "Test Producer",
+    "FirstName": "John",
+    "LastName": "Smith",
+    "SSN": "123-45-6789",
+    "DateOfBirth": "01/15/1980",
+    "Address": "123 Main Street",
+    "City": "Chicago",
+    "State": "Illinois",
+    "ZipCode1": "60601",
+    "ZipCode2": "",
+    "BusinessDescription": "",
+    "BusinessType": "",
+    "BusinessFunction": "",
+    "Insuranceinforce": "",
+    "InfoBusinessEndeavorBankruptcy": "",
+    "InfoToolsEquipment": "",
+    "InfoCanceledRefusedCoverage": "",
+    "ExteriorSprayPainting": "",
+    "GrossAnnualIncome": "",
+    "EmployeePayroll": "",
+    "ContinueButton": ""
+  }
+}

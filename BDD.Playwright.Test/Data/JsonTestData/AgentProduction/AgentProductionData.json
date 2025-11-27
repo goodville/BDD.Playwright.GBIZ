@@ -1,11 +1,11 @@
 {
-  "AgentProduction": {
-    "NoOfCarriers": "2",
-    "Carrier1": "State Farm",
-    "Premium1": "500000",
-    "Carrier2": "Allstate",
-    "Premium2": "350000"
-  },
+    "AgentProduction": {
+        "NoOfCarriers": "2",
+        "Carrier1": "Whatever",
+        "Premium1": "50000",
+        "Carrier2": "Another",
+        "Premium2": "500000"
+    },
   "SingleCarrier": {
     "NoOfCarriers": "1",
     "Carrier1": "Progressive",

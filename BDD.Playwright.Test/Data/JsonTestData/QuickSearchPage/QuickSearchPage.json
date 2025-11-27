@@ -1,0 +1,18 @@
+{
+    "Agent_TC23": {
+        "PolicyNumberSearch": "566188",
+        "SearchClaimQuote_Radio": "Search"
+    },
+    "Agent_TC25": {
+        "PolicyNumberSearch": "566188",
+        "SearchClaimQuote_Radio": "Search"
+    },
+    "Agent_TC26": {
+        "PolicyNumberSearch": "906271",
+        "SearchClaimQuote_Radio": "Search"
+    },
+    "Agent_TC1": {
+        "PolicyNumberSearch": "566188",
+        "SearchClaimQuote_Radio": "Claim"
+    }
+}

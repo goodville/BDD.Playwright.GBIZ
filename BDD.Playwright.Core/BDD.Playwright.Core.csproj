@@ -36,27 +36,27 @@
 		<Compile Remove="BusinessTransactions\PINOT.cs" />
 		<Compile Remove="Helpers\AlertHelper.cs" />
 		<Compile Remove="Helpers\GenericHelper.cs" />
-		<Compile Remove="Pages\Policy\AddlInterestsPage.cs" />
-		<Compile Remove="Pages\Policy\BuildingPage.cs" />
-		<Compile Remove="Pages\Policy\CGLPage.cs" />
-		<Compile Remove="Pages\Policy\EndorsementPage.cs" />
-		<Compile Remove="Pages\Policy\EquipmentBreakdownPage.cs" />
-		<Compile Remove="Pages\Policy\ExposurePage.cs" />
-		<Compile Remove="Pages\Policy\LocationSchedulePage.cs" />
-		<Compile Remove="Pages\Policy\LoginPage.cs" />
-		<Compile Remove="Pages\Policy\ManuscriptEndPage.cs" />
-		<Compile Remove="Pages\Policy\NewQuotePage.cs" />
-		<Compile Remove="Pages\Policy\OptionalCoveragePage.cs" />
-		<Compile Remove="Pages\Policy\PaymentDetailsPage.cs" />
-		<Compile Remove="Pages\Policy\PolicyCoverage.cs" />
-		<Compile Remove="Pages\Policy\PolicyCoveragePage.cs" />
-		<Compile Remove="Pages\Policy\PolicyInfo.cs" />
-		<Compile Remove="Pages\Policy\PolicyInfoPage.cs" />
-		<Compile Remove="Pages\Policy\PolicyUnderwrtingPage.cs" />
-		<Compile Remove="Pages\Policy\PricingPage.cs" />
-		<Compile Remove="Pages\Policy\TransACTPage.cs" />
-		<Compile Remove="Pages\Policy\UnderlyingPolicyInformationPage.cs" />
-		<Compile Remove="Pages\SeleniumFunctions.cs" />
+		<Compile Remove="pages\Policy\AddlInterestspage.cs" />
+		<Compile Remove="pages\Policy\Buildingpage.cs" />
+		<Compile Remove="pages\Policy\CGLpage.cs" />
+		<Compile Remove="pages\Policy\Endorsementpage.cs" />
+		<Compile Remove="pages\Policy\EquipmentBreakdownpage.cs" />
+		<Compile Remove="pages\Policy\Exposurepage.cs" />
+		<Compile Remove="pages\Policy\LocationSchedulepage.cs" />
+		<Compile Remove="pages\Policy\Loginpage.cs" />
+		<Compile Remove="pages\Policy\ManuscriptEndpage.cs" />
+		<Compile Remove="pages\Policy\NewQuotepage.cs" />
+		<Compile Remove="pages\Policy\OptionalCoveragepage.cs" />
+		<Compile Remove="pages\Policy\PaymentDetailspage.cs" />
+		<Compile Remove="pages\Policy\PolicyCoverage.cs" />
+		<Compile Remove="pages\Policy\PolicyCoveragepage.cs" />
+		<Compile Remove="pages\Policy\PolicyInfo.cs" />
+		<Compile Remove="pages\Policy\PolicyInfopage.cs" />
+		<Compile Remove="pages\Policy\PolicyUnderwrtingpage.cs" />
+		<Compile Remove="pages\Policy\Pricingpage.cs" />
+		<Compile Remove="pages\Policy\TransACTpage.cs" />
+		<Compile Remove="pages\Policy\UnderlyingPolicyInformationpage.cs" />
+		<Compile Remove="pages\SeleniumFunctions.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -79,6 +79,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
+		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
 		<PackageReference Include="log4net" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />

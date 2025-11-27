@@ -1,0 +1,43 @@
+{
+    "Agent_TC14": {
+        "ReportLossAddorVerify": "Add",
+        "ServiceAddorVerify": "",
+        "DirectPayAddorVerify": "",
+        "YTDLossAddorVerify": "",
+        "PaymentsSearchorVerify": "",
+        "AgentBook": "",
+        "StartDate": "10/11/2022",
+        "EndDate": "10/11/2023"
+    },
+    "Agent_TC15": {
+        "ReportLossAddorVerify": "Add",
+        "ServiceAddorVerify": "",
+        "DirectPayAddorVerify": "",
+        "YTDLossAddorVerify": "",
+        "PaymentsSearchorVerify": "",
+        "AgentBook": "",
+        "StartDate": "",
+        "EndDate": ""
+    },
+    "Agent_TC16": {
+        "ReportLossAddorVerify": "Verify",
+        "ServiceAddorVerify": "Verify",
+        "DirectPayAddorVerify": "Verify",
+        "YTDLossAddorVerify": "Verify",
+        "PaymentsSearchorVerify": "Verify",
+        "AgentBook": "Verify",
+        "StartDate": "",
+        "EndDate": ""
+    },
+
+    "Agent_TC57": {
+        "ReportLossAddorVerify": "",
+        "ServiceAddorVerify": "",
+        "DirectPayAddorVerify": "",
+        "YTDLossAddorVerify": "",
+        "PaymentsSearchorVerify": "Search",
+        "AgentBook": "0704",
+        "StartDate": "-90",
+        "EndDate": "0"
+    }
+}

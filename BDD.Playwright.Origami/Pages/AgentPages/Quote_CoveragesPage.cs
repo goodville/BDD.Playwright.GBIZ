@@ -1,20 +1,22 @@
-﻿using BDD.Playwright.Origami.Pages.CommonPage;
+﻿using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
+using BDD.Playwright.Origami.Pages.CommonPage;
 using Reqnroll;
 
 namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
 {
     public class Quote_CoveragesPage : BasePage
     {
-        private readonly CommonFunctions _commonFunctions;
+      
         private readonly ScenarioContext _scenarioContext;
         public FeatureContext _featureContext;
         public CommonXpath _commonXpath;
         public LoginPage _loginPage;
         // Constructor
-        public Quote_CoveragesPage(ScenarioContext scenarioContext, CommonFunctions commonFunctions, LoginPage loginPage, CommonXpath commonXpath) : base(scenarioContext)
+        public Quote_CoveragesPage(ScenarioContext scenarioContext,LoginPage loginPage, CommonXpath commonXpath) : base(scenarioContext)
         {
             _scenarioContext = scenarioContext;
-            _commonFunctions = commonFunctions;
             _loginPage = loginPage;
             _commonXpath = commonXpath;
         }
@@ -64,25 +66,23 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
 
         public async Task CoveragesDatafillAsync()
         {
-            commonFunctions.ReadTestDataForCoveragePage();
-            await commonFunctions.UserWaitForPageToLoadCompletlyAsync();
-            await DropDown.SelectDropDownAsync(PolicyForm_Drp, commonFunctions.CoveragesPolicyForm_LabelAndValue.Item2, true, 1);
+           
+          /*  await DropDown.SelectDropDownAsync(PolicyForm_Drp, commonFunctions.CoveragesPolicyForm_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(PremisesLiability_Drp, commonFunctions.CoveragesPremisesLiability_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(MedicalPayments_Drp, commonFunctions.CoveragesMedicalPayments_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(AllPerilsDeductible_Drp, commonFunctions.CoveragesAllPerilsDeductible_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(WindHailDeductible_Drp, commonFunctions.CoveragesWindorHailDeductible_LabelAndValue.Item2, true, 1);
             //Button.ClickButton(NextButton, ActionType.Click, true, 1);
-            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);
-            await commonFunctions.UserWaitForPageToLoadCompletlyAsync();
+            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);*/
+          
         }
 
         #region Workers Compensation Coverages Fill
         // Rahul WC
         public async Task WorkersCompCoveragesDatafillAsync()
         {
-            commonFunctions.ReadTestDataForCoveragePage();
-            await commonFunctions.UserWaitForPageToLoadCompletlyAsyncAsync();
-            await TextLink.ClickTextLinkAsync(Coverages_Link, true, 1);
+           
+         /*   await TextLink.ClickTextLinkAsync(Coverages_Link, true, 1);
             await DropDown.SelectDropDownAsync(ELEachAccident_Select, commonFunctions.CoveragesELEachAccident_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(ELDiseasePL_Select, commonFunctions.CoveragesELDiseasePL_LabelAndValue.Item2, true, 1);
             await DropDown.SelectDropDownAsync(ELDiseaseEachEmployee_Select, commonFunctions.CoveragesELDiseaseEachEmployee_LabelAndValue.Item2, true, 1);
@@ -97,7 +97,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
             await InputField.SetInputFieldAsync(IndividualClassCodeUWDesc_Input, commonFunctions.CoveragesIndividualClassCodeUWDesc_LabelAndValue.Item2, true, 1);
             await InputField.SetInputFieldAsync(IndividualOwnership_Input, commonFunctions.CoveragesIndividualOwnership_LabelAndValue.Item2, true, 1);
             await InputField.SetInputFieldAsync(IndividualPayroll_Input, commonFunctions.CoveragesIndividualPayroll_LabelAndValue.Item2, true, 1);
-            await commonFunctions.UserWaitForPageToLoadCompletlyAsync();
+            await commonFunctions.UserWaitForPageToLoadCompletlyAsync();*/
         }
         #endregion
 
@@ -105,9 +105,8 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
         // Rahul HO
         public async Task HomeOwnersCoveragesDatafillAsync()
         {
-            commonFunctions.ReadTestDataForCoveragePage();
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            if (commonFunctions.PolicyForm_LabelAndValue.Item2 != string.Empty)
+           
+           /* if (commonFunctions.PolicyForm_LabelAndValue.Item2 != string.Empty)
             {
                 await DropDown.SelectDropDownAsync(PolicyForm_DropDown, commonFunctions.PolicyForm_LabelAndValue.Item2, true, 1);
             }
@@ -162,13 +161,13 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
             }
 
             await commonFunctions.UserWaitForPageToLoadCompletlyAsync();
-            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);
+            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);*/
         }
         #endregion
         #region HomeOwners Coverages Fill1
         public async Task HomeOwnersCoveragesDatafill1Async()
         {
-            commonFunctions.ReadTestDataForCoveragePage();
+           /* commonFunctions.ReadTestDataForCoveragePage();
             commonFunctions.UserWaitForPageToLoadCompletly();
             if (commonFunctions.PolicyForm_LabelAndValue.Item2 != string.Empty)
             {
@@ -220,7 +219,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
             }
 
             commonFunctions.UserWaitForPageToLoadCompletly();
-            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);
+            await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);*/
         }
         #endregion
 

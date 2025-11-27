@@ -40,7 +40,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     if (isChecked)
                     {
                         await element.UncheckAsync();
-                        specLogger.WriteLine(string.Format("Checkbox Un-Selected with value '{0}' on Checkbox field with locator '{1}'", value, labelnameorlocator1));
+                        logger.WriteLine(string.Format("Checkbox Un-Selected with value '{0}' on Checkbox field with locator '{1}'", value, labelnameorlocator1));
                     }
                 }
             }

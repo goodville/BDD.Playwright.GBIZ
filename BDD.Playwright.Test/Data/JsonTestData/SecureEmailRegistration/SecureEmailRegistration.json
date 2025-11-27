@@ -1,0 +1,19 @@
+{
+    "Agent_TC41": {
+        "Email_Inp": "Qw@gmail.com",
+        "FirstName_Inp": "Qwe",
+        "LastName_Inp": "Rty",
+        "Password_Inp": "Zxcv@123",
+        "ConfirmPassword_Inp": "Zxcv@123"
+
+    },
+
+    "Agent_TC42": {
+        "Email_Inp": "samsamplemsg@gmail.com",
+        "FirstName_Inp": "Sam",
+        "LastName_Inp": "Sample",
+        "Password_Inp": "m3ss@geCenterte5t",
+        "ConfirmPassword_Inp": "m3ss@geCenterte5t"
+
+    }
+}

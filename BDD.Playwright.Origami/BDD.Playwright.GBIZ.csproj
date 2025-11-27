@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\PublicPages\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Selenium.Support" Version="4.37.0" />
   </ItemGroup>
 

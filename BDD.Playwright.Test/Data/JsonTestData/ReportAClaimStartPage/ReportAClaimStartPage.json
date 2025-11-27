@@ -1,7 +1,161 @@
 {
-  "ReportAclaim": {
-    "policyNumber_Input": "",
-    "zipCode_Input": ""
+    "ReportAclaimTC12": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "03/02/2024"
 
-  }
+    },
+
+    "ReportAclaimTC13": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2024"
+
+    },
+
+    "ReportAclaimTC15": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2022"
+
+    },
+
+    "ReportAclaimTC16": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "ReportAclaimTC17": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "03/03/2024"
+
+    },
+
+    "ReportAclaimTC18": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "03/03/2024"
+    },
+
+    "ReportAclaimTC19": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "17555",
+        "DateOfLoss": ""
+    },
+    "ReportAclaimTC20": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "ReportAclaimTC21": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "ReportAclaimTC22": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "03/03/2024"
+    },
+
+    "ReportAclaimTC23": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "17555",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "AgentTC_15": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "AgentTC_14": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "",
+        "DateOfLoss": "04/01/2022"
+    },
+
+    "AgentTC_16": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "",
+        "DateOfLoss": "04/01/2022"
+    },
+
+
+    "Agent_TC34": {
+        "policyNumber_Input": "566188",
+        "zipCode_Input": "",
+        "DateOfLoss": "04/01/2023"
+    },
+
+    "Agent_TC35": {
+        "policyNumber_Input": "765475",
+        "zipCode_Input": "",
+        "DateOfLoss": "04/01/2023"
+    },
+
+    "MakeAclaimStartTC24": {
+        "policyNumber_Input": "GMCA100095362",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC25": {
+        "policyNumber_Input": "GMQA100073747",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC26": {
+        "policyNumber_Input": "GMCA100095323",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC27": {
+        "policyNumber_Input": "GMCA100095361",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC28": {
+        "policyNumber_Input": "GMCA100095364",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC29": {
+        "policyNumber_Input": "GMCA100095364",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC30": {
+        "policyNumber_Input": "GMQA100073747",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC31": {
+        "policyNumber_Input": "GMCA100095361",
+        "zipCode_Input": "47906"
+
+    },
+
+    "MakeAclaimStartTC32": {
+        "policyNumber_Input": "GMQA100051901",
+        "zipCode_Input": "612821"
+
+    }
+
+
+
+
+
+
 }

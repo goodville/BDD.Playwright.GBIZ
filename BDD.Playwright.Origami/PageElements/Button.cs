@@ -158,13 +158,134 @@ namespace BDD.Playwright.GBIZ.PageElements
             }
         }
 
-        public async Task ActionMoverAsync(string labelnameorlocator, bool islocator = false, int index = 1)
+        public async Task ScrollIntoViewAsync(string labelnameorlocator, bool islocator = false, int index = 1, string displayname = null)
         {
             var element = await GetButtonByLabelAsync(labelnameorlocator, islocator, index);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            var a = DateTime.Now;
+            logger.WriteLine($"Scroll into view starts with locator '{labelnameorlocator1}' at {DateTime.Now:hh:mm:ss}");
             if (element != null)
             {
-                await element.EvaluateAsync("el => el.hidden = false");
-                await element.ClickAsync();
+                try
+                {
+                    await element.ScrollIntoViewIfNeededAsync();
+                    logger.WriteLine($"Scrolled into view with locator '{labelnameorlocator1}'");
+                }
+                catch (Exception ex)
+                {
+                    logger.WriteLine($"Error scrolling into view with locator '{labelnameorlocator1}': {ex.Message}");
+                }
+            }
+            else
+            {
+                logger.WriteLine($"Error @ ScrollButtonIntoView. Didn't match any element with locator {labelnameorlocator}");
+            }
+
+            var b = DateTime.Now;
+            logger.WriteLine($"Scroll into view ends with locator '{labelnameorlocator1}' at {DateTime.Now:hh:mm:ss}");
+            var c = b - a;
+            logger.WriteLine($"Time Difference Between Scroll and ScrollEnd {c.TotalSeconds}");
+        }
+        public async Task ClickButtonCssAsync(string shadowHostSelector, string buttonSelector, ActionType action = ActionType.Click, string displayname = null, bool continueonerror = false)
+        {
+            var labelnameorlocator1 = displayname ?? buttonSelector;
+            var a = DateTime.Now;
+            logger.WriteLine($"Button click starts with value '{action}' on Button field with locator '{labelnameorlocator1}' at {DateTime.Now:hh:mm:ss}");
+            try
+            {
+                var shadowHandle = await _page.QuerySelectorAsync(shadowHostSelector);
+                if (shadowHandle == null)
+                {
+                    throw new Exception($"Shadow host not found: {shadowHostSelector}");
+                }
+
+                // get the shadow root
+                var shadowRoot = await shadowHandle.EvaluateHandleAsync("el => el.shadowRoot");
+                if (shadowRoot == null)
+                {
+                    throw new Exception($"Shadow root not found for host: {shadowHostSelector}");
+                }
+
+                // query inside the shadow root for the button
+                var buttonHandle = await shadowRoot.AsElement().QuerySelectorAsync(buttonSelector);
+                if (buttonHandle == null)
+                {
+                    if (continueonerror)
+                    {
+                        logger.WriteLine($"Ignore Error @ Button.ClickButtonCssAsync. Didn't match any element with locator {buttonSelector}");
+                        return;
+                    }
+                    else
+                    {
+                        throw new Exception($"Error @ Button.ClickButtonCssAsync. Didn't match any element with locator {buttonSelector}");
+                    }
+                }
+
+                try
+                {
+                    await buttonHandle.ClickAsync();
+                }
+                catch
+                {
+                    await Task.Delay(3000);
+                    await buttonHandle.ClickAsync();
+                }
+
+                  logger.WriteLine($"Button click performed with value '{action}' on Button field with locator '{labelnameorlocator1}'");
+            }
+            catch (Exception ex)
+            {
+                if (continueonerror)
+                {
+                    logger.WriteLine($"Ignore Error @ Button.ClickButtonCssAsync. {ex.Message}");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            var b = DateTime.Now;
+            logger.WriteLine($"Button click ends with value '{action}' on Button field with locator '{labelnameorlocator1}' at {DateTime.Now:hh:mm:ss}");
+            var c = b - a;
+            logger.WriteLine($"Time Difference Between Click and ClickEnd {c.TotalSeconds}");
+        }
+
+        public async Task<bool> VerifyButtonExistCssAsync(string shadowHostSelector, string buttonSelector, string displayname = null)
+        {
+            var labelnameorlocator1 = displayname ?? buttonSelector;
+            try
+            {
+                var shadowHost = await _page.QuerySelectorAsync(shadowHostSelector);
+                if (shadowHost == null)
+                {
+                    logger.WriteLine($"'{labelnameorlocator1}' button does not exist (shadow host not found) ");
+                    return false;
+                }
+
+                var shadowRoot = await shadowHost.EvaluateHandleAsync("el => el.shadowRoot");
+                if (shadowRoot == null)
+                {
+                     logger.WriteLine($"'{labelnameorlocator1}' button does not exist (shadow root not found) ");
+                    return false;
+                }
+
+                var element = await shadowRoot.AsElement().QuerySelectorAsync(buttonSelector);
+                if (element != null)
+                {
+                    logger.WriteLine($"'{labelnameorlocator1}' button exist ");
+                    return true;
+                }
+                else
+                {
+                    logger.WriteLine($"'{labelnameorlocator1}' button does not exist ");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine($"Error verifying button {labelnameorlocator1}: {ex.Message}");
+                return false;
             }
         }
 

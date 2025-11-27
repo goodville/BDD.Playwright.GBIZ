@@ -6,7 +6,6 @@ namespace BDD.Playwright.Origami.Pages.CommonPage
 {
     public class SecureEmailRegistrationPage : BasePage
     {
-        private readonly IReqnrollOutputHelper _ReqnrollLogger;
         private readonly FeatureContext _featureContext;
         private readonly ScenarioContext _scenarioContext;
         private readonly IFileReader _fileReader;
@@ -39,7 +38,7 @@ namespace BDD.Playwright.Origami.Pages.CommonPage
             {
                 logger.WriteLine($"Starting to fill RegistrationMethod information using profile: {profileKey}");
 
-                var filePath = "SecureEmailRegistration\\RegistrationMethodData.json";
+                var filePath = "SecureEmailRegistartion\\SecureEmailRegistartion.json";
 
                 // Get values from JSON - Quote Details
 

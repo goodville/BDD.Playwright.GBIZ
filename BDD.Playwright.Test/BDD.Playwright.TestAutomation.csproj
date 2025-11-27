@@ -52,8 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\" />
-	  <Folder Include="StepDefinitions\" />
+	  <Folder Include="Data\JsonTestData\Pages\" />
 	</ItemGroup>
 
 </Project>

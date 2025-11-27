@@ -25,17 +25,17 @@ Core library for BDD (Behavior Driven Development) test automation using Playwri
 │   ├── DataTableHelper/
 │   └── ExtentReportHelper/
 ├── Interfaces/              # Core contracts
-│   ├── IPageObject/
+│   ├── IpageObject/
 │   └── ITestContext/
 ├── Loggers/                 # Logging implementation
 │   └── ApplicationLogger/
-└── PageElements/            # Base page components
+└── pageElements/            # Base page components
     └── BaseElement/
 ## Key Components
 
 ### Base Classes
 - **BaseElement**: Foundation for page elements with common functionality
-- **BasePage**: Template for page objects with standard operations
+- **Basepage**: Template for page objects with standard operations
 - **BaseTest**: Core test setup and teardown functionality
 
 ### Helpers
@@ -57,7 +57,7 @@ Core library for BDD (Behavior Driven Development) test automation using Playwri
     "Browser": "chrome",
     "Headless": false,
     "GlobalTimeout": 30,
-    "PageLevelScreenshot": true,
+    "pageLevelScreenshot": true,
     "RetryCount": 0
 }
 ### Security Configuration{
@@ -85,12 +85,12 @@ scenarioContext.Set(context, "BrowserContext");
 var logger = new ApplicationLogger(scenarioContext);
 logger.WriteLine("Test initialization complete");
 
-### Base Page Implementation
-public class LoginPage : BasePage
+### Base page Implementation
+public class Loginpage : Basepage
 {
-    public LoginPage(ScenarioContext context) : base(context)
+    public Loginpage(ScenarioContext context) : base(context)
     {
-        // Page initialization
+        // page initialization
     }
 
     public async Task LoginAsync(string username, string password)
@@ -108,7 +108,7 @@ public async Task LogTestStep(string stepName, string details)
 }
 ## Best Practices
 1. Always use the provided logging infrastructure
-2. Implement new page objects following the BasePage pattern
+2. Implement new page objects following the Basepage pattern
 3. Use configuration settings from GlobalConfig
 4. Handle async operations correctly with Task-based patterns
 5. Follow the established error handling patterns

@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using BDD.Playwright.Core.Enums;
 using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
 using BDD.Playwright.Origami.Pages.CommonPage;
 using Microsoft.Playwright;
 using Reqnroll;
@@ -38,11 +40,12 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
         public string YearsInBusiness_Input { get; set; } = "//input[@formcontrolname='yearsInBusiness']";
         public string FirstName_Input { get; set; } = "//input[@id='gg-input-2']";
         public string LastName_Input { get; set; } = "//input[@id='gg-input-3']";
-        public string Principal_RadioButton { get; set; } = "//gg-radio-button[@id='gg-radio-6']";
+        public string Principal_RadioButton { get; set; } = "//gg-radio-button[@value='Principal']";
         public string Other_RadioButton { get; set; } = "//gg-radio-button[@id='gg-radio-7']";
         public string Street_Input { get; set; } = "//input[@id='gg-input-4']";
         public string City_Input { get; set; } = "//input[@id='gg-input-5']";
         public string State_Dropdown { get; set; } = "//input[@id='gg-input-6']";
+        public string Select_StateDropDown { get; set; } = "//*[@id=\"gg-combobox-0\"]";
         public string ZipCode_Input { get; set; } = "//input[@id='gg-input-7']";
         public string ContactPhone_Input { get; set; } = "//input[@id='gg-input-8']";
         public string ContactFax_Input { get; set; } = "//input[@id='gg-input-9']";
@@ -85,7 +88,7 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
             {
                 logger.WriteLine($"Starting to add agency details using profile: {profileKey}");
 
-                var filePath = "JsonTestData\\AgentProfile\\AgentProfileData.json";
+                var filePath = "AgentProfile\\AgentProfileData.json";
 
                 // Get values from JSON
                 var agencyName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AgencyName");
@@ -116,7 +119,6 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                 // Fill Agency Name
                 await InputField.SetTextAreaInputFieldAsync(AgencyName_Input, agencyName, true, 1, "Agency Name");
 
-                // Select Business Type
                 await SelectBusinessTypeAsync(businessType);
 
                 // Fill Years in Business
@@ -138,7 +140,9 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                 await InputField.SetTextAreaInputFieldAsync(City_Input, city, true, 1, "City");
 
                 // Select State
-                await InputField.SetDropdownFieldAsync(State_Dropdown, state, true, 1, "State");
+                await InputField.SetDropdownFieldForListLoadAsync(State_Dropdown, state, true, 1, "State");
+
+                await Button.ClickButtonAsync(Select_StateDropDown, ActionType.Click, true, 1);
 
                 // Fill Zip Code
                 await InputField.SetTextAreaInputFieldAsync(ZipCode_Input, zipCode, true, 1, "Zip Code");
@@ -328,7 +332,7 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                 switch (title?.ToLower())
                 {
                     case "principal":
-                        await RadioButton.SelectRadioButtonAsync(Principal_RadioButton, "Yes", true, 1);
+                        await Button.ClickButtonAsync(Principal_RadioButton, ActionType.Click, true, 1);
                         break;
                     case "other":
                         await RadioButton.SelectRadioButtonAsync(Other_RadioButton, "Yes", true, 1);

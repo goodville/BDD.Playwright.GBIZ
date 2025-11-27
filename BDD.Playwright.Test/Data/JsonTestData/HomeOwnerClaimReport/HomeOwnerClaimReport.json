@@ -1,0 +1,51 @@
+{
+    "HomeOwnerClaimReportTC17": {
+        "AccidentTime": "05:00",
+        "AccidentTimeAMorPM": "AM",
+        "LossLocation": "Other",
+        "LossLocationAddress": "IUP, Indiana, PA",
+        "DecribeAccident": "Laptop Stolen",
+        "EstimateRepairYesorNo": "yes",
+        "DamageAmountYesorNoorDontKnow": "yes"
+    },
+
+    "HomeOwnerClaimReportTC18": {
+        "AccidentTime": "6:00",
+        "AccidentTimeAMorPM": "PM",
+        "LossLocation": "#2",
+        "LossLocationAddress": "",
+        "DecribeAccident": "Stolen",
+        "EstimateRepairYesorNo": "no",
+        "DamageAmountYesorNoorDontKnow": "no"
+    },
+
+    "HomeOwnerClaimReportTC22": {
+        "AccidentTime": "06:00",
+        "AccidentTimeAMorPM": "AM",
+        "LossLocation": "Other",
+        "LossLocationAddress": "IUP, Indiana, PA",
+        "DecribeAccident": "Laptop Stolen",
+        "EstimateRepairYesorNo": "yes",
+        "DamageAmountYesorNoorDontKnow": "yes"
+    },
+
+    "AgentTC_15": {
+        "AccidentTime": "10:00",
+        "AccidentTimeAMorPM": "AM",
+        "LossLocation": "Other",
+        "LossLocationAddress": "Narvon",
+        "DecribeAccident": "Son's laptop was stolen from college dorm room",
+        "EstimateRepairYesorNo": "no",
+        "DamageAmountYesorNoorDontKnow": "dontKnow"
+    },
+        "Agent_TC34": {
+            "AccidentTime": "6:00",
+            "AccidentTimeAMorPM": "PM",
+            "LossLocation": "Other",
+            "LossLocationAddress": "625 W Main St",
+            "DecribeAccident": "Test Damage",
+            "EstimateRepairYesorNo": "no",
+            "DamageAmountYesorNoorDontKnow": "no"
+        }
+
+}

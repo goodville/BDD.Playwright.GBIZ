@@ -114,6 +114,7 @@ namespace BDD.Playwright.GBIZ.PageElements
             await element.ClearAsync();
             await element.FillAsync("");
             await element.FillAsync(value);
+           
             try
             {
                 await element.Page.WaitForSelectorAsync(".ac_results", new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
@@ -132,7 +133,7 @@ namespace BDD.Playwright.GBIZ.PageElements
             }
 
             Enteredvalue = await element.GetAttributeAsync("value");
-            logger.WriteLine($"✓ Set '{labelnameorlocator1}' dropdown field with list load - value: {value}");
+            logger.WriteLine($"Set '{labelnameorlocator1}' dropdown field with list load - value: {value}");
         }
 
         /// <summary>
@@ -265,15 +266,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//*[contains(text(),\"{0}\")]//following::input)[{1}]", labelnameorlocator, index);
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new() 
                 { 
@@ -304,15 +297,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//label/a[contains(text(),\"{0}\")]/../../following-sibling::div//input)[{1}]", labelnameorlocator, index);
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new()
                 {
@@ -344,15 +329,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//label[contains(text(),\"{0}\")]/../following-sibling::div//input[@type='text'])[1]", labelnameorlocator);
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new()
                 {
@@ -399,15 +376,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                 XPathLocator = islocator
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//*[contains(text(),\"{0}\")]//following::textarea)[{1}]", labelnameorlocator, index);
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new()
                 {

@@ -489,14 +489,14 @@
         {
             var basefileName = Path.GetFileNameWithoutExtension(basefilepath);
             var actualfileName = Path.GetFileNameWithoutExtension(actualfilepath);
-            var basePages = 0;
-            var actualPages = 0;
+            var basepages = 0;
+            var actualpages = 0;
 
             if (response.IsSuccessful)
             {
                 var jsonResponse = JObject.Parse(response.Content);
-                basePages = jsonResponse.Value<int?>("basepages") ?? 0;
-                actualPages = jsonResponse.Value<int?>("actualpages") ?? 0;
+                basepages = jsonResponse.Value<int?>("basepages") ?? 0;
+                actualpages = jsonResponse.Value<int?>("actualpages") ?? 0;
             }
 
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -505,12 +505,12 @@
             Directory.CreateDirectory(folderPath);
             if (basefileName.Contains("Base", StringComparison.OrdinalIgnoreCase))
             {
-                ImageCheck(basefileName, diffType, "Base", basePages, folderPath);
+                ImageCheck(basefileName, diffType, "Base", basepages, folderPath);
             }
 
             if (actualfileName.Contains("Actual", StringComparison.OrdinalIgnoreCase))
             {
-                ImageCheck(actualfileName, diffType, "Actual", actualPages, folderPath);
+                ImageCheck(actualfileName, diffType, "Actual", actualpages, folderPath);
             }
         }
 
@@ -550,7 +550,7 @@
                 }
                 else
                 {
-                    logger.WriteLine($"Error processing {fileType} Page {i}: " + imageResponse.ErrorMessage);
+                    logger.WriteLine($"Error processing {fileType} page {i}: " + imageResponse.ErrorMessage);
                 }
             }
         }
@@ -565,19 +565,19 @@
         /// <param name="folderPath">The folder path where the images will be saved.</param>
         private void AddScreenshots(RestResponse imageResponse, string fileType, int page, FormValidationType diffType, string folderPath)
         {
-            var filePath = Path.Combine(folderPath, $"{fileType}_{diffType}_Page_{page}.png");
+            var filePath = Path.Combine(folderPath, $"{fileType}_{diffType}_page_{page}.png");
             File.WriteAllBytes(filePath, imageResponse.RawBytes);
 
             if (File.Exists(filePath) && new FileInfo(filePath).Length > 0)
             {
                 var tempFileType = fileType == "Base" ? "Actual" : "Base";
-                var tempFilePath = Path.Combine(folderPath, $"{tempFileType}_{diffType}_Page_{page}.png");
+                var tempFilePath = Path.Combine(folderPath, $"{tempFileType}_{diffType}_page_{page}.png");
                 if (File.Exists(tempFilePath))
                 {
                     using var image1 = LoadBitmap(filePath);
                     using var image2 = LoadBitmap(tempFilePath);
                     var combinedImage = CombineImagesSideBySide(image1, image2);
-                    var combinedFilePath = Path.Combine(folderPath, $"Images_{diffType}_Page_{page}.png");
+                    var combinedFilePath = Path.Combine(folderPath, $"Images_{diffType}_page_{page}.png");
                     SaveBitmapAsPng(combinedImage, combinedFilePath);
 
                     if (File.Exists(combinedFilePath) && new FileInfo(combinedFilePath).Length > 0)

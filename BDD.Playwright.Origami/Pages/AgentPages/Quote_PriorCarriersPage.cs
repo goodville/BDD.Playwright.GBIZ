@@ -7,6 +7,7 @@ using BDD.Playwright.Origami.Pages.CommonPage;
 using BDD.Playwright.Core.Interfaces;
 using Microsoft.Playwright;
 using Reqnroll;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
 
 namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {
@@ -51,43 +52,50 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         /// Fills Workers Compensation Prior Carriers data using JSON file
         /// </summary>
         /// <param name="profileKey">Profile key to read from JSON file (default: "PriorCarriers")</param>
-        public async Task WorkersCompPriorCarriersDatafillAsync(string profileKey = "PriorCarriers")
+        public async Task WorkersCompPriorCarriersDatafillAsync(string profileKey)
         {
-            if (_fileReader == null)
+            var filePath = "PriorCarriers\\PriorCarriersData.json";
+            await Button.ScrollIntoViewAsync(PriorCarriers_Link, true, 1);
+            await TextLink.ClickTextLinkAsync(PriorCarriers_Link, true, 1);
+
+            // Prior Carriers Loss Year
+            var lossYear = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PriorCarriersLossYear");
+            if (!string.IsNullOrEmpty(lossYear))
             {
-                throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter or call the method with explicit parameters.");
+                await InputField.SetInputFieldAsync(PriorCarrierLossYear_Input, lossYear, true, 1);
             }
 
-            try
+            // Prior Carriers Name
+            var carrierName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PriorCarriersName");
+            if (!string.IsNullOrEmpty(carrierName))
             {
-                logger.WriteLine($"=== Starting Workers Comp Prior Carriers Data Fill using profile: {profileKey} ===");
-
-                var filePath = "PriorCarriers\\PriorCarriersData.json";
-
-                // Get values from JSON
-                var lossYear = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LossYear");
-                var carrierName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CarrierName");
-                var policyNumber = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PolicyNumber");
-                var annualPremium = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AnnualPremium");
-                var modFactor = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ModFactor");
-                var questionAnswer = _fileReader.GetOptionalValue(filePath, $"{profileKey}.QuestionAnswer");
-
-                logger.WriteLine($"Retrieved prior carriers data - Loss Year: {lossYear}, Carrier: {carrierName}");
-
-                // Fill the form with JSON data
-                await WorkersCompPriorCarriersDatafillAsync(lossYear, carrierName, policyNumber, annualPremium, modFactor, questionAnswer);
-
-                logger.WriteLine($"✅ Successfully filled prior carriers information using profile: {profileKey}");
-                logger.WriteLine("=== Workers Comp Prior Carriers Data Fill Completed ===");
+                await InputField.SetInputFieldAsync(PriorCarrierName_Input, carrierName, true, 1);
             }
-            catch (Exception ex)
+
+            // Prior Carriers Policy Number
+            var policyNumber = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PriorCarriersPolicyNumber");
+            if (!string.IsNullOrEmpty(policyNumber))
             {
-                logger.WriteLine($"❌ Error filling prior carriers data: {ex.Message}");
-                logger.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw new Exception($"Failed to fill prior carriers data using profile '{profileKey}': {ex.Message}", ex);
+                await InputField.SetInputFieldAsync(PriorCarrierPolicyNumber_Input, policyNumber, true, 1);
             }
+
+            // Prior Carriers Annual Premium
+            var annualPremium = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PriorCarriersAnnualPremium");
+            if (!string.IsNullOrEmpty(annualPremium))
+            {
+                await InputField.SetInputFieldAsync(PriorCarrierAnnualPremium_Input, annualPremium, true, 1);
+            }
+
+            // Prior Carriers Mod Factor
+            var modFactor = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PriorCarriersModFactor");
+            if (!string.IsNullOrEmpty(modFactor))
+            {
+                await InputField.SetInputFieldAsync(PriorCarrierModFactor_Input, modFactor, true, 1);
+            }
+
+            // Prior Carrier Question No Radio
+            await RadioButton.SelectRadioButtonAsync(PriorCarrierQuestionNo_Radio,"value", true, 1);
         }
-
         /// <summary>
         /// Fills Workers Compensation Prior Carriers data with explicit parameters
         /// </summary>
@@ -97,86 +105,6 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         /// <param name="annualPremium">Annual Premium value</param>
         /// <param name="modFactor">Mod Factor value</param>
         /// <param name="questionAnswer">Question Answer ('Yes' or 'No', default: 'No')</param>
-        public async Task WorkersCompPriorCarriersDatafillAsync(
-            string lossYear = null,
-            string carrierName = null,
-            string policyNumber = null,
-            string annualPremium = null,
-            string modFactor = null,
-            string questionAnswer = "No")
-        {
-            try
-            {
-                logger.WriteLine("=== Starting Workers Comp Prior Carriers Data Fill ===");
-
-                // Wait for page to be ready
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new PageWaitForLoadStateOptions
-                {
-                    Timeout = 30000
-                });
-
-                // Additional wait for page stability
-                await page.WaitForTimeoutAsync(3000);
-
-                // Click Prior Carriers link
-                logger.WriteLine("Navigating to Prior Carriers section");
-                await ClickPriorCarriersLinkAsync();
-                
-                // Wait for Prior Carriers section to load
-                await page.WaitForTimeoutAsync(2000);
-
-                // Fill in Loss Year if provided
-                if (!string.IsNullOrEmpty(lossYear))
-                {
-                    logger.WriteLine($"Setting Loss Year: {lossYear}");
-                    await InputField.SetInputFieldAsync(PriorCarrierLossYear_Input, lossYear, true, 1);
-                }
-
-                // Fill in Carrier Name if provided
-                if (!string.IsNullOrEmpty(carrierName))
-                {
-                    logger.WriteLine($"Setting Carrier Name: {carrierName}");
-                    await InputField.SetInputFieldAsync(PriorCarrierName_Input, carrierName, true, 1);
-                }
-
-                // Fill in Policy Number if provided
-                if (!string.IsNullOrEmpty(policyNumber))
-                {
-                    logger.WriteLine($"Setting Policy Number: {policyNumber}");
-                    await InputField.SetInputFieldAsync(PriorCarrierPolicyNumber_Input, policyNumber, true, 1);
-                }
-
-                // Fill in Annual Premium if provided
-                if (!string.IsNullOrEmpty(annualPremium))
-                {
-                    logger.WriteLine($"Setting Annual Premium: {annualPremium}");
-                    await InputField.SetInputFieldAsync(PriorCarrierAnnualPremium_Input, annualPremium, true, 1);
-                }
-
-                // Fill in Mod Factor if provided
-                if (!string.IsNullOrEmpty(modFactor))
-                {
-                    logger.WriteLine($"Setting Mod Factor: {modFactor}");
-                    await InputField.SetInputFieldAsync(PriorCarrierModFactor_Input, modFactor, true, 1);
-                }
-
-                // Select radio button for question
-                if (!string.IsNullOrEmpty(questionAnswer))
-                {
-                    logger.WriteLine($"Selecting '{questionAnswer}' for Prior Carrier question");
-                    await SelectQuestionRadioButtonAsync(questionAnswer);
-                }
-
-                logger.WriteLine("✅ Workers Comp Prior Carriers data fill completed successfully");
-                logger.WriteLine("=== Workers Comp Prior Carriers Data Fill Completed ===");
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"❌ Error filling Workers Comp Prior Carriers data: {ex.Message}");
-                logger.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw new Exception($"Failed to fill Workers Comp Prior Carriers data: {ex.Message}", ex);
-            }
-        }
 
         /// <summary>
         /// Clicks the Prior Carriers link to navigate to the section

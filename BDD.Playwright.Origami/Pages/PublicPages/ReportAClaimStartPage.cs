@@ -1,5 +1,6 @@
 ﻿using BDD.Playwright.Core.Interfaces;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
+using Microsoft.Playwright;
 using Reqnroll;
 using System;
 using System.Reflection.Emit;
@@ -40,24 +41,14 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                 var filePath = "ReportAClaimStartPage\\ReportAClaimStartPage.json";
 
                 // Get values from JSON - Quote Details
-                var policyNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PolicyNumber");
-                var zipCode_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode");
+                var policyNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.policyNumber_Input");
+                var zipCode_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.zipCode_Input");
+                var dateOfLoss = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DateOfLoss");
 
                 await InputField.SetTextAreaInputFieldAsync(PolicyNumber_Input, policyNumber_Input, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(ZipCode_Input, zipCode_Input, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(OccurrenceDate_Input, DateTime.Now.AddDays(Convert.ToInt32()).ToString("MMddyyyy"), true, 1);
-
-                /* if (commonFunctions.AccountName_LabelAndValue.Item2 != "Agents")
-                {
-                    IFrame.switchToIframe();
-                    Checkbox.SelectCheckbox(_commonXpath.ReCaptcha_CheckBox, true, true, 1);
-                    Thread.Sleep(3000);
-                    IFrame.close();
-                }*/
-                logger.WriteLine($"Retrieved PolicyDetailsInReportAClaimStartPage data for:{policyNumber_Input} {zipCode_Input} ");
-
-                // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
-                // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
+                await InputField.SetTextAreaInputFieldAsync(OccurrenceDate_Input, dateOfLoss, true, 1);
+                logger.WriteLine($"Retrieved PolicyDetailsInReportAClaimStartPage data for:{policyNumber_Input} {zipCode_Input}{OccurrenceDate_Input} ");
 
                 logger.WriteLine($"Successfully filled PolicyDetailsInReportAClaimStartPage information using profile: {profileKey}");
                 logger.WriteLine("PolicyDetailsInReportAClaimStartPage Details Entered Successfully from JSON Data");
@@ -68,8 +59,30 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                 throw new Exception($"Failed to fill Tradesman Cover data using profile '{profileKey}': {ex.Message}", ex);
             }
         }
+        public async Task EnterPolicyDetailsWithHardcodedDataAsync()
+        {
+            try
+            {
+                logger.WriteLine("Filling Policy Details with hardcoded data...");
 
-        public async Task EnterPolicyDetailsInMakeAPaymentStartPageAsync(string profileKey)
+                var policyNumber = "ABC12345";
+                var zipCode = "60007";
+                var dateOfLoss = DateTime.Now.AddDays(0).ToString("MMddyyyy");
+
+                await InputField.SetTextAreaInputFieldAsync(PolicyNumber_Input, policyNumber, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(ZipCode_Input, zipCode, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(OccurrenceDate_Input, dateOfLoss, true, 1);
+
+                logger.WriteLine($"Hardcoded Data Entered: PolicyNumber={policyNumber}, ZipCode={zipCode}");
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine($"Error entering hardcoded data: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task EnterPolicyDetailsInReportsAClaimStartPageAsync(string profileKey)
         {
             if (_fileReader == null)
             {
@@ -78,32 +91,18 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
 
             try
             {
-                logger.WriteLine($"Starting to fill PolicyDetailsInMakeAPaymentStartPage information using profile: {profileKey}");
-
-                var filePath = "ReportAClaimStartPage\\MakeAPaymentStartPage.json";
-
-                // Get values from JSON - Quote Details
-                var policyNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PolicyNumber");
-                var zipCode_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode");
-
+                logger.WriteLine($"Starting to fill PolicyDetailsInReportAClaimStartPage information using profile: {profileKey}");
+                var filePath = "ReportAClaimStartPage\\ReportAClaimStartPage.json";
+                var policyNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.policyNumber_Input");
+                var zipCode_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.zipCode_Input");
                 await InputField.SetTextAreaInputFieldAsync(PolicyNumber_Input, policyNumber_Input, true, 2);
                 await InputField.SetTextAreaInputFieldAsync(ZipCode_Input, zipCode_Input, true, 2);
-                /*IFrame.switchToIframe();
-                Checkbox.SelectCheckbox(_commonXpath.ReCaptcha_CheckBox, true, true, 1);
-                Thread.Sleep(3000);
-                IFrame.close();*/
-                logger.WriteLine($"Retrieved PolicyDetailsInMakeAPaymentStartPage data for: {policyNumber_Input} {zipCode_Input}");
 
-                // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
-                // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
-
-                logger.WriteLine($"Successfully filled PolicyDetailsInMakeAPaymentStartPage information using profile: {profileKey}");
-                logger.WriteLine("PolicyDetailsnMakeAPaymentStartPage Entered Successfully from JSON Data");
+                logger.WriteLine($"Policy Number: {policyNumber_Input}, Zip Code: {zipCode_Input} entered successfully.");
             }
             catch (Exception ex)
             {
-                logger.WriteLine($"Error filling PolicyDetailsInMakeAPaymentStartPage data: {ex.Message}");
-                throw new Exception($"Failed to fill PolicyDetailsInMakeAPaymentStartPage data using profile '{profileKey}': {ex.Message}", ex);
+                throw new Exception($"Error while filling PolicyDetailsInReportAClaimStartPage for profile {profileKey}: {ex.Message}", ex);
             }
         }
     }

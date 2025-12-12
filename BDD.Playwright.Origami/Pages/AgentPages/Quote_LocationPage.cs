@@ -1,73 +1,99 @@
-﻿using BDD.Playwright.GBIZ.PageElements;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Microsoft.Playwright;
 using Reqnroll;
 
-namespace BDD.Playwright.Origami.Pages.AgentPages
+namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {
     public class Quote_LocationPage : BasePage
     {
-        public Quote_LocationPage(ScenarioContext scenarioContext) : base(scenarioContext) { }
+        private readonly ScenarioContext _ScenarioContext;
+        public FeatureContext _FeatureContext;
+        public CommonXpath _CommonXpath;
+        private readonly IFileReader _FileReader;
+        public LoginPage _LoginPage;
+
+        public Quote_LocationPage(
+            ScenarioContext scenarioContext,
+            LoginPage loginPage,
+            CommonXpath commonXpath,
+            IFileReader fileReader)
+            : base(scenarioContext)
+        {
+            _ScenarioContext = scenarioContext;
+            _LoginPage = loginPage;
+            _CommonXpath = commonXpath;
+            _FileReader = fileReader;
+        }
 
         #region Xpath
-        public string Addlocation { get; set; } = "//a[text()='Add Location']";
+        public string AddLocation { get; set; } = "//a[text()='Add Location']";
         public string Protection_Drp { get; set; } = "//select[@name='loc_protection_1' and @id='fld_loc_protection_1']";
-        public string StreetAddress_input { get; set; } = "//input[@name='loc_streetAddress_1']";
-        public string City_input { get; set; } = "//input[@id='fld_loc_city_1']";
-        public string Zipcode_input { get; set; } = "//input[@id='fld_loc_zipCode_1']";
-        public string Milestofire_input { get; set; } = "//input[@id='fld_loc_milesToFireDept_1']";
+        public string StreetAddress_Input { get; set; } = "//input[@name='loc_streetAddress_1']";
+        public string City_Input { get; set; } = "//input[@id='fld_loc_city_1']";
+        public string ZipCode_Input { get; set; } = "//input[@id='fld_loc_zipCode_1']";
+        public string MilesToFire_Input { get; set; } = "//input[@id='fld_loc_milesToFireDept_1']";
         public string RespondingFireDept_Input { get; set; } = "//input[@id='fld_loc_respondingFireDept_1']";
-        public string Loc_PassagewaysLit_Radio { get; set; } = "//input[contains(@id,'loc_passagewaysLit_1')  and @value='{0}']";
-        public string Loc_PorchHandrails_Radio { get; set; } = "//input[contains(@id,'loc_porchHandrails_1')  and @value='{0}']";
-        public string Loc_StairwaysHandrails_Radio { get; set; } = "//input[contains(@id,'loc_stairwaysHandrails_1')  and @value='{0}']";
-        public string Loc_RiInsuredWithin70MiOfLocation_1_Radio { get; set; } = "//input[contains(@id,'loc_riInsuredWithin70MiOfLocation_1')  and @value='{0}']";
-        public string Loc_Thereatrampoline_Radio { get; set; } = "//input[contains(@id,'loc_trampolineOrPool_1')  and @value='{0}']";
-        public string Continue_btn { get; set; } = "//button[contains(text(),'Continue')]";
+        public string IsThereATrampoline_Radio { get; set; } = "//input[contains(@id,'loc_trampolineOrPool_1')  and @value='{0}']";
+        public string PassagewaysLit_Radio { get; set; } = "//input[contains(@id,'loc_passagewaysLit_1')  and @value='{0}']";
+        public string PorchHandrails_Radio { get; set; } = "//input[contains(@id,'loc_porchHandrails_1')  and @value='{0}']";
+        public string StairwaysHandrails_Radio { get; set; } = "//input[contains(@id,'loc_stairwaysHandrails_1')  and @value='{0}']";
+        public string InsuredWithin70MiOfLocation_Radio { get; set; } = "//input[contains(@id,'loc_riInsuredWithin70MiOfLocation_1')  and @value='{0}']";
+        public string Continue_Btn { get; set; } = "//button[@id = 'buttonlocations_submitbutton']";
         #endregion
 
-        public async Task LocationDatafillAsync(dynamic commonFunctions)
+        public async Task LocationDataFillAsync(string profileKey)
         {
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
-            await Button.ClickButtonAsync(Addlocation, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(3000);
-            await DropDown.SelectDropDownAsync(Protection_Drp, commonFunctions.LocationProtection_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(StreetAddress_input, commonFunctions.LocationStreetAddress_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(City_input, commonFunctions.LocationCity_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(Zipcode_input, commonFunctions.LocationZipCode_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(Milestofire_input, commonFunctions.LocationMiles_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(RespondingFireDept_Input, commonFunctions.LocationRespondingFireDepartment_LabelAndValue.Item2, true, 1);
-            if (!string.IsNullOrEmpty(commonFunctions.Locationtrampoline_LabelAndValue.Item2))
+            if (_FileReader == null)
             {
-                var trampolineRadio = string.Format(Loc_Thereatrampoline_Radio, commonFunctions.Locationtrampoline_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(trampolineRadio, commonFunctions.Locationtrampoline_LabelAndValue.Item2, true, 1);
+                throw new InvalidOperationException("FileReader is not available.");
             }
 
-            if (!string.IsNullOrEmpty(commonFunctions.LocationArepassagewayswelllighted_LabelAndValue.Item2))
+            var filePath = "QuoteLocationPage\\QuoteLocationPage.json";
+            await Button.ClickButtonAsync(AddLocation, ActionType.Click, true, 1);
+
+            await DropDown.SelectDropDownAsync(Protection_Drp, _FileReader.GetOptionalValue(filePath, $"{profileKey}.Protection"), true, 1);
+            await InputField.SetTextAreaInputFieldAsync(StreetAddress_Input, _FileReader.GetOptionalValue(filePath, $"{profileKey}.StreetAddress"), true, 1);
+            await InputField.SetTextAreaInputFieldAsync(City_Input, _FileReader.GetOptionalValue(filePath, $"{profileKey}.City"), true, 1);
+            await InputField.SetTextAreaInputFieldAsync(ZipCode_Input, _FileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode"), true, 1);
+            await InputField.SetTextAreaInputFieldAsync(MilesToFire_Input, _FileReader.GetOptionalValue(filePath, $"{profileKey}.Miles"), true, 1);
+            await InputField.SetTextAreaInputFieldAsync(RespondingFireDept_Input, _FileReader.GetOptionalValue(filePath, $"{profileKey}.RespondingFireDepartment"), true, 1);
+            await Task.Delay(3000);
+
+            var trampoline = _FileReader.GetOptionalValue(filePath, $"{profileKey}.trampoline");
+            if (!string.IsNullOrEmpty(trampoline))
             {
-                var passagewaysLitRadio = string.Format(Loc_PassagewaysLit_Radio, commonFunctions.LocationArepassagewayswelllighted_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(passagewaysLitRadio, commonFunctions.LocationArepassagewayswelllighted_LabelAndValue.Item2, true, 1);
+                await RadioButton.SelectRadioButtonAsync(string.Format(IsThereATrampoline_Radio, trampoline), "value", true,1);
             }
 
-            if (!string.IsNullOrEmpty(commonFunctions.LocationAreallporches_LabelAndValue.Item2))
+            var passagewaysLit = _FileReader.GetOptionalValue(filePath, $"{profileKey}.Arepassagewayswelllighted");
+            if (!string.IsNullOrEmpty(passagewaysLit))
             {
-                var porchHandrailsRadio = string.Format(Loc_PorchHandrails_Radio, commonFunctions.LocationAreallporches_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(porchHandrailsRadio, commonFunctions.LocationAreallporches_LabelAndValue.Item2, true, 1);
+                await RadioButton.SelectRadioButtonAsync(string.Format(PassagewaysLit_Radio, passagewaysLit), "value", true, 1);
             }
 
-            if (!string.IsNullOrEmpty(commonFunctions.LocationAreallinterior_LabelAndValue.Item2))
+            var porchHandrails = _FileReader.GetOptionalValue(filePath, $"{profileKey}.Areallporches");
+            if (!string.IsNullOrEmpty(porchHandrails))
             {
-                var stairwaysHandrailsRadio = string.Format(Loc_StairwaysHandrails_Radio, commonFunctions.LocationAreallinterior_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(stairwaysHandrailsRadio, commonFunctions.LocationAreallinterior_LabelAndValue.Item2, true, 1);
+                await RadioButton.SelectRadioButtonAsync(string.Format(PorchHandrails_Radio, porchHandrails), "value", true, 1);
             }
 
-            if (!string.IsNullOrEmpty(commonFunctions.LocationDoestheinsuredlivewithin70miles_LabelAndValue.Item2))
+            var stairwaysHandrails = _FileReader.GetOptionalValue(filePath, $"{profileKey}.Areallinterior");
+            if (!string.IsNullOrEmpty(stairwaysHandrails))
             {
-                var insuredWithin70MiRadio = string.Format(Loc_RiInsuredWithin70MiOfLocation_1_Radio, commonFunctions.LocationDoestheinsuredlivewithin70miles_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(insuredWithin70MiRadio, commonFunctions.LocationDoestheinsuredlivewithin70miles_LabelAndValue.Item2, true, 1);
+                await RadioButton.SelectRadioButtonAsync(string.Format(StairwaysHandrails_Radio, stairwaysHandrails), "value", true, 1);
             }
 
-            await Button.ClickButtonAsync(Continue_btn, ActionType.Click, true, 1);
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
+            var insuredWithin70Mi = _FileReader.GetOptionalValue(filePath, $"{profileKey}.Doestheinsuredlivewithin70miles");
+            if (!string.IsNullOrEmpty(insuredWithin70Mi))
+            {
+                await RadioButton.SelectRadioButtonAsync(string.Format(InsuredWithin70MiOfLocation_Radio, insuredWithin70Mi), "value", true, 1);
+            }
+
+            await Button.ClickButtonAsync(Continue_Btn, ActionType.Click, true, 1);
         }
     }
 }

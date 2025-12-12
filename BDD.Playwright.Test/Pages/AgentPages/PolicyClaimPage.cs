@@ -1,38 +1,42 @@
-﻿using BDD.Playwright.Core.Loggers;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages;
-using Microsoft.CodeAnalysis.Text;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.Core.Loggers;
+using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.PublicPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Reqnroll;
 using System.Threading.Tasks;
 
-namespace BDD.Playwright.Test.Pages.AgentPages
+namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {
     public class PolicyClaimPage : BasePage
     {
-        //private CommonFunctions _commonFunctions;
-        //private WebDriverManager _webDriverManager;
-        //private readonly ScenarioContext _scenarioContext;
-        //public FeatureContext _featureContext;
-        //public CommonXpath _commonXpath;
-        //private readonly ApplicationLogger _applicationLogger;
-        //public LoginPage _loginPage;
-        //public ReportAClaimStartPage _reportAClaimStartPage;
-        //public ReportAClaimForm _reportAClaimForm;
-        // Constructor
-        public PolicyClaimPage(ScenarioContext scenarioContext, CommonFunctions commonFunctions, ApplicationLogger applicationLogger, LoginPage loginPage, CommonXpath commonXpath, ReportAClaimStartPage reportAClaimStartPage, ReportAClaimForm reportAClaimForm) : base(scenarioContext)
+        private readonly ScenarioContext _scenarioContext;
+        public FeatureContext _featureContext;
+        public CommonXpath _commonXpath;
+        public LoginPage _loginPage;
+        public ReportAClaimStartPage _reportAClaimStartPage;
+        public ReportAClaimFormPage _reportAClaimFormPage;
+        private readonly IFileReader _fileReader;
+
+        public PolicyClaimPage(
+            ScenarioContext scenarioContext,
+            LoginPage loginPage,
+            CommonXpath commonXpath,
+            ReportAClaimStartPage reportAClaimStartPage,
+            ReportAClaimFormPage reportAClaimFormPage,
+            IFileReader fileReader
+        ) : base(scenarioContext)
         {
-            //_scenarioContext = scenarioContext;
-            //_commonFunctions = commonFunctions;
-            //_applicationLogger = applicationLogger;
-            //_webDriverManager = _scenarioContext.Get<WebDriverManager>("WebDriverManager");
-            //_loginPage = loginPage;
-            //_commonXpath = commonXpath;
-            //_reportAClaimStartPage = reportAClaimStartPage;
-            //_reportAClaimForm = reportAClaimForm;
-            //commonFunctions.ReadTestDataForClaimPage();
+            _scenarioContext = scenarioContext;
+            _loginPage = loginPage;
+            _commonXpath = commonXpath;
+            _reportAClaimStartPage = reportAClaimStartPage;
+            _reportAClaimFormPage = reportAClaimFormPage;
+            _fileReader = fileReader;
+            // Optionally: await _commonFunctions.ReadTestDataForClaimPageAsync();
         }
 
         #region Xpath
@@ -42,22 +46,22 @@ namespace BDD.Playwright.Test.Pages.AgentPages
         public string ClaimLossReportNoRecord_Text => "//td[contains(text(),'No claims found on this policy.')]";
         #endregion
 
-        public async Task NoClaimHistoryMethod()
+        public async Task NoClaimHistoryMethodAsync()
         {
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            commonFunctions.ReadTestDataPolicyClaimPage();
-            TextLink.ClickTextLink(Claim_Link, true, 1);
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            Thread.Sleep(5000);
-            Label.VerifyText(NoClaimHistory_Text, "No Records Returned!", true, 1);
-            string ClaimLossreportyeartoSelect = string.Format(ClaimLossReport_Btn, commonFunctions.PolicyClaim_3or5orAll_LabelAndValue.Item2);
-            Button.ClickButton(ClaimLossreportyeartoSelect, ActionType.Click, true, 1);
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            IFrame.switchToWindow();
-            Thread.Sleep(2000);
-            Label.VerifyText(ClaimLossReportNoRecord_Text, "No claims found on this policy.", true, 1);
-            IFrame.CurrentWindowClose();
-            commonFunctions.UserWaitForPageToLoadCompletly();
+            // Optionally: await _commonFunctions.ReadTestDataPolicyClaimPageAsync();
+            var profileKey = "Agent_TC26";
+            var filePath = "PolicyClaimPage\\PolicyClaimPage.json";
+            // Use JSON fields for test data
+            var claimLossReportBtnYear = _fileReader.GetOptionalValue(filePath, $"{profileKey}.3or5orAll");
+
+            await TextLink.ClickTextLinkAsync(Claim_Link, true, 1);
+            await Task.Delay(5000);
+            await Label.VerifyTextAsync(NoClaimHistory_Text, "No Records Returned!", true, 1);
+            var claimLossReportYearToSelect = string.Format(ClaimLossReport_Btn, claimLossReportBtnYear);
+            await Button.ClickButtonAsync(claimLossReportYearToSelect, ActionType.Click, true, 1);
+            await Task.Delay(2000);
+            await Label.VerifyTextAsync(ClaimLossReportNoRecord_Text, "No claims found on this policy.", true, 1);
+            await Task.Delay(3000);
         }
     }
 }

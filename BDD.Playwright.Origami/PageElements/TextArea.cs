@@ -30,7 +30,8 @@ namespace BDD.Playwright.GBIZ.PageElements
             await element.ClearAsync();
             await element.FillAsync("");
             await element.FillAsync(value);
-            logger.WriteLine($"✓ Set '{labelnameorlocator1}' text area with value: {value}");
+            await element.PressAsync("Tab");
+            logger.WriteLine($"✓Set '{labelnameorlocator1}' text area with value: {value}");
         }
 
         public async Task SetDOBFieldAsync(string labelnameorlocator, string value, bool isLocator = false, int index = 1, string displayname = null)
@@ -144,15 +145,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     XPathLocator = string.Format("(//*[.=normalize-space(\"{0}\")]//following::textarea)[{1}]", labelnameorlocator, index);
                 }
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator(XPathLocator);
-                }
-                else
-                {
-                    element = _page.Locator(XPathLocator);
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator(XPathLocator) : _page.Locator(XPathLocator);
 
                 await element.WaitForAsync(new() { State = WaitForSelectorState.Visible });
                 return element;
@@ -180,15 +173,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//*[.=normalize-space(\"{0}\")]/../parent::div/following::textarea)[{1}]", labelnameorlocator, index);
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator(XPathLocator);
-                }
-                else
-                {
-                    element = _page.Locator(XPathLocator);
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator(XPathLocator) : _page.Locator(XPathLocator);
 
                 await element.WaitForAsync(new() { State = WaitForSelectorState.Visible });
                 return element;

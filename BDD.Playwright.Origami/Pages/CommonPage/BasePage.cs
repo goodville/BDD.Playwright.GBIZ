@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using BDD.Playwright.Core.Loggers;
-using BDD.Playwright.Origami.PageElements;
 using BDD.Playwright.GBIZ.PageElements;
 using PageElementsIFrame = GoodVille.GBIZ.Reqnroll.Automation.PageElements.IFrame;
 using Microsoft.Playwright;
@@ -71,6 +70,7 @@ namespace BDD.Playwright.GBIZ.Pages.CommonPage
             Icon = new Icon(_scenarioContext);
             TextArea = new TextArea(_scenarioContext);
             IFrame = new PageElementsIFrame(_scenarioContext);
+
         }
 
         /// <summary>

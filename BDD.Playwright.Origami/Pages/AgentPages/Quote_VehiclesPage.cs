@@ -53,16 +53,16 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
                 var filePath = "QuoteVehicles\\QuoteVehiclesData.json";
 
                 // Get values from JSON - Quote Details
-                var vinNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VinNumber_Input");
-                var vehicleType_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VehicleType_DropDown");
-                var overrideSymbolComp_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OverrideSymbolComp_Input");
-                var overrideSymbolColl_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OverrideSymbolColl_Input");
-                var vehicleUse_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VehicleUse_DropDown");
-                var annualMileageOverride_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AnnualMileageOverride_Radio");
-                var titlesNamedInsured_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TitlesNamedInsured_Radio");
-                var reconstructedSalvageTitle_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ReconstructedSalvageTitle_Radio");
-                var assignDriverOverride_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AssignDriverOverride_DropDown");
-                var isGaragedAddress_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsGaragedAddress_Radio");
+                var vinNumber_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VinNumber");
+                var vehicleType_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VehicleType");
+                var overrideSymbolComp_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OverrideSymbolComp");
+                var overrideSymbolColl_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OverrideSymbolColl");
+                var vehicleUse_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.VehicleUse");
+                var annualMileageOverride_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AnnualMileageOverride");
+                var titlesNamedInsured_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TitlesNamedInsured");
+                var reconstructedSalvageTitle_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ReconstructedSalvageTitle");
+                var assignDriverOverride_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AssignDriverOverride");
+                var isGaragedAddress_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsGaragedAddress");
 
                 Thread.Sleep(3000);
 

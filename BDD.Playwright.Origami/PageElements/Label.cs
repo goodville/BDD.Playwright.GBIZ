@@ -1,4 +1,5 @@
 using BDD.Playwright.Core.Loggers;
+using BDD.Playwright.GBIZ.Pages.AgentPages;
 using Microsoft.Playwright;
 using Reqnroll;
 using System.Text.RegularExpressions;
@@ -50,11 +51,35 @@ namespace BDD.Playwright.GBIZ.PageElements
             }
         }
 
-    /// <summary>
-    /// Gets the policy number text.
-    /// </summary>
-    /// <returns>policy number- </returns>
-    public async Task <string> GetTextAsync(string labelnameorlocator, bool islocator = false, int index = 1)
+        public async Task<bool> VerifyTextLinesAsync(string labelnameorlocator, string expectedValue, bool isLocator = false, int index = 1, string displayname = null)
+        {
+            // Get the element based on locator or label
+            var element = isLocator ? _page.Locator(labelnameorlocator).Nth(index - 1) : _page.GetByText(labelnameorlocator).Nth(index - 1);
+            var labelnameorlocator1 = displayname ?? labelnameorlocator;
+            var actualValue = (await element.InnerTextAsync()).Trim()
+                .Replace("\r\n", "\n")
+                .Replace("\n", " ");
+
+            expectedValue = expectedValue.Trim()
+                .Replace("\r\n", "\n")
+                .Replace("\n", " ");
+
+            if (actualValue == expectedValue)
+            {
+                Console.WriteLine($"'{expectedValue}' Text exists.");
+                return true;
+            }
+            else
+            {
+                throw new Exception($"Text doesn't match! \nExpected: '{expectedValue}'\nActual: '{actualValue}'");
+            }
+        }
+
+        /// <summary>
+        /// Gets the policy number text.
+        /// </summary>
+        /// <returns>policy number- </returns>
+        public async Task <string> GetTextAsync(string labelnameorlocator, bool islocator = false, int index = 1)
         {
             var element = await GetLabelFieldByLabelAsync(labelnameorlocator, islocator, index);
             var result = await element.InnerTextAsync();
@@ -109,22 +134,100 @@ namespace BDD.Playwright.GBIZ.PageElements
                 throw;
             }
         }
-
-        public async Task <bool> VerifyLabelTextExistAsync(string labelnameorlocator, bool islocator = false, int index = 1, int timeout = 1)
+        public async Task<bool> VerifyTextFormatAsync(string labelnameorlocator, string regexPattern, bool islocator = false, int index = 1, string displayname = null)
         {
-            var element = await GetLabelFieldByLabelTextAsync(labelnameorlocator, islocator, index, timeout);
+            try
+            {
+                var element = await GetLabelFieldByLabelTextAsync(labelnameorlocator, islocator, index);
+                if (element == null)
+                {
+                    logger.WriteLine($"FAIL: Element '{displayname ?? labelnameorlocator}' not found.");
+                    return false;
+                }
 
-            if (element != null)
-            {
-                logger.WriteLine(string.Format("'{0}' Label exist ", labelnameorlocator));
-                return true;
+                var actualText = await element.InnerTextAsync();
+                var isMatch = Regex.IsMatch(actualText, regexPattern);
+
+                if (isMatch)
+                {
+                    logger.WriteLine($"PASS: Text matches the expected format '{regexPattern}': {actualText}");
+                }
+                else
+                {
+                    logger.WriteLine($"FAIL: Text does not match format '{regexPattern}'. Actual: {actualText}");
+                }
+
+                return isMatch;
             }
-            else
+            catch (Exception ex)
             {
-                logger.WriteLine(string.Format("'{0}' Label does not exist ", labelnameorlocator));
+                logger.WriteLine($"Exception in VerifyTextFormat: {ex.Message}");
                 return false;
             }
         }
+
+        private async Task<ILocator> GetLabelFieldByLabelTextAsync(string labelnameorlocator, bool islocator = false, int index =1)
+        {
+            var XPathLocator = islocator ? $"({labelnameorlocator})[{index}]" : $"(//*[text()=normalize-space(\"{labelnameorlocator}\")])[{index}]";
+
+            try
+            {
+                var locator = _page.Locator(XPathLocator);
+                await locator.WaitForAsync(new LocatorWaitForOptions { Timeout = 3000 });
+                // Confirm the element exists and is visible
+                var isVisible = await locator.IsVisibleAsync();
+                return !isVisible ? null : locator;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLine("Error:Element locator " + labelnameorlocator + " did not match any elements.");
+                return null;
+            }
+        }
+
+        /* public async Task<bool> VerifyTextCssAsync(
+      string shadowLocator,
+      string labelNameOrLocator,
+      string expectedValue,
+      string displayName = null,
+      bool continueOnError = false)
+         {
+             var element = await GetLabelByCssAsync(shadowLocator, labelNameOrLocator);
+             var labelNameOrLocator1 = displayName ?? labelNameOrLocator;
+             var result = await element.InnerTextAsync();
+             if (result.Contains(expectedValue))
+             {
+                 logger.WriteLine($"'{expectedValue}' Text exist ");
+                 return true;
+             }
+             else
+             {
+                 var msg = $"'{result}' Text Doesn't match with '{expectedValue}'";
+                 logger.WriteLine(msg);
+                 return !continueOnError ? throw new Exception(msg) : false;
+             }
+         }
+
+         public async Task<ILocator> GetLabelByCssAsync(
+             string shadowLocator,
+             string labelNameOrLocator)
+         {
+             try
+             {
+                 var shadowHost = context.Locator(shadowLocator);
+                 await shadowHost.WaitForAsync(new() { State = Microsoft.Playwright.WaitForSelectorState.Attached });
+
+                var element = shadowHost.Locator($">>> {labelNameOrLocator}");
+                 await element.WaitForAsync(new() { State = Microsoft.Playwright.WaitForSelectorState.Visible });
+                 return element;
+             }
+             catch (Exception ex)
+             {
+                 logger.WriteLine("Error:Shadow Element locator " + labelNameOrLocator + " did not match any elements.");
+                 logger.WriteLine("Error:Details: " + ex.Message);
+                 return null;
+             }
+         }*/
 
         /// <summary>
         /// Gets the label field by label.
@@ -143,16 +246,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//*[text()=normalize-space(\"{0}\")])[{1}]", labelnameorlocator, index);
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
-
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
                 await element.WaitForAsync(new()
                 { 
                     Timeout = 10000,
@@ -176,15 +270,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                 XPathLocator = islocator
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//*[text()=normalize-space(\"{0}\")])[{1}]", labelnameorlocator, index);
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new()
                 {

@@ -40,6 +40,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         #endregion
         public async Task CoveragesforFarmOwnerAsync(string profileKey)
         {
+            var filePath = "FarmCoverages\\FarmCoveragesData.json";
             if (_fileReader == null)
             {
                 throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
@@ -49,23 +50,23 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Coverages for FarmOwner information using profile: {profileKey}");
 
-                var filePath = "";
-
                 // Get values from JSON - Quote Details
-                var LocationFarm = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocationFarm");
+                var LocationFarm = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Location");
                 var FarmPolIcYFom = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FarmPolIcYFom");
                 var TypeOfBuilding = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TypeOfBuilding");
-                var Limit_Farm = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Limit_Farm");
-                var AllPeRilDeduc_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AllPeRilDeduc_Farm");
-                var WindhaIldeduc_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.WindhaIldeduc_Farm");
-                var YearOfConst_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearOfConst_Farm");
+                var Limit_Farm = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Limit");
+                var AllPeRilDeduc_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AllPerilDeductible");
+                var WindhaIldeduc_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.WindHailDeductible");
+                var YearOfConst_Farm_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Yearofconstruction");
                 var ConstructionType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ConstructionType");
                 var Length = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Length");
                 var Width = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Width");
                 var Rateas = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Rateas");
                 var Earthquake = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Earthquake");
-                var ExcludingOfBAse = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExcludingOfBAse");
-                
+                var Limit_Farm2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Limit_2");
+                //var ExcludingOfBAse = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExcludingOfBAse");
+                //var AllPeRilDeduc_Farm = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AllPerilsDeductible");
+
                 await DropDown.SelectDropDownAsync(LocationFarm_Text, LocationFarm, true, 1);
                 //InputField.SetTextAreaInputField(LocationFarm_Text, commonFunctions.LocationFarm_Text_LabelAndValue.Item2, true, 1, "Location");
                 Thread.Sleep(2000);
@@ -78,11 +79,11 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
                 await DropDown.SelectDropDownAsync(AllPeRilDeduc_Farm, AllPeRilDeduc_Farm_Value, true, 1);
                 //InputField.SetTextAreaInputField(AllPeRilDeduc_Farm, commonFunctions.Farmowner_AllPeRilDeduc_Farm_LabelAndValue.Item2, true, 1, "AllPerilDeductible");
                 await DropDown.SelectDropDownAsync(WindhaIldeduc_Farm, WindhaIldeduc_Farm_Value, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(YearOfConst_Farm, YearOfConst_Farm_Value, true, 1, "Year of construction");
+                await InputField.SetTextAreaInputFieldAsync(YearOfConst_Farm, YearOfConst_Farm_Value, true, 1, "Yearofconstruction");
                 await DropDown.SelectDropDownAsync(ConstructionType_Drpdown, ConstructionType, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(Length_Drpdown, Length, true, 1, "Length (ft)");
+                await InputField.SetTextAreaInputFieldAsync(Length_Drpdown, Length, true, 1, "Length");
                 //DropDown.SelectDropDown(Width_dropdown, commonFunctions.Farmowner_Width_dropdown_LabelAndValue.Item2, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(Width_dropdown, Width, true, 1, "Width (ft)");
+                await InputField.SetTextAreaInputFieldAsync(Width_dropdown, Width, true, 1, "Width");
                 Thread.Sleep(2000);
                 //Button.ClickButton(Rateas_drpdown, ActionType.Click, true, 1);
                 await Checkbox.SelectCheckboxAsync(Rateas_drpdown, true, true, 1);
@@ -103,6 +104,6 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
                 throw new Exception($"Failed to fill Coverages for FarmOwner data using profile '{profileKey}': {ex.Message}", ex);
             }
         }
-        }
     }
+}
 

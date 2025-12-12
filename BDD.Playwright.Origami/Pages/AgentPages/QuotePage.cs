@@ -25,7 +25,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string Search_Link => "//a[contains(text(),'SEARCH')]";
         public string NewQuote_Link => "//a[contains(text(),'NEW QUOTE')]";
         //public string E2Value_Link => "//a[contains(text(),'E2VALUE')]";
-        public string E2Value_Link => "//div[contains(text(),'e2Value')]";
+        public string E2Value_Link => "//div[@gg-tab-link='' and contains(@class,'gg-tab-link') and .//a[text()='E2VALUE']]";
         public string FAQs_Link => "//a[contains(text(),'FAQS')]";
         public string StartNewQuote_Btn => "//button[contains(text(),'Start New Quote')]";
         public string OnlineQuoting_Text => "//div[contains(text(),'Online Quoting')]";
@@ -38,10 +38,13 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
 
         public async Task QuotingLinkAsync()
         {
-            await Button.ClickButtonAsync(QuotingSidePanelShadow, ActionType.Click, true, 1);
+            //await Button.ClickButtonAsync(QuotingSidePanelShadow, ActionType.Click, true, 1);
+            await page.Locator(QuotingSidePanelShadow).ClickAsync();
+            await Task.Delay(2000);
         }
-        public async Task QuotingSearchAsync(string profileKey)
+        public async Task QuotingSearchAsync()
         {
+            var profileKey = "QuotingSearch";
             if (_fileReader == null)
             {
                 throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
@@ -49,8 +52,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
 
             try
             {
-                logger.WriteLine($"Starting to fill Quoting Search information using profile: {profileKey}");
-
+                logger.WriteLine($"Starting to fill Quoting Search information");
                 var filePath = "QuotePage\\QuotePageData.json";
                 // Get values from JSON - Quote Details
 
@@ -89,8 +91,9 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             }
         }
 
-        public async Task QuotingE2ValueAsync(string profileKey)
+        public async Task QuotingE2ValueAsync()
         {
+            var profileKey = "QuotingE2Value";
             if (_fileReader == null)
             {
                 throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
@@ -131,8 +134,9 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             }
         }
 
-        public async Task QuotingFAQSAsync(string profileKey)
+        public async Task QuotingFAQSAsync()
         {
+            var profileKey = "QuotingFAQS";  
             if (_fileReader == null)
             {
                 throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
@@ -172,8 +176,9 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             }
         }
 
-        public async Task QuotingNewQuoteAsync(string profileKey)
+        public async Task QuotingNewQuoteAsync()
         {
+            var profileKey = "QuotingNewQuote";
             if (_fileReader == null)
             {
                 throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");

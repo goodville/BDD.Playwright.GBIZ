@@ -1,12 +1,12 @@
 ﻿using BDD.Playwright.Core.Interfaces;
-using Reqnroll;
-using BDD.Playwright.GBIZ.Pages.CommonPage;
 using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
+using Microsoft.Playwright;
+using Reqnroll;
 namespace BDD.Playwright.Origami.Pages.CommonPage
 {
     public class SecureEmailRegistrationPage : BasePage
     {
-        private readonly IReqnrollOutputHelper _ReqnrollLogger;
         private readonly FeatureContext _featureContext;
         private readonly ScenarioContext _scenarioContext;
         private readonly IFileReader _fileReader;
@@ -39,7 +39,7 @@ namespace BDD.Playwright.Origami.Pages.CommonPage
             {
                 logger.WriteLine($"Starting to fill RegistrationMethod information using profile: {profileKey}");
 
-                var filePath = "SecureEmailRegistration\\RegistrationMethodData.json";
+                var filePath = "SecureEmailRegistration\\SecureEmailRegistration.json";
 
                 // Get values from JSON - Quote Details
 
@@ -53,6 +53,7 @@ namespace BDD.Playwright.Origami.Pages.CommonPage
                 int b = a.Next(1, 9999999);
                 string UserName = b.ToString() + commonFunctions.SecureEmailRegistration_Email_LabelAndValue.Item2;*/
                 await InputField.SetTextAreaInputFieldAsync(Email_Inp, email_Inp, true, 1);
+                // Wait for dialog root
                 await Button.ClickButtonAsync(Continue_Btn, ActionType.Click, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(FirstName_Inp, firstName_Inp, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(LastName_Inp, lastName_Inp, true, 1);

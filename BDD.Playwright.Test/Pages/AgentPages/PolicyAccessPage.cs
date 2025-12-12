@@ -1,40 +1,46 @@
-﻿using BDD.Playwright.Core.Loggers;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages;
-using Microsoft.CodeAnalysis.Text;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.Core.Loggers;
+using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.PublicPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Microsoft.Playwright;
+using Reqnroll;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace BDD.Playwright.Test.Pages.AgentPages
+namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {
     public class PolicyAccessPage : BasePage
     {
-        //private CommonFunctions _commonFunctions;
-        //private WebDriverManager _webDriverManager;
-        //private readonly ScenarioContext _scenarioContext;
-        //public FeatureContext _featureContext;
-        //public CommonXpath _commonXpath;
-        //private readonly ApplicationLogger _applicationLogger;
+        private readonly ScenarioContext _scenarioContext;
+        public FeatureContext _featureContext;
+        public CommonXpath _commonXpath;
+        private readonly ApplicationLogger _applicationLogger;
         public LoginPage _loginPage;
-        //public ReportAClaimStartPage _reportAClaimStartPage;
-        //public ReportAClaimForm _reportAClaimForm;
-        //private WebDriverWait _driverWait;
+        public ReportAClaimStartPage _reportAClaimStartPage;
+        public ReportAClaimFormPage _reportAClaimFormPage;
+        private readonly IFileReader _fileReader;
+        private readonly IReqnrollOutputHelper _reqnrollLogger;
+
         // Constructor
-        public PolicyAccessPage(ScenarioContext scenarioContext, CommonFunctions commonFunctions, ApplicationLogger applicationLogger, LoginPage loginPage, CommonXpath commonXpath, ReportAClaimStartPage reportAClaimStartPage, ReportAClaimForm reportAClaimForm) : base(scenarioContext)
+        public PolicyAccessPage(
+            ScenarioContext scenarioContext,
+            LoginPage loginPage,
+            CommonXpath commonXpath,
+            ReportAClaimStartPage reportAClaimStartPage,
+            ReportAClaimFormPage reportAClaimFormPage,
+            IFileReader fileReader
+        ) : base(scenarioContext)
         {
-            //_scenarioContext = scenarioContext;
-            //_commonFunctions = commonFunctions;
-            //_applicationLogger = applicationLogger;
-            //_webDriverManager = _scenarioContext.Get<WebDriverManager>("WebDriverManager");
-            //_loginPage = loginPage;
-            //_commonXpath = commonXpath;
-            //_reportAClaimStartPage = reportAClaimStartPage;
-            //_reportAClaimForm = reportAClaimForm;
-            //commonFunctions.ReadTestDataForClaimPage();
-           // _driverWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(60));
+            _scenarioContext = scenarioContext;
+            _loginPage = loginPage;
+            _commonXpath = commonXpath;
+            _reportAClaimStartPage = reportAClaimStartPage;
+            _reportAClaimFormPage = reportAClaimFormPage;
+            _fileReader = fileReader;
+            // Optionally: await _commonFunctions.ReadTestDataForClaimPageAsync();
         }
 
         #region Xpath
@@ -49,54 +55,85 @@ namespace BDD.Playwright.Test.Pages.AgentPages
         public string Successful_Text => "//div[contains(@class,'ml_row ml_message')]";
         #endregion
 
-        public async Task ManageLoginsAdd()
+        public async Task ManageLoginsAddAsync()
         {
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            commonFunctions.ReadTestDataforPolicyAccessPage();
-            TextLink.ClickTextLink(Access_Link, true, 1);
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            IFrame.switchToIframe();
-            InputField.SetTextAreaInputField(FirstName_Inp, commonFunctions.ManageLogin_FirstName_LabelAndValue.Item2, true, 1);
-            InputField.SetTextAreaInputField(LastName_Inp, commonFunctions.ManageLogin_LastName_LabelAndValue.Item2, true, 1);
-            InputField.SetTextAreaInputField(MiddleInitial_Inp, commonFunctions.ManageLogin_MiddleInitial_LabelAndValue.Item2, true, 1);
-            InputField.SetTextAreaInputField(Email_Inp, commonFunctions.ManageLogin_Email_LabelAndValue.Item2, true, 1);
-            Button.ClickButton(Add_Btn, ActionType.Click, true, 1);
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            Thread.Sleep(5000);
-            Label.VerifyText(Successful_Text, "Invite sucessfully sent to user.", true, 1);
-            IFrame.close();
+            var profileKey = "Agent_TC25";
+            // Optionally: await _commonFunctions.ReadTestDataforPolicyAccessPageAsync();
+            var filePath = "PolicyAccessPage\\PolicyAccessPage.json";
+            await TextLink.ClickTextLinkAsync(Access_Link, true, 1);
+            await IFrame.SwitchToIframeAsync();
+
+            var firstName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FirstName");
+            var lastName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LastName");
+            var middleInitial = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MiddleInitial");
+            var email = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Email");
+
+            var frame = page.FrameLocator("//iframe[contains(@src, 'index.cfm?f=manageinsureds')]");
+            await frame.Locator(FirstName_Inp).FillAsync(firstName);
+            await frame.Locator(LastName_Inp).FillAsync(lastName);
+            await frame.Locator(MiddleInitial_Inp).FillAsync(middleInitial);
+            await frame.Locator(Email_Inp).FillAsync(email);
+            await frame.Locator(Add_Btn).ClickAsync();            //await InputField.SetTextAreaInputFieldAsync(FirstName_Inp, firstName, true, 1);
+            //await InputField.SetTextAreaInputFieldAsync(LastName_Inp, lastName, true, 1);
+            //await InputField.SetTextAreaInputFieldAsync(MiddleInitial_Inp, middleInitial, true, 1);
+            // await InputField.SetTextAreaInputFieldAsync(Email_Inp, email, true, 1);
+            //await Button.ClickButtonAsync(Add_Btn, ActionType.Click, true, 1);
+            await Task.Delay(5000);
+            await frame.Locator(Successful_Text)
+    .WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+            var successMessage = await frame.Locator(Successful_Text).InnerTextAsync();
+            if (!successMessage.Contains("Invite sucessfully sent to user."))
+            {
+                throw new Exception($"Success message not found. Actual: '{successMessage}'");
+            }
+
+            //await IFrame.CloseAsync();
         }
 
-        public async Task ManageLoginsDelete()
+        public async Task ManageLoginsDeleteAsync()
         {
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            commonFunctions.ReadTestDataforPolicyAccessPage();
-            _driverWait.Until(ExpectedConditions.ElementToBeClickable(OpenQA.Selenium.By.XPath(Access_Link)));
-            TextLink.ClickTextLink(Access_Link, true, 1);
-            IFrame.switchToIframe();
-            if (commonFunctions.ManageLogin_RemoveorDeactivate_LabelAndValue.Item2 == "Remove")
+            var profileKey = "Agent_TC25";
+            var filePath = "PolicyAccessPage\\PolicyAccessPage.json";
+            await TextLink.ClickTextLinkAsync(Access_Link, true, 1);
+            var frame = page.FrameLocator("//iframe[contains(@src, 'index.cfm?f=manageinsureds')]");
+            //await IFrame.SwitchToIframeAsync();
+            //var frame = page.FrameLocator("//iframe[contains(@src, 'index.cfm?f=manageinsureds')]");
+            var removeOrDeactivate = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RemoveorDeactivate");
+            var deleteUserName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DeleteUserName");
+
+            if (removeOrDeactivate == "Remove")
             {
-                commonFunctions.UserWaitForPageToLoadCompletly();
-                string RemoveName = string.Format(Remove_Link, commonFunctions.ManageLogin_DeleteUserName_labelAndvalue.Item2);
-                TextLink.ClickTextLink(RemoveName, true, 1);
-                Driver.SwitchTo().Alert().Accept();
-                commonFunctions.UserWaitForPageToLoadCompletly();
-                Thread.Sleep(2000);
-                Label.VerifyText(Successful_Text, "Pending user successfully removed from policy.", true, 1);
+                var RemoveName = string.Format(Remove_Link, deleteUserName);
+                // await TextLink.ClickTextLinkAsync(RemoveName, true, 1);
+                page.Dialog += async (_, dialog) => await dialog.AcceptAsync();
+                await frame.Locator(RemoveName).ClickAsync();
+                await Task.Delay(2000);
+                await frame.Locator(Successful_Text)
+         .WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+                var confirmationText = await frame.Locator(Successful_Text).InnerTextAsync();
+                if (!confirmationText.Contains("Pending user successfully removed from policy."))
+                {
+                    throw new Exception("Removal message not found");
+                }
             }
-            if (commonFunctions.ManageLogin_RemoveorDeactivate_LabelAndValue.Item2 == "Deactivate")
+            else if (removeOrDeactivate == "Deactivate")
             {
-                commonFunctions.UserWaitForPageToLoadCompletly();
-                string DeactivateName = string.Format(Deactivate_Link, commonFunctions.ManageLogin_DeleteUserName_labelAndvalue.Item2);
-                TextLink.ClickTextLink(DeactivateName, true, 1);
-                commonFunctions.UserWaitForPageToLoadCompletly();
-                Driver.SwitchTo().Alert().Accept();
-                commonFunctions.UserWaitForPageToLoadCompletly();
-                Thread.Sleep(2000);
-                Label.VerifyText(Successful_Text, "User successfully deactivated on this policy.", true, 1);
+                var DeactivateName = string.Format(Deactivate_Link, deleteUserName);
+                page.Dialog += async (_, dialog) => await dialog.AcceptAsync();
+                await frame.Locator(DeactivateName).ClickAsync();
+                //await TextLink.ClickTextLinkAsync(DeactivateName, true, 1);
+                await Task.Delay(2000);
+
+                await frame.Locator(Successful_Text)
+    .WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+                var actualText = await frame.Locator(Successful_Text).InnerTextAsync();
+                if (!actualText.Contains("User successfully deactivated on this policy."))
+                {
+                    throw new Exception(
+                        $"Expected 'User successfully deactivated on this policy.' but got '{actualText}'"
+                    );
+                }
             }
-            IFrame.close();
-            commonFunctions.UserWaitForPageToLoadCompletly();
         }
     }
 }

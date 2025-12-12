@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BDD.Playwright.GBIZ.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
 
@@ -33,7 +34,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
                 if (frame != null)
                 {
                     _scenarioContext.Set(frame, "CurrentFrame");
-                    _applicationLogger.WriteLine("Successfully switched to iframe");
+                    logger.WriteLine("Successfully switched to iframe");
                 }
                 else
                 {
@@ -63,7 +64,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
                 if (frame != null)
                 {
                     _scenarioContext.Set(frame, "CurrentFrame");
-                    _applicationLogger.WriteLine($"Successfully switched to iframe using XPath: {xpath}");
+                    logger.WriteLine($"Successfully switched to iframe using XPath: {xpath}");
                 }
                 else
                 {
@@ -85,7 +86,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
             try
             {
                 _scenarioContext.Set(_mainPage, "Page");
-                _applicationLogger.WriteLine("Successfully switched to parent frame");
+                logger.WriteLine("Successfully switched to parent frame");
                 await Task.CompletedTask;
             }
             catch (Exception ex)
@@ -103,12 +104,12 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
             try
             {
                 _scenarioContext.Set(_mainPage, "Page");
-                _applicationLogger.WriteLine("Successfully switched to default content");
+                logger.WriteLine("Successfully switched to default content");
                 await Task.CompletedTask;
             }
             catch (Exception ex)
             {
-                _applicationLogger.WriteLine($"Error switching to default content: {ex.Message}");
+                logger.WriteLine($"Error switching to default content: {ex.Message}");
             }
         }
 
@@ -116,34 +117,36 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
         /// Switches to a new window/tab.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SwitchToWindowAsync()
+        public async Task<IPage> SwitchToWindowAsync()
         {
             try
             {
                 var context = _page.Context;
                 var pages = context.Pages;
-                
+
+                IPage newPage;
+
                 if (pages.Count > 1)
                 {
-                    // Switch to the latest opened page
-                    var newPage = pages.Last();
-                    _scenarioContext.Set(newPage, "Page");
-                    _applicationLogger.WriteLine("Switched to new window");
+
+                    newPage = pages.Last();
                 }
                 else
                 {
                     // Wait for new page to open
-                    var newPageTask = context.WaitForPageAsync();
-                    var newPage = await newPageTask;
-                    _scenarioContext.Set(newPage, "Page");
-                    _applicationLogger.WriteLine("Switched to new window");
+                    newPage = await context.WaitForPageAsync();
                 }
+
+                _scenarioContext.Set(newPage, "Page");
+                logger.WriteLine("Switched to new window");
+                return newPage;
             }
             catch (Exception ex)
             {
                 throw new TimeoutException("Unable to Switch to Window", ex);
             }
         }
+
 
         /// <summary>
         /// Closes the current window and switches back to the main window.
@@ -157,14 +160,14 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.PageElements
                 var currentPage = _page;
                 
                 await currentPage.CloseAsync();
-                _applicationLogger.WriteLine("Current window has been closed");
+                logger.WriteLine("Current window has been closed");
                 
                 // Switch back to the first page
                 var pages = context.Pages;
                 if (pages.Count > 0)
                 {
                     _scenarioContext.Set(pages.First(), "Page");
-                    _applicationLogger.WriteLine("Switched back to main window");
+                    logger.WriteLine("Switched back to main window");
                 }
             }
             catch (Exception ex)

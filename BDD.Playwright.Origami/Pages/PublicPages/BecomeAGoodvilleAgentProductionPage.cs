@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using BDD.Playwright.Core.Enums;
 using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
 using BDD.Playwright.Origami.Pages.CommonPage;
 using Microsoft.Playwright;
 using Reqnroll;
@@ -70,7 +72,7 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
             {
                 logger.WriteLine($"Starting to add carriers using profile: {profileKey}");
 
-                var filePath = "JsonTestData\\AgentProduction\\AgentProductionData.json";
+                var filePath = "AgentProduction\\AgentProductionData.json";
 
                 // Get number of carriers from JSON
                 var noOfCarriersStr = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NoOfCarriers");
@@ -104,11 +106,11 @@ namespace BDD.Playwright.GBIZ.Pages.PublicPages
                     }
 
                     // Add carrier link click (if not first carrier)
-                    if (i > 1)
+                    /*if (i > 1)
                     {
                         await TextLink.ClickTextLinkAsync(AddCarrier_Link, true, 1, "Add Carrier");
                         await page.WaitForTimeoutAsync(1000); // Wait for new carrier fields to appear
-                    }
+                    }*/
 
                     // Fill carrier name
                     await InputField.SetTextAreaInputFieldAsync(NameOfCarrier_Input, carrierName, true, i, $"Carrier {i} Name");

@@ -1,0 +1,16 @@
+{
+        "AgentOwner": {
+        "NoOfOwners": 2,
+        "Owner1FirstName": "Sam",
+        "Owner1LastName": "Sample",
+        "Owner1Title": "Owner",
+        "Owner1PercentOfOwnership": 70,
+        "Owner1EmailAddress": "samsample@gmail.com",
+        "Owner2FirstName": "Steven",
+        "Owner2LastName": "Sample",
+        "Owner2Title": "Owner",
+        "Owner2PercentOfOwnership": 30,
+        "Owner2EmailAddress": "stevensample@gmail.com"
+        }    
+
+}

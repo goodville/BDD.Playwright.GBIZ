@@ -1,13 +1,28 @@
-﻿using BDD.Playwright.GBIZ.PageElements;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
-using Microsoft.Playwright;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Reqnroll;
 
-namespace BDD.Playwright.Origami.Pages.AgentPages
+namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
 {
     public class Quote_AdditionalInterestPage : BasePage
     {
-        public Quote_AdditionalInterestPage(ScenarioContext scenarioContext) : base(scenarioContext) { }
+        private readonly ScenarioContext _scenarioContext;
+        public FeatureContext _featureContext;
+        public CommonXpath _commonXpath;
+        public LoginPage _loginPage;
+        private readonly IFileReader _fileReader;
+
+        public Quote_AdditionalInterestPage(ScenarioContext scenarioContext, LoginPage loginPage, CommonXpath commonXpath, IFileReader fileReader)
+            : base(scenarioContext)
+        {
+            _scenarioContext = scenarioContext;
+            _loginPage = loginPage;
+            _commonXpath = commonXpath;
+            _fileReader = fileReader;
+        }
 
         #region Xpath
         public string MortgageeName { get; set; } = "//input[@name='mort_name1_1']";
@@ -17,6 +32,8 @@ namespace BDD.Playwright.Origami.Pages.AgentPages
         public string MortgageeZip { get; set; } = "//input[@name='mort_zip_1']";
         public string MortgageeRelateDwelling { get; set; } = "//div[@class='text11 nowrap']";
         public string MortgageeDwelling_Drp { get; set; } = "//select[@name='mortgageeRelateBuildings_selectLocation']";
+        
+        public string MortgageeDwelling_Drp1 { get; set; } = "(//select[@name='mortgageeRelateBuildings_selectLocation'])[2]";
         public string MortgageeRelate_btn { get; set; } = "//span[@class='ui-button-text' and text()='Relate Dwelling']";
         public string AdditionalInsured { get; set; } = "//div[@class='tabText']//div[@id='subtab_2']";
         public string AdditionalInsuredName { get; set; } = "//input[@name='ai_name1_1']";
@@ -30,53 +47,102 @@ namespace BDD.Playwright.Origami.Pages.AgentPages
         public string AdditionalRelateDwelling_btn { get; set; } = "(//span[@class='ui-button-text' and text()='Relate Dwelling'])[2]";
         #endregion
 
-        public async Task AdditionalInterestDataFillAsync(
-            string mortgageeName,
-            string mortgageeAddress,
-            string mortgageeCity,
-            string mortgageeState,
-            string mortgageeZip,
-            string mortgageeDwellingValue,
-            string insuredName,
-            string insuredAddress,
-            string insuredCity,
-            string insuredState,
-            string insuredZip,
-            string insuredInterest,
-            string insuredDescription,
-            string additionalDwellingValue)
+        public async Task AdditionalInterestDataFillAsync(string profileKey)
         {
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
-            await InputField.SetTextAreaInputFieldAsync(MortgageeName, mortgageeName, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(MortgageeAddress, mortgageeAddress, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(MortgageeCity, mortgageeCity, true, 1);
-            await DropDown.SelectDropDownAsync(MortgageeState, mortgageeState, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(MortgageeZip, mortgageeZip, true, 1);
+            var filePath = "QuoteAdditionalInterestPage\\QuoteAdditionalInterestPage.json";
+
+            // Mortgagee Section
+            var mortgageeNameValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeName");
+            if (!string.IsNullOrEmpty(mortgageeNameValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(MortgageeName, mortgageeNameValue, true, 1);
+            }
+
+            var mortgageeAddressValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeAddress");
+            if (!string.IsNullOrEmpty(mortgageeAddressValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(MortgageeAddress, mortgageeAddressValue, true, 1);
+            }
+
+            var mortgageeCityValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeCity");
+            if (!string.IsNullOrEmpty(mortgageeCityValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(MortgageeCity, mortgageeCityValue, true, 1);
+            }
+
+            var mortgageeStateValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeState");
+            if (!string.IsNullOrEmpty(mortgageeStateValue))
+            {
+                await DropDown.SelectDropDownAsync(MortgageeState, mortgageeStateValue, true, 1);
+            }
+
+            var mortgageeZipValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeZip");
+            if (!string.IsNullOrEmpty(mortgageeZipValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(MortgageeZip, mortgageeZipValue, true, 1);
+            }
+
+            // Relate Dwelling
             await Button.ClickButtonAsync(MortgageeRelateDwelling, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(2000);
+            var mortgageeDwellingValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeDwelling");
             await DropDown.SelectDropDownAsync(MortgageeDwelling_Drp, mortgageeDwellingValue, true, 1);
+
+            await Task.Delay(2000);
             await Button.ClickButtonAsync(MortgageeRelate_btn, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(2000);
-            await page.EvaluateAsync("window.scrollTo(0,0)");
-            await page.WaitForTimeoutAsync(2000);
-            await page.EvaluateAsync("window.scrollTo(0,0)");
-            await page.WaitForTimeoutAsync(2000);
-            await page.EvaluateAsync("window.scrollTo(0,0)");
-            await page.WaitForTimeoutAsync(4000);
+
+           // await _commonFunctions.ScrollUpAsync();
+           // await _commonFunctions.ScrollUpAsync();
             await Button.ClickButtonAsync(AdditionalInsured, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(4000);
-            await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredName, insuredName, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredAddress, insuredAddress, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredCity, insuredCity, true, 1);
-            await DropDown.SelectDropDownAsync(AdditionalInsuredState, insuredState, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredZip, insuredZip, true, 1);
-            await DropDown.SelectDropDownAsync(AdditionalInsuredInterest, insuredInterest, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredDescription, insuredDescription, true, 1);
+
+            var addInsuredNameValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredName");
+            if (!string.IsNullOrEmpty(addInsuredNameValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredName, addInsuredNameValue, true, 1);
+            }
+
+            var addInsuredAddressValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredAddress");
+            if (!string.IsNullOrEmpty(addInsuredAddressValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredAddress, addInsuredAddressValue, true, 1);
+            }
+
+            var addInsuredCityValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredCity");
+            if (!string.IsNullOrEmpty(addInsuredCityValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredCity, addInsuredCityValue, true, 1);
+            }
+
+            var addInsuredStateValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredState");
+            if (!string.IsNullOrEmpty(addInsuredStateValue))
+            {
+                await DropDown.SelectDropDownAsync(AdditionalInsuredState, addInsuredStateValue, true, 1);
+            }
+
+            var addInsuredZipValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredZip");
+            if (!string.IsNullOrEmpty(addInsuredZipValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredZip, addInsuredZipValue, true, 1);
+            }
+
+            var interestValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredInterest");
+            if (!string.IsNullOrEmpty(interestValue))
+            {
+                await DropDown.SelectDropDownAsync(AdditionalInsuredInterest, interestValue, true, 1);
+            }
+
+            var descriptionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredDescription");
+            if (!string.IsNullOrEmpty(descriptionValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(AdditionalInsuredDescription, descriptionValue, true, 1);
+            }
+
             await Button.ClickButtonAsync(AdditionalRelateDwelling, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(2000);
-            await DropDown.SelectDropDownAsync(MortgageeDwelling_Drp, additionalDwellingValue, true, 2);
+            var mortgageeDwellingValue1 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MortgageeDwelling");
+            await DropDown.SelectDropDownAsync(MortgageeDwelling_Drp1, mortgageeDwellingValue1, true, 1);
+            await Task.Delay(3000);
+
             await Button.ClickButtonAsync(AdditionalRelateDwelling_btn, ActionType.Click, true, 1);
-            await page.WaitForTimeoutAsync(2000);
+
         }
     }
 }

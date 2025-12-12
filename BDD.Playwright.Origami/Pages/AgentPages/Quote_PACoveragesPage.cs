@@ -7,6 +7,7 @@ using BDD.Playwright.Origami.Pages.CommonPage;
 using BDD.Playwright.GBIZ.PageElements;
 using Microsoft.Playwright;
 using Reqnroll;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
 
 namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {

@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using Reqnroll;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace BDD.Playwright.GBIZ.PageElements
 {
@@ -20,7 +21,7 @@ namespace BDD.Playwright.GBIZ.PageElements
             var element = await GetDropDownByLabelAsync(labelnameorlocator, islocator, index);
             try
             {
-                if (value.StartsWith("#") && int.TryParse(value.Substring(1), out var count))
+                /*if (value.StartsWith("#") && int.TryParse(value.Substring(1), out var count))
                 {
                     count--;
                     await element.SelectOptionAsync(new SelectOptionValue { Index = count });
@@ -28,6 +29,21 @@ namespace BDD.Playwright.GBIZ.PageElements
                 else
                 {
                     await element.SelectOptionAsync(new SelectOptionValue { Label = value });
+                }*/
+                if (value.StartsWith("#") && int.TryParse(value.Substring(1), out var count))
+                {
+                    // #index → e.g. "#2"
+                    await element.SelectOptionAsync(new SelectOptionValue { Index = count - 1 });
+                }
+                else if (int.TryParse(value, out _))
+                {
+                    // Pure number → treat as option value
+                    await element.SelectOptionAsync(new SelectOptionValue { Value = value });
+                }
+                else
+                {
+                    // Fallback to label (trimmed)
+                    await element.SelectOptionAsync(new SelectOptionValue { Label = value.Trim() });
                 }
 
                 logger.WriteLine($"✓ Selected '{value}' from '{labelnameorlocator1}' dropdown");
@@ -144,15 +160,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                 XPathLocator = islocator
                     ? string.Format("{0}//option", labelnameorlocator)
                     : string.Format("(//select[@aria-label=normalize-space(\"{0}\")]//option | //*[.=normalize-space(\"{0}\")]/../descendant-or-self::select)[1]//option", labelnameorlocator);
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 return await element.AllAsync();
             }
@@ -178,15 +186,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                 XPathLocator = islocator
                     ? string.Format("({0})[{1}]", labelnameorlocator, index)
                     : string.Format("(//label[.=normalize-space(\"{0}\")]/../following-sibling::div//input[@type='text'])[1]", labelnameorlocator);
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator($"xpath={XPathLocator}");
-                }
-                else
-                {
-                    element = _page.Locator($"xpath={XPathLocator}");
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator($"xpath={XPathLocator}") : _page.Locator($"xpath={XPathLocator}");
 
                 await element.WaitForAsync(new LocatorWaitForOptions
                 { State = WaitForSelectorState.Visible

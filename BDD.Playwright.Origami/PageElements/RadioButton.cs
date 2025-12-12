@@ -87,15 +87,7 @@ namespace BDD.Playwright.GBIZ.PageElements
                     Console.WriteLine(xPathLocator);
                 }
 
-                ILocator element;
-                if (_frameLocator != null)
-                {
-                    element = _frameLocator.Locator(xPathLocator);
-                }
-                else
-                {
-                    element = _page.Locator(xPathLocator);
-                }
+                var element = _frameLocator != null ? _frameLocator.Locator(xPathLocator) : _page.Locator(xPathLocator);
 
                 await element.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
                 return element;

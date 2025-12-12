@@ -1,4 +1,4 @@
-﻿using BDD.Playwright.Origami.PageElements;
+﻿
 using BDD.Playwright.Origami.Pages.CommonPage;
 using BDD.Playwright.Core.Interfaces;
 using BDD.Playwright.GBIZ.PageElements;
@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using BDD.Playwright.Core.Enums;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
 
 namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {

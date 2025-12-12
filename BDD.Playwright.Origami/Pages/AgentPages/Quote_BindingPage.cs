@@ -1,35 +1,32 @@
-﻿using BDD.Playwright.GBIZ.PageElements;
-using BDD.Playwright.Origami.Pages.CommonPage;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Reqnroll;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BDD.Playwright.GBIZ.Pages.AgentPages
+namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.AgentPages
 {
     public class Quote_BindingPage : BasePage
     {
-        private CommonFunctions _commonFunctions;
         private readonly ScenarioContext _scenarioContext;
         public FeatureContext _featureContext;
         public CommonXpath _commonXpath;
-        private readonly IReqnrollOutputHelper _ReqnrollLogger;
         public LoginPage _loginPage;
-        // Constructor
-        public Quote_BindingPage(ScenarioContext scenarioContext, CommonFunctions commonFunctions, IReqnrollOutputHelper ReqnrollOutputHelper, LoginPage loginPage, CommonXpath commonXpath) : base(scenarioContext)
+        private readonly IFileReader _fileReader;
+
+        public Quote_BindingPage(ScenarioContext scenarioContext, LoginPage loginPage, CommonXpath commonXpath, IFileReader fileReader) : base(scenarioContext)
         {
             _scenarioContext = scenarioContext;
-            _commonFunctions = commonFunctions;
-            _ReqnrollLogger = ReqnrollOutputHelper;
             _loginPage = loginPage;
             _commonXpath = commonXpath;
+            _fileReader = fileReader;
         }
+
         #region Xpath
         public string Office_Drp { get; set; } = "//select[@name='binding_office']";
         public string Producer_Drp { get; set; } = "//select[@name='binding_producer']";
-        public string AgentEmail { get; set; } = "//input[@name='agentEmail']";
+        public string AgentEmail { get; set; } = "//input[@name='applicationEmail']";
         public string InsuranceTransferredAgency { get; set; } = "//input[@name='insuranceTransferred' and @value='{0}']";
         public string CoverageDeclined { get; set; } = "//input[@name='coverageDeclined' and @value='{0}']";
         public string ApplicantConvictedArson { get; set; } = "//input[@name='applicantConvictedArson' and @value='{0}']";
@@ -37,8 +34,8 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string Remarks { get; set; } = "//textarea[@name='binding_remarks']";
         public string CoverageBound { get; set; } = "//input[@name='binding_iscoveragebound' and @value='{0}']";
         public string AgreeTerms { get; set; } = "//input[@name='binding_agreetoterms']";
-
         #endregion
+        // Add other locators as needed, including Homeowners fields...
         #region Quote_HomeOwnerBinding
         public string HO_Phone_Input { get; set; } = "//input[@id='fld_phone']";
         public string HO_MaritalStatus_DropDown { get; set; } = "//select[@id='fld_maritalStatus']";
@@ -52,7 +49,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string HO_NoYearsKnown_Input { get; set; } = "//input[@id='fld_noYearsKnown']";
         #endregion
 
-        #region HomeOwner_Radio
+        #region
         public string HO_ResidenceEmployees_DropDown { get; set; } = "//input[@name='residenceEmployees' and @value='{0}']";
         public string HO_HadForeclosure_DropDown { get; set; } = "//input[contains(@id,'hadAForeclosure') and @value='{0}']";
         public string HO_TaxLien_DropDown { get; set; } = "//input[contains(@id,'taxLien') and @value='{0}']";
@@ -74,422 +71,316 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string HO_LogHome_DropDown { get; set; } = "//input[contains(@id,'logHome') and @value='{0}']";
         public string HO_HistoricRegisteredHome_DropDown { get; set; } = "//input[contains(@id,'historicRegisteredHome') and @value='{0}']";
         public string HO_DrivingDirections { get; set; } = "//textarea[@id='fld_drivingDirections']";
+#endregion
 
-        #endregion
-        public async Task BindingDataFillAsync()
+        public async Task BindingDataFillAsync(string profileKey)
         {
-            commonFunctions.ReadTestDataForBinding();
-            commonFunctions.ScrollUp();
-            DropDown.SelectDropDown(Office_Drp, commonFunctions.BindingOffice_LabelAndValue.Item2, true, 1);
-            DropDown.SelectDropDown(Producer_Drp, commonFunctions.BindingProducer_LabelAndValue.Item2, true, 1);
-            if (commonFunctions.BindingInsuranceTransferredAgency_LabelAndValue.Item2 == "Yes")
+            var filePath = "QuoteBindingPage\\QuoteBindingPage.json";
+
+            // Office Dropdown
+            var officeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AgencyOffice");
+            if (!string.IsNullOrEmpty(officeValue))
             {
-                var TransferredAgency = string.Format(InsuranceTransferredAgency, commonFunctions.BindingInsuranceTransferredAgency_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(TransferredAgency, true, 1);
-            }
-            else
-            {
-                var TransferredAgency = string.Format(InsuranceTransferredAgency, commonFunctions.BindingInsuranceTransferredAgency_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(TransferredAgency, true, 1);
+                await DropDown.SelectDropDownAsync(Office_Drp, officeValue, true, 1);
             }
 
-            if (commonFunctions.BindingCoverageDeclined_LabelAndValue.Item2 == "Yes")
+            // Producer Dropdown
+            var producerValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AgencyProducer");
+            if (!string.IsNullOrEmpty(producerValue))
             {
-                var CoverageDecline = string.Format(CoverageDeclined, commonFunctions.BindingCoverageDeclined_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(CoverageDecline, true, 1);
-            }
-            else
-            {
-                var CoverageDecline = string.Format(CoverageDeclined, commonFunctions.BindingCoverageDeclined_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(CoverageDecline, true, 1);
+                await DropDown.SelectDropDownAsync(Producer_Drp, producerValue, true, 1);
             }
 
-            if (commonFunctions.BindingApplicantConvictedArson_LabelAndValue.Item2 == "Yes")
+            // Agent Email
+            var agentEmailValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AgentEmail");
+            if (!string.IsNullOrEmpty(agentEmailValue))
             {
-                var CoverageDecline = string.Format(CoverageDeclined, commonFunctions.BindingApplicantConvictedArson_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(CoverageDecline, true, 1);
-            }
-            else
-            {
-                var ApplicantConvicteArson = string.Format(ApplicantConvictedArson, commonFunctions.BindingApplicantConvictedArson_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(ApplicantConvicteArson, true, 1);
+                await InputField.SetInputFieldAsync(AgentEmail, agentEmailValue, true, 1);
             }
 
-            if (commonFunctions.BindingBindingDestinationemail_LabelAndValue.Item2 != string.Empty)
+            // Insurance Transferred Agency (radio)
+            var insuranceTransferredValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HasInsurancebeenTransferredWithinAgency");
+            if (!string.IsNullOrEmpty(insuranceTransferredValue))
             {
-                if (commonFunctions.BindingBindingDestinationemail_LabelAndValue.Item2 == "Agent")
-                {
-                    var Destinationemail = string.Format(BindingDestinationemail, commonFunctions.BindingBindingDestinationemail_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(Destinationemail, true, 1);
-                }
-                else
-                {
-                    var Destinationemail = string.Format(BindingDestinationemail, commonFunctions.BindingBindingDestinationemail_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(Destinationemail, true, 1);
-                }
+                var radioXpath = string.Format(InsuranceTransferredAgency, insuranceTransferredValue);
+                await RadioButton.SelectRadioButtonAsync(radioXpath,"VALUE",true, 1);
             }
 
-            InputField.SetTextAreaInputField(Remarks, commonFunctions.BindingRemarks_LabelAndValue.Item2, true, 1);
-            if (commonFunctions.BindingCoverageBound_LabelAndValue.Item2 == "Yes")
+            // Coverage Declined (radio)
+            var coverageDeclinedValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CoverageDeclined");
+            if (!string.IsNullOrEmpty(coverageDeclinedValue))
             {
-                var CoverageBound = string.Format(coverageBound, commonFunctions.BindingCoverageBound_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(CoverageBound, true, 1);
-            }
-            else
-            {
-                var CoverageBound = string.Format(coverageBound, commonFunctions.BindingCoverageBound_LabelAndValue.Item2);
-                RadioButton.SelectRadioButton(CoverageBound, true, 1);
+                var radioXpath = string.Format(CoverageDeclined, coverageDeclinedValue);
+                await RadioButton.SelectRadioButtonAsync(radioXpath,"VALUE", true, 1);
             }
 
-            //commonFunctions.ScrollUp();
-
-            //HomeOwner
-            if (commonFunctions.BindingHOPhone_LabelAndValue.Item2 != string.Empty)
+            // Applicant Convicted Arson (radio)
+            var convictedArsonValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ApplicantConvictedArson");
+            if (!string.IsNullOrEmpty(convictedArsonValue))
             {
-                InputField.SetTextAreaInputField(HO_Phone_Input, commonFunctions.BindingHOPhone_LabelAndValue.Item2, true, 1);
+                var radioXpath = string.Format(ApplicantConvictedArson, convictedArsonValue);
+                await RadioButton.SelectRadioButtonAsync(radioXpath,"VALUE", true, 1);
             }
 
-            if (commonFunctions.BindingHOMaritalStatus_LabelAndValue.Item2 != string.Empty)
+            // Binding Destination Email (radio)
+            var destinationEmailValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.EmailRecipient");
+            if (!string.IsNullOrEmpty(destinationEmailValue))
             {
-                DropDown.SelectDropDown(HO_MaritalStatus_DropDown, commonFunctions.BindingHOMaritalStatus_LabelAndValue.Item2, true, 1);
+                var radioXpath = string.Format(BindingDestinationemail, destinationEmailValue);
+                await RadioButton.SelectRadioButtonAsync(radioXpath,"VALUE", true, 1);
             }
 
-            if (commonFunctions.BindingHOOccupation_LabelAndValue.Item2 != string.Empty)
+            // Remarks (textarea)
+            var remarksValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Remarks");
+            if (!string.IsNullOrEmpty(remarksValue))
             {
-                DropDown.SelectDropDown(HO_Occupation_DropDown, commonFunctions.BindingHOOccupation_LabelAndValue.Item2, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(Remarks, remarksValue, true, 1);
             }
 
-            if (commonFunctions.BindingHONoYearsCurrentEmployer_LabelAndValue.Item2 != string.Empty)
+            // Coverage Bound (radio)
+            var coverageBoundValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsCoverageBound");
+            if (!string.IsNullOrEmpty(coverageBoundValue))
             {
-                InputField.SetTextAreaInputField(HO_NoYearsCurrentEmployer_Input, commonFunctions.BindingHONoYearsCurrentEmployer_LabelAndValue.Item2, true, 1);
+                var radioXpath = string.Format(CoverageBound, coverageBoundValue);
+                await RadioButton.SelectRadioButtonAsync(radioXpath,"VALUE", true, 1);
             }
 
-            if (commonFunctions.BindingHOSecondMaritalStatus_LabelAndValue.Item2 != string.Empty)
+            // Agreement Terms Checkbox
+            var agreeTermsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AgreeTerms");
+            if (!string.IsNullOrEmpty(agreeTermsValue) && agreeTermsValue == "Yes")
             {
-                DropDown.SelectDropDown(HO_SecondMaritalStatus_DropDown, commonFunctions.BindingHOSecondMaritalStatus_LabelAndValue.Item2, true, 1);
+                await Checkbox.SelectCheckboxAsync(AgreeTerms, true, true, 1, "I agree to the above terms and conditions.");
             }
 
-            if (commonFunctions.BindingHOSecondOccupations_LabelAndValue.Item2 != string.Empty)
+            await Checkbox.VerifyCheckboxExistAsync(AgreeTerms, true, 1, "I agree to the above terms and conditions.");
+
+            var hoPhoneValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOPhone");
+            if (!string.IsNullOrEmpty(hoPhoneValue))
             {
-                DropDown.SelectDropDown(HO_SecondOccupation_DropDown, commonFunctions.BindingHOSecondOccupations_LabelAndValue.Item2, true, 1);
+                await InputField.SetInputFieldAsync(HO_Phone_Input, hoPhoneValue, true, 1);
             }
 
-            if (commonFunctions.BindingHOSecondNoYearsCurrentEmployer_LabelAndValue.Item2 != string.Empty)
+            var hoMaritalStatusValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOMaritalStatus");
+            if (!string.IsNullOrEmpty(hoMaritalStatusValue))
             {
-                InputField.SetTextAreaInputField(HO_SecondNoYearsCurrentEmployer_Input, commonFunctions.BindingHOSecondNoYearsCurrentEmployer_LabelAndValue.Item2, true, 1);
+                await DropDown.SelectDropDownAsync(HO_MaritalStatus_DropDown, hoMaritalStatusValue, true, 1);
             }
 
-            if (commonFunctions.BindingHOAddlInfoPriorInsuranceCarrier_LabelAndValue.Item2 != string.Empty)
+            var hoOccupationValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOOccupation");
+            if (!string.IsNullOrEmpty(hoOccupationValue))
             {
-                DropDown.SelectDropDown(HO_AddlInfoPriorInsuranceCarrier_DropDown, commonFunctions.BindingHOAddlInfoPriorInsuranceCarrier_LabelAndValue.Item2, true, 1);
+                await DropDown.SelectDropDownAsync(HO_Occupation_DropDown, hoOccupationValue, true, 1);
             }
 
-            if (commonFunctions.BindingHOPriorPolicyExpireDate_LabelAndValue.Item2 != string.Empty)
+            var hoNoYearsCurrentEmployerValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HONoYearsCurrentEmployer");
+            if (!string.IsNullOrEmpty(hoNoYearsCurrentEmployerValue))
             {
-                InputField.SetTextAreaInputField(HO_PriorPolicyExpireDate_Input, commonFunctions.BindingHOPriorPolicyExpireDate_LabelAndValue.Item2, true, 1);
+                await InputField.SetInputFieldAsync(HO_NoYearsCurrentEmployer_Input, hoNoYearsCurrentEmployerValue, true, 1);
             }
 
-            if (commonFunctions.BindingHONoYearsKnown_LabelAndValue.Item2 != string.Empty)
+            var hoSecondMaritalStatusValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOSecondMaritalStatus");
+            if (!string.IsNullOrEmpty(hoSecondMaritalStatusValue))
             {
-                InputField.SetTextAreaInputField(HO_NoYearsKnown_Input, commonFunctions.BindingHONoYearsKnown_LabelAndValue.Item2, true, 1);
-            }
-            //HomeOwner_Radio
-            if (commonFunctions.HO_ResidenceEmployees_LabelAndValue.Item2 != string.Empty)
-            {
-
-                if (commonFunctions.HO_ResidenceEmployees_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_ResidenceEmployees = string.Format(HO_ResidenceEmployees_DropDown, commonFunctions.HO_ResidenceEmployees_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_ResidenceEmployees, true, 1);
-                }
-                else
-                {
-                    var HO_ResidenceEmployees = string.Format(HO_ResidenceEmployees_DropDown, commonFunctions.HO_ResidenceEmployees_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_ResidenceEmployees, true, 1);
-                }
+                await DropDown.SelectDropDownAsync(HO_SecondMaritalStatus_DropDown, hoSecondMaritalStatusValue, true, 1);
             }
 
-            if (commonFunctions.HO_HadForeclosure_LabelAndValue.Item2 != string.Empty)
+            var hoSecondOccupationValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOSecondOccupation");
+            if (!string.IsNullOrEmpty(hoSecondOccupationValue))
             {
-
-                if (commonFunctions.HO_HadForeclosure_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_HadForeclosure = string.Format(HO_HadForeclosure_DropDown, commonFunctions.HO_HadForeclosure_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HadForeclosure, true, 1);
-                }
-                else
-                {
-                    var HO_HadForeclosure = string.Format(HO_HadForeclosure_DropDown, commonFunctions.HO_HadForeclosure_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HadForeclosure, true, 1);
-                }
+                await DropDown.SelectDropDownAsync(HO_SecondOccupation_DropDown, hoSecondOccupationValue, true, 1);
             }
 
-            if (commonFunctions.HO_TaxLien_LabelAndValue.Item2 != string.Empty)
+            var hoSecondNoYearsCurrentEmployerValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOSecondNoYearsCurrentEmployer");
+            if (!string.IsNullOrEmpty(hoSecondNoYearsCurrentEmployerValue))
             {
-                if (commonFunctions.HO_TaxLien_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_TaxLien = string.Format(HO_TaxLien_DropDown, commonFunctions.HO_TaxLien_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_TaxLien, true, 1);
-                }
-                else
-                {
-                    var HO_TaxLien = string.Format(HO_TaxLien_DropDown, commonFunctions.HO_TaxLien_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_TaxLien, true, 1);
-                }
+                await InputField.SetInputFieldAsync(HO_SecondNoYearsCurrentEmployer_Input, hoSecondNoYearsCurrentEmployerValue, true, 1);
             }
 
-            if (commonFunctions.HO_BusinessOnPremises_LabelAndValue.Item2 != string.Empty)
+            var hoAddlInfoPriorInsuranceCarrierValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOAddlInfoPriorInsuranceCarrier");
+            if (!string.IsNullOrEmpty(hoAddlInfoPriorInsuranceCarrierValue))
             {
-                if (commonFunctions.HO_BusinessOnPremises_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_BusinessOnPremises = string.Format(HO_BusinessOnPremises_DropDown, commonFunctions.HO_BusinessOnPremises_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_BusinessOnPremises, true, 1);
-                }
-                else
-                {
-                    var HO_BusinessOnPremises = string.Format(HO_BusinessOnPremises_DropDown, commonFunctions.HO_BusinessOnPremises_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_BusinessOnPremises, true, 1);
-                }
+                await DropDown.SelectDropDownAsync(HO_AddlInfoPriorInsuranceCarrier_DropDown, hoAddlInfoPriorInsuranceCarrierValue, true, 1);
             }
 
-            if (commonFunctions.HO_HasDogs_LabelAndValue.Item2 != string.Empty)
+            var hoPriorPolicyExpireDateValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HOPriorPolicyExpireDate");
+            if (!string.IsNullOrEmpty(hoPriorPolicyExpireDateValue))
             {
-                if (commonFunctions.HO_HasDogs_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_HasDogs = string.Format(HO_HasDogs_DropDown, commonFunctions.HO_HasDogs_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HasDogs, true, 1);
-                }
-                else
-                {
-                    var HO_HasDogs = string.Format(HO_HasDogs_DropDown, commonFunctions.HO_HasDogs_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HasDogs, true, 1);
-                }
+                await InputField.SetInputFieldAsync(HO_PriorPolicyExpireDate_Input, hoPriorPolicyExpireDateValue, true, 1);
             }
 
-            if (commonFunctions.HO_AnimalsOrExoticPets_LabelAndValue.Item2 != string.Empty)
+            var hoNoYearsKnownValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HONoYearsKnown");
+            if (!string.IsNullOrEmpty(hoNoYearsKnownValue))
             {
-                if (commonFunctions.HO_AnimalsOrExoticPets_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_AnimalsOrExoticPets = string.Format(HO_AnimalsOrExoticPets_DropDown, commonFunctions.HO_AnimalsOrExoticPets_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_AnimalsOrExoticPets, true, 1);
-                }
-                else
-                {
-                    var HO_AnimalsOrExoticPets = string.Format(HO_AnimalsOrExoticPets_DropDown, commonFunctions.HO_AnimalsOrExoticPets_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_AnimalsOrExoticPets, true, 1);
-                }
+                await InputField.SetInputFieldAsync(HO_NoYearsKnown_Input, hoNoYearsKnownValue, true, 1);
             }
 
-            if (commonFunctions.HO_MoreFiveAcres_LabelAndValue.Item2 != string.Empty)
+            // All Homeowner Radios (pattern: radioXpath = string.Format(...), then await RadioButton.SelectRadioButtonAsync(...))
+            // HO_ResidenceEmployees (radio)
+            var HO_ResidenceEmployees_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_ResidenceEmployees");
+            if (!string.IsNullOrEmpty(HO_ResidenceEmployees_Value))
             {
-                if (commonFunctions.HO_MoreFiveAcres_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_MoreFiveAcres = string.Format(HO_MoreFiveAcres_DropDown, commonFunctions.HO_MoreFiveAcres_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_MoreFiveAcres, true, 1);
-                }
-                else
-                {
-                    var HO_MoreFiveAcres = string.Format(HO_MoreFiveAcres_DropDown, commonFunctions.HO_MoreFiveAcres_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_MoreFiveAcres, true, 1);
-                }
+                var radioXpath = string.Format(HO_ResidenceEmployees_DropDown, HO_ResidenceEmployees_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_RecreationalVehicles_LabelAndValue.Item2 != string.Empty)
+            // HO_HadForeclosure (radio)
+            var HO_HadForeclosure_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_HadForeclosure");
+            if (!string.IsNullOrEmpty(HO_HadForeclosure_Value))
             {
-                if (commonFunctions.HO_RecreationalVehicles_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_RecreationalVehicles = string.Format(HO_RecreationalVehicles_DropDown, commonFunctions.HO_RecreationalVehicles_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_RecreationalVehicles, true, 1);
-                }
-                else
-                {
-                    var HO_RecreationalVehicles = string.Format(HO_RecreationalVehicles_DropDown, commonFunctions.HO_RecreationalVehicles_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_RecreationalVehicles, true, 1);
-                }
+                var radioXpath = string.Format(HO_HadForeclosure_DropDown, HO_HadForeclosure_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_HouseForSale_LabelAndValue.Item2 != string.Empty)
+            // HO_TaxLien (radio)
+            var HO_TaxLien_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_TaxLien");
+            if (!string.IsNullOrEmpty(HO_TaxLien_Value))
             {
-                if (commonFunctions.HO_HouseForSale_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_HouseForSale = string.Format(HO_HouseForSale_DropDown, commonFunctions.HO_HouseForSale_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HouseForSale, true, 1);
-                }
-                else
-                {
-                    var HO_HouseForSale = string.Format(HO_HouseForSale_DropDown, commonFunctions.HO_HouseForSale_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HouseForSale, true, 1);
-                }
+                var radioXpath = string.Format(HO_TaxLien_DropDown, HO_TaxLien_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_BuildingRenovation_LabelAndValue.Item2 != string.Empty)
+            // HO_BusinessOnPremises (radio)
+            var HO_BusinessOnPremises_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_BusinessOnPremises");
+            if (!string.IsNullOrEmpty(HO_BusinessOnPremises_Value))
             {
-                if (commonFunctions.HO_BuildingRenovation_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_BuildingRenovation = string.Format(HO_BuildingRenovation_DropDown, commonFunctions.HO_BuildingRenovation_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_BuildingRenovation, true, 1);
-                }
-                else
-                {
-                    var HO_BuildingRenovation = string.Format(HO_BuildingRenovation_DropDown, commonFunctions.HO_BuildingRenovation_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_BuildingRenovation, true, 1);
-                }
+                var radioXpath = string.Format(HO_BusinessOnPremises_DropDown, HO_BusinessOnPremises_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_UncorrectedFireBuildingViolations_LabelAndValue.Item2 != string.Empty)
+            // HO_HasDogs (radio)
+            var HO_HasDogs_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_HasDogs");
+            if (!string.IsNullOrEmpty(HO_HasDogs_Value))
             {
-                if (commonFunctions.HO_UncorrectedFireBuildingViolations_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_UncorrectedFireBuildingViolations = string.Format(HO_UncorrectedFireBuildingViolations_DropDown, commonFunctions.HO_UncorrectedFireBuildingViolations_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_UncorrectedFireBuildingViolations, true, 1);
-                }
-                else
-                {
-                    var HO_UncorrectedFireBuildingViolations = string.Format(HO_UncorrectedFireBuildingViolations_DropDown, commonFunctions.HO_UncorrectedFireBuildingViolations_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_UncorrectedFireBuildingViolations, true, 1);
-                }
+                var radioXpath = string.Format(HO_HasDogs_DropDown, HO_HasDogs_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_IsTrampoline_LabelAndValue.Item2 != string.Empty)
+            // HO_AnimalsOrExoticPets (radio)
+            var HO_AnimalsOrExoticPets_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_AnimalsOrExoticPets");
+            if (!string.IsNullOrEmpty(HO_AnimalsOrExoticPets_Value))
             {
-                if (commonFunctions.HO_IsTrampoline_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_IsTrampoline = string.Format(HO_IsTrampoline_DropDown, commonFunctions.HO_IsTrampoline_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_IsTrampoline, true, 1);
-                }
-                else
-                {
-                    var HO_IsTrampoline = string.Format(HO_IsTrampoline_DropDown, commonFunctions.HO_IsTrampoline_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_IsTrampoline, true, 1);
-                }
+                var radioXpath = string.Format(HO_AnimalsOrExoticPets_DropDown, HO_AnimalsOrExoticPets_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_IsPool_LabelAndValue.Item2 != string.Empty)
+            // HO_MoreFiveAcres (radio)
+            var HO_MoreFiveAcres_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_MoreFiveAcres");
+            if (!string.IsNullOrEmpty(HO_MoreFiveAcres_Value))
             {
-                if (commonFunctions.HO_IsPool_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_IsPool = string.Format(HO_IsPool_DropDown, commonFunctions.HO_IsPool_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_IsPool, true, 1);
-                }
-                else
-                {
-                    var HO_IsPool = string.Format(HO_IsPool_DropDown, commonFunctions.HO_IsPool_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_IsPool, true, 1);
-                }
+                var radioXpath = string.Format(HO_MoreFiveAcres_DropDown, HO_MoreFiveAcres_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_ZipLine_LabelAndValue.Item2 != string.Empty)
+            // HO_RecreationalVehicles (radio)
+            var HO_RecreationalVehicles_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_RecreationalVehicles");
+            if (!string.IsNullOrEmpty(HO_RecreationalVehicles_Value))
             {
-                if (commonFunctions.HO_ZipLine_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_ZipLine = string.Format(HO_ZipLine_DropDown, commonFunctions.HO_ZipLine_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_ZipLine, true, 1);
-                }
-                else
-                {
-                    var HO_ZipLine = string.Format(HO_ZipLine_DropDown, commonFunctions.HO_ZipLine_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_ZipLine, true, 1);
-                }
+                var radioXpath = string.Format(HO_RecreationalVehicles_DropDown, HO_RecreationalVehicles_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_StructureConverted_LabelAndValue.Item2 != string.Empty)
+            // HO_HouseForSale (radio)
+            var HO_HouseForSale_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_HouseForSale");
+            if (!string.IsNullOrEmpty(HO_HouseForSale_Value))
             {
-                if (commonFunctions.HO_StructureConverted_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_StructureConverted = string.Format(HO_StructureConverted_DropDown, commonFunctions.HO_StructureConverted_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_StructureConverted, true, 1);
-                }
-                else
-                {
-                    var HO_StructureConverted = string.Format(HO_StructureConverted_DropDown, commonFunctions.HO_StructureConverted_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_StructureConverted, true, 1);
-                }
+                var radioXpath = string.Format(HO_HouseForSale_DropDown, HO_HouseForSale_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_Is911Address_LabelAndValue.Item2 != string.Empty)
+            // HO_BuildingRenovation (radio)
+            var HO_BuildingRenovation_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_BuildingRenovation");
+            if (!string.IsNullOrEmpty(HO_BuildingRenovation_Value))
             {
-                if (commonFunctions.HO_Is911Address_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_Is911Address = string.Format(HO_Is911Address_DropDown, commonFunctions.HO_Is911Address_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_Is911Address, true, 1);
-                }
-                else
-                {
-                    var HO_Is911Address = string.Format(HO_Is911Address_DropDown, commonFunctions.HO_Is911Address_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_Is911Address, true, 1);
-                }
-            }
-            //Driving Directions:
-
-            if (commonFunctions.HO_DrivingDirections_LabelAndValue.Item2 != string.Empty)
-            {
-                InputField.SetTextAreaInputField(HO_DrivingDirections, commonFunctions.HO_DrivingDirections_LabelAndValue.Item2, true, 1);
+                var radioXpath = string.Format(HO_BuildingRenovation_DropDown, HO_BuildingRenovation_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_OccupiedDaily_LabelAndValue.Item2 != string.Empty)
+            // HO_UncorrectedFireBuildingViolations (radio)
+            var HO_UncorrectedFireBuildingViolations_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_UncorrectedFireBuildingViolations");
+            if (!string.IsNullOrEmpty(HO_UncorrectedFireBuildingViolations_Value))
             {
-                if (commonFunctions.HO_OccupiedDaily_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_OccupiedDaily = string.Format(HO_OccupiedDaily_DropDown, commonFunctions.HO_OccupiedDaily_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_OccupiedDaily, true, 1);
-                }
-                else
-                {
-                    var HO_OccupiedDaily = string.Format(HO_OccupiedDaily_DropDown, commonFunctions.HO_OccupiedDaily_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_OccupiedDaily, true, 1);
-                }
+                var radioXpath = string.Format(HO_UncorrectedFireBuildingViolations_DropDown, HO_UncorrectedFireBuildingViolations_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_SharedProgram_LabelAndValue.Item2 != string.Empty)
+            // HO_IsTrampoline (radio)
+            var HO_IsTrampoline_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_IsTrampoline");
+            if (!string.IsNullOrEmpty(HO_IsTrampoline_Value))
             {
-                if (commonFunctions.HO_SharedProgram_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_SharedProgram = string.Format(HO_SharedProgram_DropDown, commonFunctions.HO_SharedProgram_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_SharedProgram, true, 1);
-                }
-                else
-                {
-                    var HO_SharedProgram = string.Format(HO_SharedProgram_DropDown, commonFunctions.HO_SharedProgram_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_SharedProgram, true, 1);
-                }
+                var radioXpath = string.Format(HO_IsTrampoline_DropDown, HO_IsTrampoline_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_LogHome_LabelAndValue.Item2 != string.Empty)
+            // HO_IsPool (radio)
+            var HO_IsPool_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_IsPool");
+            if (!string.IsNullOrEmpty(HO_IsPool_Value))
             {
-                if (commonFunctions.HO_LogHome_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_LogHome = string.Format(HO_LogHome_DropDown, commonFunctions.HO_LogHome_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_LogHome, true, 1);
-                }
-                else
-                {
-                    var HO_LogHome = string.Format(HO_LogHome_DropDown, commonFunctions.HO_LogHome_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_LogHome, true, 1);
-                }
+                var radioXpath = string.Format(HO_IsPool_DropDown, HO_IsPool_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.HO_HistoricRegisteredHome_LabelAndValue.Item2 != string.Empty)
+            // HO_ZipLine (radio)
+            var HO_ZipLine_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_ZipLine");
+            if (!string.IsNullOrEmpty(HO_ZipLine_Value))
             {
-                if (commonFunctions.HO_HistoricRegisteredHome_LabelAndValue.Item2 == "Yes")
-                {
-                    var HO_HistoricRegisteredHome = string.Format(HO_HistoricRegisteredHome_DropDown, commonFunctions.HO_HistoricRegisteredHome_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HistoricRegisteredHome, true, 1);
-                }
-                else
-                {
-                    var HO_HistoricRegisteredHome = string.Format(HO_HistoricRegisteredHome_DropDown, commonFunctions.HO_HistoricRegisteredHome_LabelAndValue.Item2);
-                    RadioButton.SelectRadioButton(HO_HistoricRegisteredHome, true, 1);
-                }
+                var radioXpath = string.Format(HO_ZipLine_DropDown, HO_ZipLine_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            if (commonFunctions.BindingAgreeTerms_LabelAndValue.Item2 == "Yes")
+            // HO_StructureConverted (radio)
+            var HO_StructureConverted_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_StructureConverted");
+            if (!string.IsNullOrEmpty(HO_StructureConverted_Value))
             {
-                var AgreeTerm = string.Format(AgreeTerms, commonFunctions.BindingAgreeTerms_LabelAndValue.Item2);
-                Checkbox.SelectCheckbox(AgreeTerm, true, true, 1, "I agree to the above terms and conditions.");
+                var radioXpath = string.Format(HO_StructureConverted_DropDown, HO_StructureConverted_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
             }
 
-            Checkbox.VerifyCheckboxExist(AgreeTerms, true, 1, "I agree to the above terms and conditions.");
+            // HO_Is911Address (radio)
+            var HO_Is911Address_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_Is911Address");
+            if (!string.IsNullOrEmpty(HO_Is911Address_Value))
+            {
+                var radioXpath = string.Format(HO_Is911Address_DropDown, HO_Is911Address_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
+            }
+
+            // HO_OccupiedDaily (radio)
+            var HO_OccupiedDaily_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_OccupiedDaily");
+            if (!string.IsNullOrEmpty(HO_OccupiedDaily_Value))
+            {
+                var radioXpath = string.Format(HO_OccupiedDaily_DropDown, HO_OccupiedDaily_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
+            }
+
+            // HO_SharedProgram (radio)
+            var HO_SharedProgram_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_SharedProgram");
+            if (!string.IsNullOrEmpty(HO_SharedProgram_Value))
+            {
+                var radioXpath = string.Format(HO_SharedProgram_DropDown, HO_SharedProgram_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
+            }
+
+            // HO_LogHome (radio)
+            var HO_LogHome_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_LogHome");
+            if (!string.IsNullOrEmpty(HO_LogHome_Value))
+            {
+                var radioXpath = string.Format(HO_LogHome_DropDown, HO_LogHome_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
+            }
+
+            // HO_HistoricRegisteredHome (radio)
+            var HO_HistoricRegisteredHome_Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_HistoricRegisteredHome");
+            if (!string.IsNullOrEmpty(HO_HistoricRegisteredHome_Value))
+            {
+                var radioXpath = string.Format(HO_HistoricRegisteredHome_DropDown, HO_HistoricRegisteredHome_Value);
+                await RadioButton.SelectRadioButtonAsync(radioXpath, "VALUE", true, 1);
+            }
+
+            // Driving Directions
+            var drivingDirectionsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HO_DrivingDirections");
+            if (!string.IsNullOrEmpty(drivingDirectionsValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(HO_DrivingDirections, drivingDirectionsValue, true, 1);
+            }
         }
     }
 }
-

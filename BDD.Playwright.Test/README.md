@@ -45,7 +45,7 @@ Comprehensive test automation project implementing BDD scenarios for Guidewire a
 ### Step Definitions
 - **Policy Management**
   - `GuidewirePolicyCreationSteps`: Policy creation and management
-  - `GuidewirePolicySearchPageSteps`: Policy search operations
+  - `GuidewirePolicySearchpageSteps`: Policy search operations
   - `GuidewirePolicySubmissionWizardSteps`: Policy submission workflow
   - `GuidewirePolicyAssignTaskSteps`: Task assignment handling
 
@@ -109,7 +109,7 @@ Scenario: Validate Policy Billing Information
     "Headless": "false",
     "Environment": "QA",
     "ExecutionType": "LOCAL",
-    "PageLevelScreenshot": "Yes",
+    "pageLevelScreenshot": "Yes",
     "GlobalTimeout": 30,
     "WebElementTimeout": 30,
     "TestDataFolderPath": "Data\\JsonTestData"
@@ -196,7 +196,7 @@ Scenario: Validate Policy Billing Information
 #### Environment Settings
 - **GlobalTimeout**: Default timeout for all operations (seconds)
 - **WebElementTimeout**: Element interaction timeout (seconds)
-- **PageLevelScreenshot**: Enable/disable automatic screenshots
+- **pageLevelScreenshot**: Enable/disable automatic screenshots
 - **Authentication**: Toggle authentication requirements
 - **RetryCount**: Number of retry attempts for failed operations
 

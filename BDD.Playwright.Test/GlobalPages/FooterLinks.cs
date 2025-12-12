@@ -1,22 +1,21 @@
-﻿using GoodVille.GBIZ.Reqnroll.Automation.PageElements;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.CommonPage;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.XpathProperties;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using BDD.Playwright.GBIZ.PageElements;
+using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
+using Microsoft.Playwright;
 using Reqnroll;
-using SeleniumExtras.PageObjects;
+using System.Threading.Tasks;
 
-namespace BDD.Playwright.Test.GlobalPages
+namespace BDD.Playwright.GBIZ.Pages.GlobalPages
 {
     public class FooterLink : BasePage
     {
         public CommonXpath _commonXpath;
+
         public FooterLink(ScenarioContext scenarioContext, CommonXpath commonXpath) : base(scenarioContext)
         {
-
-            PageFactory.InitElements(Driver, this);
             _commonXpath = commonXpath;
-
         }
+
         #region Xpath
         public string ShadowHost_Text => ".gg-footer.hydrated";
         public string PrivacyPolicy_Link => "div.footernav> a[href='/help/privacypolicy/']";
@@ -24,43 +23,41 @@ namespace BDD.Playwright.Test.GlobalPages
         public string TermsandConditions_Link => "div.footernav> a[href='/help/terms/']";
         public string RetrySign_Btn => "//a[contains(text(),'Retry Sign in')]";
         #endregion
+
         public async Task PrivacyMethodAsync()
         {
-            //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, PrivacyPolicy_Link);
-            //Driver.Navigate().Back();
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            await Button.ClickButtonCssAsync(ShadowHost_Text, PrivacyPolicy_Link);
+            await page.GoBackAsync();
+            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            await RetrySigninAsync();
         }
 
         public async Task ContactUsMethodAsync()
         {
-            //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, ContactUs_Link);
-            //Driver.Navigate().Back();
-            //commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            await Button.ClickButtonCssAsync(ShadowHost_Text, ContactUs_Link);
+            await page.GoBackAsync();
+            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            await RetrySigninAsync();
         }
 
         public async Task TermMethodAsync()
         {
-            //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, TermsandConditions_Link);
-            //Driver.Navigate().Back();
-            //commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            await Button.ClickButtonCssAsync(ShadowHost_Text, TermsandConditions_Link);
+            await page.GoBackAsync();
+            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            await RetrySigninAsync();
         }
 
         public async Task RetrySigninAsync()
         {
-            if (Button.VerifyButtonExistCss(ShadowHost_Text, TermsandConditions_Link))
+            // If Terms and Conditions exists, page loaded and signed in to Agent Home
+            if (await Button.VerifyButtonExistCssAsync(ShadowHost_Text, TermsandConditions_Link))
             {
-                SpecLogger.WriteLine("Page is Loaded Successfully and signed to Agent Home");
+                logger.WriteLine("Page is Loaded Successfully and signed to Agent Home");
             }
             else
             {
-                Button.ClickButton(RetrySign_Btn, ActionType.Click, true, 1);
-                //commonFunctions.UserWaitForPageToLoadCompletly();
+                await Button.ClickButtonAsync(RetrySign_Btn, ActionType.Click, true, 1);
             }
         }
     }

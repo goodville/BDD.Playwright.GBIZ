@@ -1,0 +1,25 @@
+{
+    "AgentLossHistoryData": {
+        "Premium1": 50000,
+        "Premium2": 40000,
+        "Premium3": 30000,
+        "Premium4": 20000,
+        "Premium5": 10000,
+        "LossHistory1": 50,
+        "LossHistory2": 40,
+        "LossHistory3": 30,
+        "LossHistory4": 20,
+        "LossHistory5": 10,
+        "Premium6": 50000,
+        "Premium7": 45000,
+        "Premium8": 35000,
+        "Premium9": 25000,
+        "Premium10": 15000,
+        "LossHistory6": 10,
+        "LossHistory7": 20,
+        "LossHistory8": 30,
+        "LossHistory9": 40,
+        "LossHistory10": 50
+
+    }
+}

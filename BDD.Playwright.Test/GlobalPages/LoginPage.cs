@@ -1,10 +1,4 @@
-﻿using System;
-using GoodVille.GBIZ.Reqnroll.Automation.Helpers;
-using GoodVille.GBIZ.Reqnroll.Automation.PageElements;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.CommonPage;
-using GoodVille.GBIZ.Reqnroll.Automation.Pages.XpathProperties;
-using Reqnroll;
-using SeleniumExtras.PageObjects;
+﻿using BDD.Playwright.GBIZ.Pages.CommonPage;
 
 namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages
 {
@@ -14,17 +8,14 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages
         private readonly string _scenarioTitle;
         public LoginPage(ScenarioContext scenarioContext) : base(scenarioContext)
         {
-
-            PageFactory.InitElements(Driver, this);
             //_commonXpath = commonXpath;
             _scenarioTitle = scenarioContext.ScenarioInfo.Title;
-
         }
         #region Xpath
         #endregion
         public async Task LoginAsync()
         {
-            commonFunctions.ReadTestDataForLoginPage();
+            /*commonFunctions.ReadTestDataForLoginPage();
             commonFunctions.UserWaitForPageToLoadCompletly();
             if (commonFunctions.AccountName_LabelAndValue.Item2 == "Agents")
             {
@@ -38,12 +29,12 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages
             InputField.SetTextAreaInputField(_commonXpath.PasswordInp, commonFunctions.Password_LabelAndValue.Item2, true, 1, "Password");
             Button.ClickButtonForStaleElementWithoutDepen(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
             Console.WriteLine("User logged into GBIZ");
-            commonFunctions.UserWaitForPageToLoadCompletly();
+            commonFunctions.UserWaitForPageToLoadCompletly();*/
         }
 
         public async Task LoginUsingJSONAsync()
         {
-            commonFunctions.UserWaitForPageToLoadCompletly();
+           /* commonFunctions.UserWaitForPageToLoadCompletly();
             var jsonDataReader = new JsonTestDataReader();
             var testData = JsonTestDataReader.LoadTestData(_scenarioTitle, "AgentLogin.json");
             if (testData["Account"].ToString() == "Agents")
@@ -58,7 +49,7 @@ namespace GoodVille.GBIZ.Reqnroll.Automation.Pages.GlobalPages
             InputField.SetTextAreaInputField(_commonXpath.PasswordInp, testData["Password"].ToString(), true, 1, "Password");
             Button.ClickButtonForStaleElementWithoutDepen(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
             Console.WriteLine("User logged into GBIZ");
-            commonFunctions.UserWaitForPageToLoadCompletly();
+            commonFunctions.UserWaitForPageToLoadCompletly();*/
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using BDD.Playwright.GBIZ.PageElements;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
+using Microsoft.Playwright;
 using Reqnroll;
 using System;
 using System.Collections.Generic;
@@ -13,53 +16,103 @@ namespace BDD.Playwright.GBIZ.Pages.GlobalPages
     {
         //public CommonXpath _commonXpath;
         private readonly string _scenarioTitle;
-        public LoginPage(ScenarioContext scenarioContext) : base(scenarioContext)
+        private readonly IFileReader _fileReader;
+        public CommonXpath _commonXpath;
+        public LoginPage(ScenarioContext scenarioContext, IFileReader fileReader, CommonXpath commonXpath) : base(scenarioContext)
         {
 
             //PageFactory.InitElements(Driver, this);
             //_commonXpath = commonXpath;
             _scenarioTitle = scenarioContext.ScenarioInfo.Title;
+            _fileReader = fileReader;
+            _commonXpath = commonXpath;
 
         }
         #region Xpath
         #endregion
         public async Task LoginAsync()
         {
-            commonFunctions.ReadTestDataForLoginPage();
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            if (commonFunctions.AccountName_LabelAndValue.Item2 == "Agents")
+            if (_fileReader == null)
             {
-                Button.ClickButton(_commonXpath.AgentPortal, ActionType.Click, true, 1, "Agents");
+                throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
             }
-            else if (commonFunctions.AccountName_LabelAndValue.Item2 == "Members")
+
+            try
             {
-                Button.ClickButton(_commonXpath.Members, ActionType.Click, true, 1, "Members");
+                var filePath = "AgentLogin.json";
+                var profileKey = "Agent_TC11";
+
+                var accountType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Account");
+                var userName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UserName");
+                var password = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Password");
+
+                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+                if (accountType == "Agents")
+                {
+                    await Button.ClickButtonAsync(_commonXpath.AgentPortal, ActionType.Click, true, 1, "Agents");
+                }
+                else if (accountType == "Members")
+                {
+                    await Button.ClickButtonAsync(_commonXpath.Members, ActionType.Click, true, 1, "Members");
+                }
+
+                await InputField.SetTextAreaInputFieldAsync(_commonXpath.UsernameInp, userName, true, 1, "UserName");
+                await InputField.SetTextAreaInputFieldAsync(_commonXpath.PasswordInp, password, true, 1, "Password");
+                await Button.ClickButtonForStaleElementWithoutDepenAsync(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
+
+                logger.WriteLine("User logged into GBIZ successfully.");
+                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
             }
-            InputField.SetTextAreaInputField(_commonXpath.UsernameInp, commonFunctions.UserName_LabelAndValue.Item2, true, 1, "UserName");
-            InputField.SetTextAreaInputField(_commonXpath.PasswordInp, commonFunctions.Password_LabelAndValue.Item2, true, 1, "Password");
-            Button.ClickButtonForStaleElementWithoutDepen(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
-            Console.WriteLine("User logged into GBIZ");
-            commonFunctions.UserWaitForPageToLoadCompletly();
+            catch (Exception ex)
+            {
+                throw new Exception($"Error during login for profile: {ex.Message}", ex);
+            }
         }
+
+        //private string AgentPortal => "//button[text()='Agents']";
+        // private string Members => "//button[text()='Members']";
+        // private string UsernameInp => "//input[@id='username']";
+        // private string PasswordInp => "//input[@id='password']";
+        // private string SignInBtn => "//button[text()='Sign In']";
 
         public async Task LoginUsingJSONAsync()
         {
-            commonFunctions.UserWaitForPageToLoadCompletly();
-            var jsonDataReader = new JsonTestDataReader();
-            var testData = JsonTestDataReader.LoadTestData(_scenarioTitle, "AgentLogin.json");
-            if (testData["Account"].ToString() == "Agents")
+            if (_fileReader == null)
             {
-                Button.ClickButton(_commonXpath.AgentPortal, ActionType.Click, true, 1, "Agents");
+                throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
             }
-            else if (testData["Account"].ToString() == "Members")
+
+            try
             {
-                Button.ClickButton(_commonXpath.Members, ActionType.Click, true, 1, "Members");
+               
+                var filePath = "AgentLogin.json";
+                var profileKey = "Agent_TC11";
+
+                var accountType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Account");
+                var userName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UserName");
+                var password = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Password");
+
+                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                if (accountType == "Agents")
+                {
+                    await Button.ClickButtonAsync(_commonXpath.AgentPortal, ActionType.Click, true, 1, "Agents");
+                }
+                else if (accountType == "Members")
+                {
+                    await Button.ClickButtonAsync(_commonXpath.Members, ActionType.Click, true, 1, "Members");
+                }
+
+                await InputField.SetTextAreaInputFieldAsync(_commonXpath.UsernameInp, userName, true, 1, "UserName");
+                await InputField.SetTextAreaInputFieldAsync(_commonXpath.PasswordInp, password, true, 1, "Password");
+                await Button.ClickButtonAsync(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
+
+                logger.WriteLine("User logged into GBIZ successfully.");
             }
-            InputField.SetTextAreaInputField(_commonXpath.UsernameInp, testData["UserName"].ToString(), true, 1, "UserName");
-            InputField.SetTextAreaInputField(_commonXpath.PasswordInp, testData["Password"].ToString(), true, 1, "Password");
-            Button.ClickButtonForStaleElementWithoutDepen(_commonXpath.SignInBtn, ActionType.Click, true, 1, "Login");
-            Console.WriteLine("User logged into GBIZ");
-            commonFunctions.UserWaitForPageToLoadCompletly();
+            catch (Exception ex)
+            {
+                throw new Exception($"Error during login for profile: {ex.Message}", ex);
+            }
         }
     }
 }

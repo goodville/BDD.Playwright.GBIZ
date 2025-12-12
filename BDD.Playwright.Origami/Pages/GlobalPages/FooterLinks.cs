@@ -1,6 +1,6 @@
 ﻿using BDD.Playwright.GBIZ.PageElements;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
-using OpenQA.Selenium.Support.PageObjects;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Reqnroll;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace BDD.Playwright.GBIZ.Pages.GlobalPages
     public class FooterLinks : BasePage
     {
         public CommonXpath _commonXpath;
-        public FooterLink(ScenarioContext scenarioContext, CommonXpath commonXpath) : base(scenarioContext)
+        public FooterLinks(ScenarioContext scenarioContext, CommonXpath commonXpath) : base(scenarioContext)
         {
 
             //PageFactory.InitElements(Driver, this);
@@ -30,41 +30,41 @@ namespace BDD.Playwright.GBIZ.Pages.GlobalPages
         public async Task PrivacyMethodAsync()
         {
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, PrivacyPolicy_Link);
+           // Button.ClickButtonCss(ShadowHost_Text, PrivacyPolicy_Link);
             //Driver.Navigate().Back();
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            await RetrySigninAsync();
         }
 
         public async Task ContactUsMethodAsync()
         {
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, ContactUs_Link);
+           // Button.ClickButtonCss(ShadowHost_Text, ContactUs_Link);
             //Driver.Navigate().Back();
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            //RetrySignin();
         }
 
         public async Task TermMethodAsync()
         {
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            Button.ClickButtonCss(ShadowHost_Text, TermsandConditions_Link);
+          //  Button.ClickButtonCss(ShadowHost_Text, TermsandConditions_Link);
             //Driver.Navigate().Back();
             //commonFunctions.UserWaitForPageToLoadCompletly();
-            RetrySignin();
+            await RetrySigninAsync();
         }
 
         public async Task RetrySigninAsync()
         {
-            if (Button.VerifyButtonExistCss(ShadowHost_Text, TermsandConditions_Link))
+           /* if (await Button.VerifyButtonExistCssAsync(ShadowHost_Text, TermsandConditions_Link))
             {
-                SpecLogger.WriteLine("Page is Loaded Successfully and signed to Agent Home");
+                logger.WriteLine("Page is Loaded Successfully and signed to Agent Home");
             }
             else
             {
                 Button.ClickButtonAsync(RetrySign_Btn, ActionType.Click, true, 1);
                 //commonFunctions.UserWaitForPageToLoadCompletly();
-            }
+            }*/
         }
     }
 }

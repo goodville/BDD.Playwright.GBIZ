@@ -1,5 +1,8 @@
-﻿using BDD.Playwright.GBIZ.PageElements;
+﻿using BDD.Playwright.Core.Interfaces;
+using BDD.Playwright.GBIZ.PageElements;
 using BDD.Playwright.GBIZ.Pages.CommonPage;
+using BDD.Playwright.GBIZ.Pages.GlobalPages;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 using Microsoft.Playwright;
 using Reqnroll;
 
@@ -7,7 +10,22 @@ namespace BDD.Playwright.Origami.Pages.AgentPages
 {
     public class Quote_DwellingPage : BasePage
     {
-        public Quote_DwellingPage(ScenarioContext scenarioContext) : base(scenarioContext) { }
+        private readonly ScenarioContext _scenarioContext;
+        public FeatureContext _featureContext;
+        public CommonXpath _commonXpath;
+        public LoginPage _loginPage;
+        private readonly IFileReader _fileReader;
+        public Quote_DwellingPage(
+            ScenarioContext scenarioContext,
+            LoginPage loginPage,
+            CommonXpath commonXpath,
+            IFileReader fileReader) : base(scenarioContext)
+        {
+            _scenarioContext = scenarioContext;
+            _loginPage = loginPage;
+            _commonXpath = commonXpath;
+            _fileReader = fileReader;
+        }
 
         #region Xpath
         public string Protection_Drp { get; set; } = "//select[@id='fld_loc_protection_1']";
@@ -35,7 +53,7 @@ namespace BDD.Playwright.Origami.Pages.AgentPages
         public string AnimalLocation_Radio { get; set; } = "//input[@name='bld_animalsOrExoticPets_1' and @value='{0}']";
         public string MoreFiveAcre_Radio { get; set; } = "//input[@name='bld_moreFiveAcres_1' and @value='{0}']";
         public string FireBuildingViolations_Radio { get; set; } = "//input[@name='bld_uncorrectedFireBuildingViolations_1' and @value='{0}']";
-        public string Trampoline_Radio{ get; set; } = "//input[@name='bld_isTrampoline_1' and @value='{0}']";
+        public string Trampoline_Radio { get; set; } = "//input[@name='bld_isTrampoline_1' and @value='{0}']";
         public string StructureConverted_Radio { get; set; } = "//input[@name='bld_structureConverted_1' and @value='{0}']";
         public string Address911_Radio { get; set; } = "//input[@name='bld_is911Address_1' and @value='{0}']";
         public string Drivingdirections { get; set; } = "//textarea[@name='bld_drivingDirections_1']";
@@ -74,104 +92,266 @@ namespace BDD.Playwright.Origami.Pages.AgentPages
         public string DwellingRoofSurface_Radiobtn { get; set; } = "//input[contains(@name,'bld_dwellingRoofingSurfacing') and @value='{0}']";
         #endregion
 
-        public async Task DwellingDatafillAsync(dynamic commonFunctions)
+        public async Task DwellingDatafillAsync(string profileKey)
         {
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
-            await DropDown.SelectDropDownAsync(Protection_Drp, commonFunctions.DwellingProtection_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(StreetAddress, commonFunctions.DwellingStreetAddress_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(City, commonFunctions.DwellingCity_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(ZipCode, commonFunctions.DwellingZipCode_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(RespondingFireDepartment, commonFunctions.DwellingRespondingFireDepartment_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(YearOfConstruction, commonFunctions.DwellingYearOfConstruction_LabelAndValue.Item2, true, 1);
-            if (!string.IsNullOrEmpty(commonFunctions.DwellingConstructionType_LabelAndValue.Item2))
+            var filePath = "QuoteDwellingPage\\QuoteDwellingPage.json";
+
+            var protectValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Protection");
+            if (!string.IsNullOrEmpty(protectValue))
             {
-                var constructionType = string.Format(ConstructionType_Radio, commonFunctions.DwellingConstructionType_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(constructionType, commonFunctions.DwellingConstructionType_LabelAndValue.Item2, true, 1);
+                await DropDown.SelectDropDownAsync(Protection_Drp, protectValue, true, 1);
             }
 
-            if (!string.IsNullOrEmpty(commonFunctions.DwellingBuildingType_LabelAndValue.Item2))
+            var streetValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.StreetAddress");
+            if (!string.IsNullOrEmpty(streetValue))
             {
-                var buildingType = string.Format(BuildingType_Radio, commonFunctions.DwellingBuildingType_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(buildingType, commonFunctions.DwellingBuildingType_LabelAndValue.Item2, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(StreetAddress, streetValue, true, 1);
             }
 
-            await DropDown.SelectDropDownAsync(TotalNumber_Drp, commonFunctions.DwellingTotalNumberOfLiving_LabelAndValue.Item2, true, 1);
-            await DropDown.SelectDropDownAsync(NumberUnits_Drp, commonFunctions.DwellingNumberOfUnits_LabelAndValue.Item2, true, 1);
-            var dwellingVacant = string.Format(DwellingVacant_Radio, commonFunctions.DwellingVacant_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingVacant, commonFunctions.DwellingVacant_LabelAndValue.Item2, true, 1);
-
-            var dwellingBuilding = string.Format(BuildingConstruction_Radio, commonFunctions.DwellingBuildingUnderConstruction_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingBuilding, commonFunctions.DwellingBuildingUnderConstruction_LabelAndValue.Item2, true, 1);
-
-            var dwellingRenovation = string.Format(Renovation_Radio, commonFunctions.DwellingRenovation_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingRenovation, commonFunctions.DwellingRenovation_LabelAndValue.Item2, true, 1);
-            await DropDown.SelectDropDownAsync(OccupancyType_Drp, commonFunctions.DwellingOccupancyType_LabelAndValue.Item2, true, 1);
-            await DropDown.SelectDropDownAsync(OccupiedBy_Drp, commonFunctions.DwellingOccupiedBy_LabelAndValue.Item2, true, 1);
-            await DropDown.SelectDropDownAsync(PrimaryHeatType_Drp, commonFunctions.DwellingPrimaryHeatType_LabelAndValue.Item2, true, 1);
-            var dwellingRoofPeaked = string.Format(RoofPeaked_Radio, commonFunctions.DwellingRoofPeaked_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingRoofPeaked, commonFunctions.DwellingRoofPeaked_LabelAndValue.Item2, true, 1);
-            var dwellingAsbestos = string.Format(BuildingAsbestos_Radio, commonFunctions.DwellingBuildingAsbestos_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingAsbestos, commonFunctions.DwellingBuildingAsbestos_LabelAndValue.Item2, true, 1);
-            var dwellingPropertyLocated = string.Format(PropertyLocated_Radio, commonFunctions.DwellingPropertyLocated_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingPropertyLocated, commonFunctions.DwellingPropertyLocated_LabelAndValue.Item2, true, 1);
-            var dwellingDogsLocation = string.Format(DogsLocation_Radio, commonFunctions.DwellingDogsLocation_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingDogsLocation, commonFunctions.DwellingDogsLocation_LabelAndValue.Item2, true, 1);
-            var dwellingAnimalLocation = string.Format(AnimalLocation_Radio, commonFunctions.DwellingAnimalLocation_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingAnimalLocation, commonFunctions.DwellingAnimalLocation_LabelAndValue.Item2, true, 1);
-            var dwellingLocationFiveYears = string.Format(MoreFiveAcre_Radio, commonFunctions.DwellingLocationMoreThanFiveYears_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingLocationFiveYears, commonFunctions.DwellingLocationMoreThanFiveYears_LabelAndValue.Item2, true, 1);
-            var fireBuildingViolations = string.Format(FireBuildingViolations_Radio, commonFunctions.DwellingLocationUncorrectedFire_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(fireBuildingViolations, commonFunctions.DwellingLocationUncorrectedFire_LabelAndValue.Item2, true, 1);
-            var dwellingTrampoline = string.Format(Trampoline_Radio, commonFunctions.DwellingTrampoline_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(dwellingTrampoline, commonFunctions.DwellingTrampoline_LabelAndValue.Item2, true, 1);
-            var structureConverted = string.Format(StructureConverted_Radio, commonFunctions.DwellingStructureConverted_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(structureConverted, commonFunctions.DwellingStructureConverted_LabelAndValue.Item2, true, 1);
-            var address911 = string.Format(Address911_Radio, commonFunctions.Dwelling911address_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(address911, commonFunctions.Dwelling911address_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(Drivingdirections, commonFunctions.DwellingDrivingdirections_LabelAndValue.Item2, true, 1);
-            var swimmingPool = string.Format(SwimmingPool_Radio, commonFunctions.DwellingSwimmingPool_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(swimmingPool, commonFunctions.DwellingSwimmingPool_LabelAndValue.Item2, true, 1);
-            var zipline = string.Format(Zipline_Radio, commonFunctions.DwellingSwimmingPool_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(zipline, commonFunctions.DwellingSwimmingPool_LabelAndValue.Item2, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(Fireplaces, commonFunctions.DwellingFireplaces_LabelAndValue.Item2, true, 1);
-            if (commonFunctions.DwellingLPGasHeater_LabelAndValue.Item2 == "Yes")
+            var cityValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.City");
+            if (!string.IsNullOrEmpty(cityValue))
             {
-                var lpgasHeater = string.Format(LPGasHeater, commonFunctions.DwellingLPGasHeater_LabelAndValue.Item2);
-                await Checkbox.SelectCheckboxAsync(lpgasHeater, true, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(City, cityValue, true, 1);
+            }
+
+            var zipValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode");
+            if (!string.IsNullOrEmpty(zipValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(ZipCode, zipValue, true, 1);
+            }
+
+            var fireDeptValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RespondingFireDepartment");
+            if (!string.IsNullOrEmpty(fireDeptValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(RespondingFireDepartment, fireDeptValue, true, 1);
+            }
+
+            var yearConstrValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Yearofconstruction");
+            if (!string.IsNullOrEmpty(yearConstrValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(YearOfConstruction, yearConstrValue, true, 1);
+            }
+
+            var constrTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ConstructionType");
+            if (!string.IsNullOrEmpty(constrTypeValue))
+            {
+                var radio = string.Format(ConstructionType_Radio, constrTypeValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var buildingTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingType");
+            if (!string.IsNullOrEmpty(buildingTypeValue))
+            {
+                var radio = string.Format(BuildingType_Radio, buildingTypeValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var totalUnitsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Totalnumberoflivingunitsinthebuilding");
+            if (!string.IsNullOrEmpty(totalUnitsValue))
+            {
+                await DropDown.SelectDropDownAsync(TotalNumber_Drp, totalUnitsValue, true, 1);
+            }
+
+            var numberUnitsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Numberofunitsownedbytheinsured");
+            if (!string.IsNullOrEmpty(numberUnitsValue))
+            {
+                await DropDown.SelectDropDownAsync(NumberUnits_Drp, numberUnitsValue, true, 1);
+            }
+
+            var vacantValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthedwellingvacantorunoccupied");
+            if (!string.IsNullOrEmpty(vacantValue))
+            {
+                var radio = string.Format(DwellingVacant_Radio, vacantValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var underConstructionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthebuildingunderconstruction");
+            if (!string.IsNullOrEmpty(underConstructionValue))
+            {
+                var radio = string.Format(BuildingConstruction_Radio, underConstructionValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var renovationValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isbuildingundergoingrenovationorreconstruction");
+            if (!string.IsNullOrEmpty(renovationValue))
+            {
+                var radio = string.Format(Renovation_Radio, renovationValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var occupancyTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OccupancyType");
+            if (!string.IsNullOrEmpty(occupancyTypeValue))
+            {
+                await DropDown.SelectDropDownAsync(OccupancyType_Drp, occupancyTypeValue, true, 1);
+            }
+
+            var occupiedByValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OccupiedBy");
+            if (!string.IsNullOrEmpty(occupiedByValue))
+            {
+                await DropDown.SelectDropDownAsync(OccupiedBy_Drp, occupiedByValue, true, 1);
+            }
+
+            var primaryHeatTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Primaryheattype");
+            if (!string.IsNullOrEmpty(primaryHeatTypeValue))
+            {
+                await DropDown.SelectDropDownAsync(PrimaryHeatType_Drp, primaryHeatTypeValue, true, 1);
+            }
+
+            var peakedRoofValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Istheroofpeaked");
+            if (!string.IsNullOrEmpty(peakedRoofValue))
+            {
+                var radio = string.Format(RoofPeaked_Radio, peakedRoofValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var asbestosValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Doesthebuildinghaveanyasbestos");
+            if (!string.IsNullOrEmpty(asbestosValue))
+            {
+                var radio = string.Format(BuildingAsbestos_Radio, asbestosValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var propertyLocatedValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthepropertylocatedwithintwomilesoftidalwater");
+            if (!string.IsNullOrEmpty(propertyLocatedValue))
+            {
+                var radio = string.Format(PropertyLocated_Radio, propertyLocatedValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var dogsLocationValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Arethereanydogatthislocation");
+            if (!string.IsNullOrEmpty(dogsLocationValue))
+            {
+                var radio = string.Format(DogsLocation_Radio, dogsLocationValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var animalLocationValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Arethereanyanimalsorexoticpetskeptatthislocation");
+            if (!string.IsNullOrEmpty(animalLocationValue))
+            {
+                var radio = string.Format(AnimalLocation_Radio, animalLocationValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var moreFiveAcresValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthislocationsituatedonmorethanfiveacres");
+            if (!string.IsNullOrEmpty(moreFiveAcresValue))
+            {
+                var radio = string.Format(MoreFiveAcre_Radio, moreFiveAcresValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var fireViolationsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Doeslocationhaveanyuncorrectedfireorbuildingcodeviolations");
+            if (!string.IsNullOrEmpty(fireViolationsValue))
+            {
+                var radio = string.Format(FireBuildingViolations_Radio, fireViolationsValue);
+                await RadioButton.SelectRadioButtonAsync(radio, "value", true, 1);
+            }
+
+            var trampolineValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Istheretrampolineatthislocation");
+            if (!string.IsNullOrEmpty(trampolineValue))
+            {
+                var radio = string.Format(Trampoline_Radio, trampolineValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var structureConvertedValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Wereanystructuresatthislocationoriginallybuilt");
+            if (!string.IsNullOrEmpty(structureConvertedValue))
+            {
+                var radio = string.Format(StructureConverted_Radio, structureConvertedValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var address911Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthis911address");
+            if (!string.IsNullOrEmpty(address911Value))
+            {
+                var radio = string.Format(Address911_Radio, address911Value);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var drivingDirectionsValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Drivingdirections");
+            if (!string.IsNullOrEmpty(drivingDirectionsValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(Drivingdirections, drivingDirectionsValue, true, 1);
+            }
+
+            var swimmingPoolValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthereswimmingpoolonthepremises");
+            if (!string.IsNullOrEmpty(swimmingPoolValue))
+            {
+                var radio = string.Format(SwimmingPool_Radio, swimmingPoolValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var zipLineValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Isthereziplineonpremises");
+            if (!string.IsNullOrEmpty(zipLineValue))
+            {
+                var radio = string.Format(Zipline_Radio, zipLineValue);
+                await RadioButton.SelectRadioButtonAsync(radio,"value", true, 1);
+            }
+
+            var fireplacesValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberofBuiltFireplaces");
+            if (!string.IsNullOrEmpty(fireplacesValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(Fireplaces, fireplacesValue, true, 1);
+            }
+
+            var lpGasHeaterValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LPgasHeater");
+            if (!string.IsNullOrEmpty(lpGasHeaterValue) && lpGasHeaterValue == "Yes")
+            {
+                var checkbox = string.Format(LPGasHeater, lpGasHeaterValue);
+                await Checkbox.SelectCheckboxAsync(checkbox, true, true, 1, "LPgasHeater");
             }
 
             await Button.ClickButtonAsync(LimitsCoveragesDiscountsButton, ActionType.Click, true, 1);
-            await InputField.SetTextAreaInputFieldAsync(CoverageAResidence, commonFunctions.DwellingCoverageAResidence_LabelAndValue.Item2, true, 1);
-            if (!string.IsNullOrEmpty(commonFunctions.DwellingCoverageBOtherStructures_LabelAndValue.Item2))
+
+            var coverageAResidenceValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CoverageAResidence");
+            if (!string.IsNullOrEmpty(coverageAResidenceValue))
             {
-                await DropDown.SelectDropDownAsync(CoverageBOtherStructures, commonFunctions.DwellingCoverageBOtherStructures_LabelAndValue.Item2, true, 1);
+                await InputField.SetTextAreaInputFieldAsync(CoverageAResidence, coverageAResidenceValue, true, 1);
             }
 
-            await InputField.SetTextAreaInputFieldAsync(CoverageCPersonalProperty, commonFunctions.DwellingCoverageCPersonalProperty_LabelAndValue.Item2, true, 1);
-            if (!string.IsNullOrEmpty(commonFunctions.DwellingCoverageDAdditionalLimit_LabelAndValue.Item2))
+            var coverageBOtherStructuresValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CoverageBOtherStructures");
+            if (!string.IsNullOrEmpty(coverageBOtherStructuresValue))
             {
-                await InputField.SetTextAreaInputFieldAsync(CoverageDAdditionalLimit, commonFunctions.DwellingCoverageDAdditionalLimit_LabelAndValue.Item2, true, 1);
+                await DropDown.SelectDropDownAsync(CoverageBOtherStructures, coverageBOtherStructuresValue, true, 1);
             }
 
-            await InputField.SetTextAreaInputFieldAsync(EarthquakeLossAssessment, commonFunctions.DwellingEarthquakeLossAssessment_LabelAndValue.Item2, true, 1);
-            var earthquake = string.Format(Earthquake, commonFunctions.DwellingEarthquake_LabelAndValue.Item2);
-            await RadioButton.SelectRadioButtonAsync(earthquake, commonFunctions.DwellingEarthquake_LabelAndValue.Item2, true, 1);
-            await page.EvaluateAsync("window.scrollTo(0,0)");
-            await page.WaitForTimeoutAsync(5000);
+            var coverageCPersonalPropertyValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CoverageCOtherStructures");
+            if (!string.IsNullOrEmpty(coverageCPersonalPropertyValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(CoverageCPersonalProperty, coverageCPersonalPropertyValue, true, 1);
+            }
+
+            var coverageDAdditionalLimitValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CoverageDAdditionalLimit");
+            if (!string.IsNullOrEmpty(coverageDAdditionalLimitValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(CoverageDAdditionalLimit, coverageDAdditionalLimitValue, true, 1);
+            }
+
+            var earthquakeLossAssessmentValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.EarthquakeLossAssessment");
+            if (!string.IsNullOrEmpty(earthquakeLossAssessmentValue))
+            {
+                await InputField.SetTextAreaInputFieldAsync(EarthquakeLossAssessment, earthquakeLossAssessmentValue, true, 1);
+            }
+
+            var earthquakeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Earthquake");
+            if (!string.IsNullOrEmpty(earthquakeValue))
+            {
+                var radio = string.Format(Earthquake, earthquakeValue);
+                await RadioButton.SelectRadioButtonAsync(radio, "value", true, 1);
+            }
+
+            //await _commonFunctions.ScrollUpAsync();
+            await Button.ScrollIntoViewAsync(AuxUnit1, true, 1);
             await Button.ClickButtonAsync(AuxUnit1, ActionType.Click, true, 1);
-            if (commonFunctions.DwellingAuxiliaryHeatingSystem1_LabelAndValue.Item2 =="FI")
+
+            var auxiliaryHeatingSystem1Value = _fileReader.GetOptionalValue(filePath, $"{profileKey}.AuxiliaryHeatingSystem1");
+            if (!string.IsNullOrEmpty(auxiliaryHeatingSystem1Value))
             {
-                var auxiliaryHS = string.Format(AuxiliaryHeatingSystem1, commonFunctions.DwellingAuxiliaryHeatingSystem1_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(auxiliaryHS, commonFunctions.DwellingAuxiliaryHeatingSystem1_LabelAndValue.Item2, true, 1);
-            }
-            else
-            {
-                var auxiliaryHS = string.Format(AuxiliaryHeatingSystem1, commonFunctions.DwellingAuxiliaryHeatingSystem1_LabelAndValue.Item2);
-                await RadioButton.SelectRadioButtonAsync(auxiliaryHS, commonFunctions.DwellingAuxiliaryHeatingSystem1_LabelAndValue.Item2, true, 1);
+                var radio = string.Format(AuxiliaryHeatingSystem1, auxiliaryHeatingSystem1Value);
+                await RadioButton.SelectRadioButtonAsync(radio, "value", true, 1);
             }
 
             await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
+          
         }
     }
 }

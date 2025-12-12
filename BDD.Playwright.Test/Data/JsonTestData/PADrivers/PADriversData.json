@@ -1,30 +1,8 @@
 {
-  "PADrivers": {
-    "Gender": "Male",
-    "MaritalStatus": "Married",
-    "OperatorType": "Primary",
-    "NumberOfYearsNoAccident": "5",
-    "Continue": "true"
-  },
-  "PADrivers_Single": {
-    "Gender": "Female",
-    "MaritalStatus": "Single",
-    "OperatorType": "Primary",
-    "NumberOfYearsNoAccident": "3",
-    "Continue": "true"
-  },
-  "PADrivers_Occasional": {
-    "Gender": "Male",
-    "MaritalStatus": "Married",
-    "OperatorType": "Occasional",
-    "NumberOfYearsNoAccident": "10",
-    "Continue": "true"
-  },
-  "PADrivers_NoAccidents": {
-    "Gender": "Female",
-    "MaritalStatus": "Married",
-    "OperatorType": "Primary",
-    "NumberOfYearsNoAccident": "More than 10",
-    "Continue": "true"
-  }
+    "Agent_TC84": {
+        "PAgender": "M",
+        "PAmaritalStatus": "Single",
+        "PAoperatorType": "P",
+        "PAnumberOfYearsNoAccident": "5 or more"
+    }
 }

@@ -56,7 +56,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentsPages
         {
             var filePath = "PAQuoteInformation\\PAQuoteInformation.json";
             // Get all needed field values from JSON
-            var informedInsured = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InformationInsured");
+            var informedInsured = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InformedInsured");
             var quoteType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.QuoteType");
             var producer = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Producer");
             var firstName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FirstName");
@@ -66,7 +66,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentsPages
             var ssn = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SSN");
             var dob = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DOB");
             var licenseNumber = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DriverLicenseNumber");
-            var licensedState = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LicensedState");
+            var licensedState = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Licensedstate");
             var address1 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Address");
             var address2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.QuoteAddress2");
             var city = _fileReader.GetOptionalValue(filePath, $"{profileKey}.City");

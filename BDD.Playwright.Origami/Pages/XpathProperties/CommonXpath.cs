@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BDD.Playwright.GBIZ.Pages.XpathProperties
@@ -614,13 +615,13 @@ namespace BDD.Playwright.GBIZ.Pages.XpathProperties
 
         public string Businesscover_EffectiveDate { get; set; } = "//div[normalize-space(text())='08/06/2025']";
 
-        public string Businesscover_TerrorismLossLiability { get; set; } = "//div[normalize-space()='$ 500,000']";
+        public string Businesscover_TerrorismLossLiability { get; set; } = "//div[normalize-space()='$500,000']";
 
         public string Businesscover_TerrorismLossproperty { get; set; } = "//div[normalize-space()='$ 350,000']";
 
         public string Businesscover_EmploymentrelatedLiability { get; set; } = "//div[@class='colTwo'][normalize-space()='$ 50,000']";
 
-        public string Businesscover_FireLegalliability { get; set; } = "//div[@class='colTwo'][normalize-space()='$ 300,000']";
+        public string Businesscover_FireLegalliability { get; set; } = "//div[@class='colTwo'][normalize-space()='$300,000']";
 
         /*public string BCOrderCredit_btn { get; set; } = "//button[contains(text(),'Order Credit')]";*/
 
@@ -746,6 +747,7 @@ namespace BDD.Playwright.GBIZ.Pages.XpathProperties
          public string MessageOverRides { get; set; } = "//div[normalize-space()='Message Overrides']";*/
 
         public string ApplyOverRides { get; set; } = "(//div[@class='ui-dialog-buttonset']//button[@type='button']//span[normalize-space()='Apply Override(s)'])[2]";
+        public string ApplyOverRide { get; set; } = "(//div[@class='ui-dialog-buttonset']//button[@type='button']//span[normalize-space()='Apply Override(s)'])";
         public string Remarks { get; set; } = "//div[@id='Quote_Override1']//textarea[@name='remarks']";
         public string DF_QuoteOverride1 { get; set; } = "(//div[@id='Quote_Override_r1' and @title='SCR_260']//input[@type='checkbox'])[2]";
         public string DF_QuoteOverride2 { get; set; } = "(//div[@id='Quote_Override_r2' and @title='SCR_005']//input[@type='checkbox'])[2]";
@@ -1183,5 +1185,21 @@ namespace BDD.Playwright.GBIZ.Pages.XpathProperties
         public string HO_SummaryProtectiveDevices_Amount1 { get; set; } = "//div[normalize-space()='$ -11']";
         public string HO_SummaryCoverExtraEndorsement_Amount { get; set; } = "//div[normalize-space()='$ 25']";
         #endregion
+
+        #region QuoteBinding
+        public string Message_btn { get; set; } = "//div[normalize-space()='Message Overrides']";
+        public string Apply_Override_btn { get; set; } = "//span[contains(text(),'Apply Override')]";
+        #endregion
+
+        public class NumberExtractor
+        {
+            public static string GetFirstNumber(string input)
+            {
+                // Match the first sequence of digits (optionally with commas and decimals)
+                var match = Regex.Match(input, @"\d[\d,\.]*");
+
+                return match.Success ? match.Value : null;
+            }
+        }
     }
 }

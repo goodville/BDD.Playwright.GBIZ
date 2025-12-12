@@ -27,7 +27,9 @@ namespace BDD.Playwright.GBIZ.PageElements
             }
 
             var element = await GetInputFieldByLabelAsync(labelnameorlocator, islocator, index);
-            await element.ClearAsync();
+            await element.ClickAsync();                                  
+            await element.PressAsync("Control+A");                       
+            await element.PressAsync("Delete");
             await element.FillAsync(value);
             var Enteredvalue = await element.GetAttributeAsync("value");
             if (string.IsNullOrEmpty(Enteredvalue))

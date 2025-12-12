@@ -7,15 +7,17 @@ Scenario Outline: Agent_TC80
 	When user taps on the new quote tab
 	When user chooses the Business cover option
 	Then confirm that Business cover text appears
-	When user completes the mandatory fields in the Business cover new quote page
-	When user completes the mandatory fields in the Business cover location page
-	When user completes the mandatory fields in the Building page and presses next
-	When user completes the mandatory fields in the Business cover coverage page and presses next
+	When user completes the mandatory fields in the Business cover new quote page from "Agent_TC80"
+	#And user completes the mandatory fields in the Business cover applicant page and presses next
+	And user completes the mandatory fields in the Business cover location page from "Agent_TC80"
+	And user completes the mandatory fields in the Building page and presses next from "Agent_TC80"
+	When user completes the mandatory fields in the Business cover coverage page and presses next from "Agent_TC80"
 	Then user checks if Applicant information is shown on the Summary page
+	
 	Then user checks if Limits of Insurance information is shown on the Summary page
 	Then user checks if Total premium amount is shown on the Summary page
 	When user completes the required fields on the BC Billing page
-	When user completes the required fields on the BC Binding page
+	And user completes the required fields on the BC Binding page from "Agent_TC80"
 	Then user should see whether the policy is bound successfully
 	#When User clicks on the Logout
 	#When user clicks on the order prefil data button

@@ -2,6 +2,9 @@
 using BDD.Playwright.GBIZ.Pages.CommonPage;
 using BDD.Playwright.GBIZ.PageElements;
 using Reqnroll;
+using OpenQA.Selenium.DevTools.V139.Runtime;
+using static BDD.Playwright.GBIZ.Pages.XpathProperties.CommonXpath;
+using BDD.Playwright.GBIZ.Pages.XpathProperties;
 
 namespace BDD.Playwright.GBIZ.Pages.AgentPages
 {
@@ -12,11 +15,15 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         private readonly FeatureContext _featureContext;
         private readonly ScenarioContext _scenarioContext;
         public IFileReader _fileReader;
+        public CommonXpath _commonXpath;
         //public BaseElement _baseElement;
         // Constructor
-        public NewQuote_TradesmanCoverPage(ScenarioContext scenarioContext, IFileReader fileReader) : base(scenarioContext)
+        public NewQuote_TradesmanCoverPage(ScenarioContext scenarioContext, IFileReader fileReader, CommonXpath commonXpath
+            ) : base(scenarioContext)
         {
             _fileReader = fileReader;
+            _scenarioContext = scenarioContext;
+            _commonXpath = commonXpath; 
             // _baseElement = new BaseElement(scenarioContext);
         }
         #region Xpath - Tradesman Cover
@@ -40,7 +47,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string ZipCode_Inp1 => "(//input[contains(@id,'sa_zip')])[1]";
         public string ZipCode_Inp2 => "(//input[contains(@id,'sa_zip')])[2]";
         public string BusinessDescription => "//textarea[@id='fld_businessDescription']";
-        public string BusinessType => "//input[contains(@id,'businessType')  and @value='{0}']";
+        public string BusinessType => "//input[contains(@id,'fld_businessType_1')  and @value='{0}']";
         public string BusinessFunction => "//input[contains(@id,'businessFunction')  and @value='{0}']";
         public string Insuranceinforce => "//input[@name='addlinfoInsuranceForceWithGoodville' and @value='{0}']";
         public string InfoBusinessEndeavorBankruptcy => "//input[@name='addlinfoBusinessEndeavorBankruptcy' and @value='{0}']";
@@ -78,7 +85,9 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public string TCpage_ConstructionTpe_drpdwn => "//select[@id='fld_bld_constructionType_1']";
         public string TCpage_CondoUnit_Radiobtn => "//input[@id='fld_no_bld_condoUnit_1']";
         public string TCpage_NumberOfStories_Inp => "//input[@id='fld_bld_numberOfStories_1']";
-       
+
+        public string BuildingExclusiveAnOffice => "//input[@id='fld_yes_bld_exclusiveOffice_1']";
+
         //Building Limit Tab xpaths
         public string BuildingLimit_Tab => "//div[@id='buildingLimits_tabBox']";
         public string BuildingLimit_Inp => "//input[@id='fld_bld_buildingLimit_1']";
@@ -188,65 +197,119 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover NewQuote information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\NewQuoteData.json";
+                var filePath = "QuoteApplicantPage\\QuoteApplicantPage.json";
 
                 // Get values from JSON - Quote Details
-                
+               // var Quotetype = _fileReader.GetOptionalValue(filePath, $"{profileKey}.QuoteType");
                 var quoteDescription = _fileReader.GetOptionalValue(filePath, $"{profileKey}.QuoteDescription");
                 var effectiveDate = _fileReader.GetOptionalValue(filePath, $"{profileKey}.EffectiveDate");
-                var bookCode = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BookCode");
+                var bookCode = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BookBusiness");
                 var office = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Office");
                 var producer = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Producer");
                 var firstName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FirstName");
                 var lastName = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LastName");
                 var ssn = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SSN");
-                var dateOfBirth = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DateOfBirth");
+                var dateOfBirth = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DOB");
                 var address = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Address");
                 var city = _fileReader.GetOptionalValue(filePath, $"{profileKey}.City");
                 var state = _fileReader.GetOptionalValue(filePath, $"{profileKey}.State");
-                var zipCode1 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode1");
-                var zipCode2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode2");
+                var zipCode1 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Zip1");
+                var zipCode2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Zip2");
                 var businessDescription = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BusinessDescription");
                 var businessType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BusinessType");
                 var businessFunction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BusinessFunction");
                 var insuranceinforce = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Insuranceinforce");
-                var infoBusinessEndeavorBankruptcy = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InfoBusinessEndeavorBankruptcy");
-                var infoToolsEquipment = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InfoToolsEquipment");
-                var infoCanceledRefusedCoverage = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InfoCanceledRefusedCoverage");
-                var exteriorSprayPainting = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExteriorSprayPainting");
+                var infoBusinessEndeavorBankruptcy = _fileReader.GetOptionalValue(filePath, $"{profileKey}.infoBusinessEndeavorBankruptcy");
+                var infoToolsEquipment = _fileReader.GetOptionalValue(filePath, $"{profileKey}.infoToolsEquipment");
+                var infoCanceledRefusedCoverage = _fileReader.GetOptionalValue(filePath, $"{profileKey}.infoCanceledRefusedCoverage");
+                var exteriorSprayPainting = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExteriorSpray");
                 var grossAnnualIncome = _fileReader.GetOptionalValue(filePath, $"{profileKey}.GrossAnnualIncome");
                 var employeePayroll = _fileReader.GetOptionalValue(filePath, $"{profileKey}.EmployeePayroll");
+
                 var continueButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ContinueButton");
 
                 await InputField.SetTextAreaInputFieldAsync(QuoteDescription_Inp, quoteDescription, true, 1);
                 if (int.TryParse(effectiveDate, out var days))
                 {
                     await InputField.SetTextAreaInputFieldAsync(EffectiveDate_Inp, DateTime.Now.AddDays(days).ToString("MM/dd/yyyy"), true, 1);
+                    var locator = page.Locator(EffectiveDate_Inp);
+                    await locator.PressAsync("Tab");
                 }
 
                 await InputField.SetTextAreaInputFieldAsync(BookCode_Inp, bookCode, true, 1);
-                await DropDown.SelectDropDownAsync(Office_Drp, office, true, 1);
+                await Task.Delay(2000);
+                //await DropDown.SelectDropDownAsync(Office_Drp, office, true, 1);
+                await Task.Delay(2000);
                 await DropDown.SelectDropDownAsync(Producer_Drp, producer ,true, 1);
                 await InputField.SetTextAreaInputFieldAsync(NamedInsured_FirstName_Inp, firstName, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(NamedInsured_LastName_Inp, lastName, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(NamedInsured_SSN_Inp, ssn, true, 1);
-                Thread.Sleep(1000); // Wait for SSN input to be processed
+                await Task.Delay(1000); // Wait for SSN input to be processed
                 await InputField.SetTextAreaInputFieldAsync(NamedInsured_DOB_Inp,dateOfBirth, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(AddressLine1_Inp, address, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(City_Inp, city, true, 1);
                 await DropDown.SelectDropDownAsync(State_Drp1,state, true, 1);
                 await InputField.SetTextAreaInputFieldAsync(ZipCode_Inp1, zipCode1,true, 1);
                 await InputField.SetTextAreaInputFieldAsync(ZipCode_Inp2, zipCode2, true, 1);
+                await Task.Delay(3000);
                 await InputField.SetTextAreaInputFieldAsync(BusinessDescription, businessDescription, true, 1);
-                await RadioButton.SelectRadioButtonAsync(BusinessType, businessType, true, 1);
-                await RadioButton.SelectRadioButtonAsync(BusinessFunction, businessFunction,true, 1);
-                await RadioButton.SelectRadioButtonAsync(Insuranceinforce, insuranceinforce, true, 1);
-                await RadioButton.SelectRadioButtonAsync(InfoBusinessEndeavorBankruptcy,infoBusinessEndeavorBankruptcy, true, 1);
-                await RadioButton.SelectRadioButtonAsync(InfoToolsEquipment, infoToolsEquipment, true, 1);
-                await RadioButton.SelectRadioButtonAsync(InfoCanceledRefusedCoverage, infoCanceledRefusedCoverage, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_ExteriorSprayPainting,exteriorSprayPainting ,true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_GrossAnnualIncome_txt, grossAnnualIncome, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_EmployeePayroll_txt, employeePayroll, true, 1);
+                await Task.Delay(3000);
+                //await RadioButton.SelectRadioButtonAsync(BusinessType, businessType, true, 1);
+                if (!string.IsNullOrEmpty(businessType))
+                {
+                    var businessTypeSel = string.Format(BusinessType, businessType);
+                    await RadioButton.SelectRadioButtonAsync(businessTypeSel, "Individual", true, 1);
+                    await Task.Delay(3000);
+                }
+
+                if (!string.IsNullOrEmpty(businessFunction))
+                {
+                    var businessFunctionSel = string.Format(BusinessFunction, businessFunction);
+                    await Checkbox.SelectCheckboxAsync(businessFunctionSel, true, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(insuranceinforce))
+                {
+                    var insuranceinforceSel = string.Format(Insuranceinforce, insuranceinforce);
+                    await RadioButton.SelectRadioButtonAsync(insuranceinforceSel, insuranceinforce, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(infoBusinessEndeavorBankruptcy))
+                {
+                    var infoBusinessEndeavorBankruptcySel = string.Format(InfoBusinessEndeavorBankruptcy, infoBusinessEndeavorBankruptcy);
+                    await RadioButton.SelectRadioButtonAsync(infoBusinessEndeavorBankruptcySel, infoBusinessEndeavorBankruptcy, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(infoToolsEquipment))
+                {
+                    var infoToolsEquipmentSel = string.Format(InfoToolsEquipment, infoToolsEquipment);
+                    await RadioButton.SelectRadioButtonAsync(infoToolsEquipmentSel, infoToolsEquipment, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(infoCanceledRefusedCoverage))
+                {
+                    var infoCanceledRefusedCoverageSel = string.Format(InfoCanceledRefusedCoverage, infoCanceledRefusedCoverage);
+                    await RadioButton.SelectRadioButtonAsync(infoCanceledRefusedCoverageSel, infoCanceledRefusedCoverage, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(exteriorSprayPainting))
+                {
+                    var exteriorSprayPaintingSel = string.Format(TCpage_ExteriorSprayPainting, exteriorSprayPainting);
+                    await RadioButton.SelectRadioButtonAsync(exteriorSprayPaintingSel, exteriorSprayPainting, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(grossAnnualIncome))
+                {
+                    var grossAnnualIncomeSel = string.Format(TCpage_GrossAnnualIncome_txt, grossAnnualIncome);
+                    await InputField.SetTextAreaInputFieldAsync(grossAnnualIncomeSel, grossAnnualIncome, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(employeePayroll))
+                {
+                    var employeePayrollSel = string.Format(TCpage_EmployeePayroll_txt, employeePayroll);
+                    await InputField.SetTextAreaInputFieldAsync(employeePayrollSel, employeePayroll, true, 1);
+                }
+
                 await Button.ClickButtonAsync(ContinueButton, ActionType.Click, true, 1);
 
                 logger.WriteLine($"Retrieved Tradesman Cover NewQuote Data for: {firstName} {lastName}");
@@ -274,39 +337,90 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover Location information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\LocationData.json";
-                // Location Details
-                
-                var locationProtection = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocationProtection");
-                var locationStreetAddress = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocationStreetAddress");
-                var locationCity = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocationCity");
-                var locationZipCode = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocationZipCode");
-                var milesToFireDept = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MilesToFireDept");
-                var respondingFireDept = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RespondingFireDept");
-                var trampolineOrPool = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TrampolineOrPool");
-                var passagewaysLit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PassagewaysLit");
-                var porchHandrails = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PorchHandrails");
-                var stairwayHandrails = _fileReader.GetOptionalValue(filePath, $"{profileKey}.StairwayHandrails");
-                var insuredWithin70Mi = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredWithin70Mi");
-               
+                var filePath = "QuoteLocationPage\\QuoteLocationPage.json";
+                // Read JSON data
+                var locationProtection = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Protection");
+                var locationStreetAddress = _fileReader.GetOptionalValue(filePath, $"{profileKey}.StreetAddress");
+                var locationCity = _fileReader.GetOptionalValue(filePath, $"{profileKey}.City");
+                var locationZipCode = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ZipCode");
+                var milesToFireDept = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Miles");
+                var respondingFireDept = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RespondingFireDepartment");
+                var trampoline = _fileReader.GetOptionalValue(filePath, $"{profileKey}.trampoline");
+                var passagewaysLit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Arepassagewayswelllighted");
+                var allPorches = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Areallporches");
+                var allInterior = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Areallinterior");
+                var insuredWithin70Mi = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Doestheinsuredlivewithin70miles");
+
+                // Add Location
                 await Button.ClickButtonAsync(TCpage_AddLocation_btn, ActionType.Click, true, 1);
-                await DropDown.SelectDropDownAsync(TCpage_Protection_drpdwn, locationProtection ,true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_locationStreet_Inp, locationStreetAddress, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_locationCity_Inp, locationCity, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_locationZip_Inp, locationZipCode, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_MilestoFireDept_Inp, milesToFireDept, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_RespondingFireDept_Inp, respondingFireDept, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_TrampolineorPool_RadioBtn, trampolineOrPool, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_passagewaysList_RadioBtn, passagewaysLit, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_porchHandrails_RadioBtn, porchHandrails, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_stairwayHandrails_RadioBtn, stairwayHandrails, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_InsuredWithin70MiOfLocation_RadioBtn, insuredWithin70Mi, true, 1);
+
+                // Protection dropdown
+                if (!string.IsNullOrEmpty(locationProtection))
+                {
+                    await DropDown.SelectDropDownAsync(TCpage_Protection_drpdwn, locationProtection, true, 1);
+                }
+
+                // Address fields
+                if (!string.IsNullOrEmpty(locationStreetAddress))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_locationStreet_Inp, locationStreetAddress, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(locationCity))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_locationCity_Inp, locationCity, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(locationZipCode))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_locationZip_Inp, locationZipCode, true, 1);
+                }
+
+                // Other fields
+                if (!string.IsNullOrEmpty(milesToFireDept))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_MilestoFireDept_Inp, milesToFireDept, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(respondingFireDept))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_RespondingFireDept_Inp, respondingFireDept, true, 1);
+                }
+
+                // Radios
+                if (!string.IsNullOrEmpty(trampoline))
+                {
+                    var trampolineRadio = string.Format(TCpage_TrampolineorPool_RadioBtn, trampoline);
+                    await RadioButton.SelectRadioButtonAsync(trampolineRadio, trampoline, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(passagewaysLit))
+                {
+                    var passagewaysLitRadio = string.Format(TCpage_passagewaysList_RadioBtn, passagewaysLit);
+                    await RadioButton.SelectRadioButtonAsync(passagewaysLitRadio, passagewaysLit, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(allPorches))
+                {
+                    var allPorchesRadio = string.Format(TCpage_porchHandrails_RadioBtn, allPorches);
+                    await RadioButton.SelectRadioButtonAsync(allPorchesRadio, allPorches, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(allInterior))
+                {
+                    var allInteriorRadio = string.Format(TCpage_stairwayHandrails_RadioBtn, allInterior);
+                    await RadioButton.SelectRadioButtonAsync(allInteriorRadio, allInterior, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(insuredWithin70Mi))
+                {
+                    var insuredWithin70MiRadio = string.Format(TCpage_InsuredWithin70MiOfLocation_RadioBtn, insuredWithin70Mi);
+                    await RadioButton.SelectRadioButtonAsync(insuredWithin70MiRadio, insuredWithin70Mi, true, 1);
+                }
+
                 await Button.ClickButtonAsync(TCpage_ContinuetoBuilding_Btn, ActionType.Click, true, 1);
+
                 logger.WriteLine($"Retrieved Tradesman Cover Location data for:  {locationCity} {locationZipCode} ");
-
-                // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
-                // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
-
                 logger.WriteLine($"Successfully filled Tradesman Cover Location information using profile: {profileKey}");
                 logger.WriteLine("Tradesman Cover Location Page Details Entered Successfully from JSON Data");
             }
@@ -327,35 +441,237 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover Building information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\BuildingData.json";
+                var filePath = "QuoteBuildingPage\\QuoteBuildingPage.json";
 
-                var buildingDropdown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingDropdown");
-                var buildingDescription = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingDescription");
-                var locatedInTheBuilding = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LocatedInTheBuilding");
+                // 1. Read data from JSON
+                var location = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Location");
+                var buildingDescription = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Description");
+                var checkAllLocated = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CheckAllThatAreLocated");
                 var insuredOwnBuilding = _fileReader.GetOptionalValue(filePath, $"{profileKey}.InsuredOwnBuilding");
-                var exclusiveOffice = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExclusiveOffice");
-                var squareFootage = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SquareFootage");
-                var constructionType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ConstructionType");
-                var condoUnit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CondoUnit");
+                var totalSquareFootage = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TotalSquareFootage");
+                var constructionType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Constructiontype");
+                var condoUnit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsthisACondoUnit");
                 var numberOfStories = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfStories");
-                // Building Details
+                var sprinklerSystem = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingDoesbuildinghavesprinklers");
+                var lessThan100Amp = _fileReader.GetOptionalValue(filePath, $"{profileKey}.bld_riLessThan100Amp_Radio");
+                var yearHeatSourceUpdated = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearHeatSourceUpdated");
+                var localPropertyManager = _fileReader.GetOptionalValue(filePath, $"{profileKey}.localPropertyManager");
+                var yearOfConstruction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearOfConstruction");
+                var valueListed100Percent = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ValueOfBuildingListed100Percent");
+                var roofPeaked = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofPeaked");
+                var portionOfRoofMaterial = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PortionOfRoofMaterial");
+                var nearFloodZone = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NearFloodzone");
+                var isMobileHome = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsMobileHome");
+                var isTownHouse = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsTownHouse");
+                var extendedUnoccupied = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExtendedUnoccupied");
+                var hasAsbestos = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HasAsbestos");
+                var doorsWindowsGoodRepair = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DoorsWindowsGoodRepair");
+                var otherOccupanciesOnPremises = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OtherOccupanciesOnPremises");
+                var totalSquareFootage2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TotalSquareFootage_2");
+                var workingSmokeDetectors = _fileReader.GetOptionalValue(filePath, $"{profileKey}.WorkingSmokeDetectorsInPlace");
+                var fireExtinguishers = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireExtinguishersInPlace");
+                var securitySystem = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SecuritySystem2");
+                var heldForSale = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HeldForSale");
 
+                // 2. Fill out the Building page fields using Playwright-powered helpers and above locators
+
+                // Add Building
                 await Button.ClickButtonAsync(TCpage_AddBuilding_btn, ActionType.Click, true, 1);
-                await DropDown.SelectDropDownAsync(TCpage_Building_drpdwn, buildingDropdown, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_BuildingDescription_Inp, buildingDescription, true, 1);
-                await Checkbox.SelectCheckboxAsync(TCpage_LocatedIntheBuilding_Chkbox, true, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_InsuredOwnBuilding_RadioBtn, insuredOwnBuilding, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_ExclusiveOffice_RadioBtn, exclusiveOffice, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_SquareFootage_Inp, squareFootage, true, 1);
-                await DropDown.SelectDropDownAsync(TCpage_ConstructionTpe_drpdwn, constructionType, true, 1);
-                await RadioButton.SelectRadioButtonAsync(TCpage_CondoUnit_Radiobtn, condoUnit, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TCpage_NumberOfStories_Inp, numberOfStories, true, 1);
 
-                logger.WriteLine($"Retrieved Tradesman Cover Building data for: {buildingDropdown} {numberOfStories}");
+                if (!string.IsNullOrEmpty(location))
+                {
+                    await DropDown.SelectDropDownAsync(TCpage_Building_drpdwn, location, true, 1);
+                }
 
-                // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
-                // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
+                if (!string.IsNullOrEmpty(buildingDescription))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_BuildingDescription_Inp, buildingDescription, true, 1);
+                }
 
+                if (!string.IsNullOrEmpty(checkAllLocated))
+                {
+                    var locChk = string.Format(TCpage_LocatedIntheBuilding_Chkbox, checkAllLocated); // locChk = checkbox, formatted
+                    await Checkbox.SelectCheckboxAsync(locChk, true, true, 1, checkAllLocated);
+                }
+
+                await RadioButton.SelectRadioButtonAsync(BuildingExclusiveAnOffice,"Yes", true, 1);
+
+                if (!string.IsNullOrEmpty(insuredOwnBuilding))
+                {
+                    var insuredRadio = string.Format(TCpage_InsuredOwnBuilding_RadioBtn, insuredOwnBuilding);
+                    await RadioButton.SelectRadioButtonAsync(insuredRadio, insuredOwnBuilding, true, 1);
+                }
+
+                await Task.Delay(2000);
+                if (!string.IsNullOrEmpty(totalSquareFootage))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_SquareFootage_Inp, totalSquareFootage, true, 1);
+                }
+
+                await Task.Delay(2000);
+
+                if (!string.IsNullOrEmpty(constructionType))
+                {
+                    await DropDown.SelectDropDownAsync(TCpage_ConstructionTpe_drpdwn, constructionType, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(condoUnit))
+                {
+                    var condoRadio = string.Format(TCpage_CondoUnit_Radiobtn, condoUnit);
+                    await RadioButton.SelectRadioButtonAsync(condoRadio, condoUnit, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(numberOfStories))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TCpage_NumberOfStories_Inp, numberOfStories, true, 1);
+                }
+
+                await Button.ClickButtonAsync(_commonXpath.Save_btn, ActionType.Click, true, 1);
+                await Task.Delay(5000);
+
+                /*if (!string.IsNullOrEmpty(buildingInput))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingLimit_Inp, buildingInput, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(buildingDeductible))
+                {
+                    await DropDown.SelectDropDownAsync(BuildingDeductable_Inp, buildingDeductible, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(buildingWindHailDeductible))
+                {
+                    await DropDown.SelectDropDownAsync(BuildingDeductable_Inp, buildingWindHailDeductible, true, 1); // update if different
+                }
+
+                if (!string.IsNullOrEmpty(buildingPersonalPropertyLimit))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(PersonalPropertyLimit_Inp, buildingPersonalPropertyLimit, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(buildingPersonalPropertyDeductible))
+                {
+                    await DropDown.SelectDropDownAsync(PersonalPropertyDeductable_Inp, buildingPersonalPropertyDeductible, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(sprinklerSystem))
+                {
+                    var sprinklerRadio = string.Format(Buildingsprinklers_RadioButton, sprinklerSystem);
+                    await RadioButton.SelectRadioButtonAsync(sprinklerRadio, sprinklerSystem, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(lessThan100Amp))
+                {
+                    var ampRadio = string.Format(BuildingElectricalService_RadioButton, lessThan100Amp);
+                    await RadioButton.SelectRadioButtonAsync(ampRadio, lessThan100Amp, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(yearHeatSourceUpdated))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingYearHeatSourceUpdated_Input, yearHeatSourceUpdated, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(localPropertyManager))
+                {
+                    var managerRadio = string.Format(BuildingPropertyManager_RadioButton, localPropertyManager);
+                    await RadioButton.SelectRadioButtonAsync(managerRadio, localPropertyManager, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(yearOfConstruction))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingYearOfConstruction_Input, yearOfConstruction, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(valueListed100Percent))
+                {
+                    var valueListedRadio = string.Format(ValueOfBuilding_RadioButton, valueListed100Percent);
+                    await RadioButton.SelectRadioButtonAsync(valueListedRadio, valueListed100Percent, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(roofPeaked))
+                {
+                    var roofPeakedRadio = string.Format(RoofPeaked_RadioButton, roofPeaked);
+                    await RadioButton.SelectRadioButtonAsync(roofPeakedRadio, roofPeaked, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(portionOfRoofMaterial))
+                {
+                    var flatRoofRadio = string.Format(RoofFlat_RadioButton, portionOfRoofMaterial);
+                    await RadioButton.SelectRadioButtonAsync(flatRoofRadio, portionOfRoofMaterial, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(nearFloodZone))
+                {
+                    var floodZoneRadio = string.Format(NearFloodZoneRadioButton, nearFloodZone);
+                    await RadioButton.SelectRadioButtonAsync(floodZoneRadio, nearFloodZone, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(isMobileHome))
+                {
+                    var mobileHomeRadio = string.Format(BuildingIsMobileHome_RadioButton, isMobileHome);
+                    await RadioButton.SelectRadioButtonAsync(mobileHomeRadio, isMobileHome, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(isTownHouse))
+                {
+                    var townHouseRadio = string.Format(BuildingIsTownHouse_RadioButton, isTownHouse);
+                    await RadioButton.SelectRadioButtonAsync(townHouseRadio, isTownHouse, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(extendedUnoccupied))
+                {
+                    var unoccupiedRadio = string.Format(ExtendedUnoccupied_RadioButton, extendedUnoccupied);
+                    await RadioButton.SelectRadioButtonAsync(unoccupiedRadio, extendedUnoccupied, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(hasAsbestos))
+                {
+                    var asbestosRadio = string.Format(HasAsbestos_RadioButton, hasAsbestos);
+                    await RadioButton.SelectRadioButtonAsync(asbestosRadio, hasAsbestos, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(doorsWindowsGoodRepair))
+                {
+                    var doorsWindowsRadio = string.Format(DoorsWindowsGoodRepair_RadioButton, doorsWindowsGoodRepair);
+                    await RadioButton.SelectRadioButtonAsync(doorsWindowsRadio, doorsWindowsGoodRepair, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(otherOccupanciesOnPremises))
+                {
+                    var otherOccupanciesRadio = string.Format(OtherOccupanciesOnPremises_RadioButton, otherOccupanciesOnPremises);
+                    await RadioButton.SelectRadioButtonAsync(otherOccupanciesRadio, otherOccupanciesOnPremises, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(totalSquareFootage2))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TotalSquareFootage_Input, totalSquareFootage2, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(workingSmokeDetectors))
+                {
+                    var smokeDetRadio = string.Format(WorkingSmokeDetectorsInPlace_RadioButton, workingSmokeDetectors);
+                    await RadioButton.SelectRadioButtonAsync(smokeDetRadio, workingSmokeDetectors, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(fireExtinguishers))
+                {
+                    var fireExtRadio = string.Format(FireExtinguishersInPlace_RadioButton, fireExtinguishers);
+                    await RadioButton.SelectRadioButtonAsync(fireExtRadio, fireExtinguishers, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(securitySystem))
+                {
+                    var securitySystemRadio = string.Format(SecuritySystem2_RadioButton, securitySystem);
+                    await RadioButton.SelectRadioButtonAsync(securitySystemRadio, securitySystem, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(heldForSale))
+                {
+                    var heldForSaleRadio = string.Format(HasAsbestos_RadioButton, heldForSale);
+                    await RadioButton.SelectRadioButtonAsync(heldForSaleRadio, heldForSale, true, 1);
+                }*/
+
+                logger.WriteLine($"Retrieved Tradesman Cover Building data for: {buildingDescription} {numberOfStories}");
                 logger.WriteLine($"Successfully filled Tradesman Cover Building information using profile: {profileKey}");
                 logger.WriteLine("Tradesman Cover Building Page Details Entered Successfully from JSON Data");
             }
@@ -376,24 +692,35 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover BuildingLimits information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\TradesmanCoverData.json";
+                var filePath = "QuoteBuildingPage\\QuoteBuildingPage.json";
 
-                var buildingLimit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingLimit");
-                var buildingDeductable = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingDeductable");
-                var personalPropertyLimit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyLimit");
-                var personalPropertyDeductable = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyDeductable");
+                var buildingInput = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Buildinginput");
+                var buildingDeductible = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Buildingdeductibledrp");
+                var buildingWindHailDeductible = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Buildingwindhaildeductibledrp");
+                var buildingPersonalPropertyLimit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingpersonalPropertyLimitdrp");
+                var buildingPersonalPropertyDeductible = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingpersonalPropertyDeductibledrp");
 
                 //await Button.ScrollIntoViewAsync(BuildingLimit_Tab, true, 1);
                 await Button.ClickButtonForStaleElementWithoutDepenAsync(BuildingLimit_Tab, ActionType.Click, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(BuildingLimit_Inp, buildingLimit, true, 1);
-                await DropDown.SelectDropDownAsync(BuildingDeductable_Inp, buildingDeductable, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(PersonalPropertyLimit_Inp, personalPropertyLimit, true, 1);
-                await DropDown.SelectDropDownAsync(PersonalPropertyDeductable_Inp, personalPropertyDeductable, true, 1);
+                if (!string.IsNullOrEmpty(buildingInput))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingLimit_Inp, buildingInput, true, 1);
+                }
 
-                logger.WriteLine($"Retrieved Tradesman Cover BuildingLimits data for: {buildingLimit} {personalPropertyDeductable}");
+                if (!string.IsNullOrEmpty(buildingDeductible))
+                {
+                    await DropDown.SelectDropDownAsync(BuildingDeductable_Inp, buildingDeductible, true, 1);
+                }
 
-                // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
-                // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
+                if (!string.IsNullOrEmpty(buildingPersonalPropertyLimit))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(PersonalPropertyLimit_Inp, buildingPersonalPropertyLimit, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(buildingPersonalPropertyDeductible))
+                {
+                    await DropDown.SelectDropDownAsync(PersonalPropertyDeductable_Inp, buildingPersonalPropertyDeductible, true, 1);
+                }
 
                 logger.WriteLine($"Successfully filled Tradesman Cover BuildingLimits information using profile: {profileKey}");
                 logger.WriteLine("Tradesman Cover BuildingLimits Page Details Entered Successfully from JSON Data");
@@ -415,53 +742,146 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover BuildingRating information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\BuildingData.json";
+                var filePath = "QuoteBuildingPage\\QuoteBuildingPage.json";
 
-                var buildingsprinklers_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.Buildingsprinklers_RadioButton");
-                var buildingElectricalService_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingElectricalService_RadioButton");
-                var buildingSourceOfHeat_CheckBox = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingSourceOfHeat_CheckBox");
-                var buildingOccupancy_CheckBox = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingOccupancy_CheckBox");
-                var buildingYearHeatSourceUpdated_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingYearHeatSourceUpdated_Input");
-                var buildingPropertyManager_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingPropertyManager_RadioButton");
-                var buildingYearOfConstruction_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingYearOfConstruction_Input");
-                var valueOfBuilding_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ValueOfBuilding_RadioButton");
-                var roofPeaked_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofPeaked_RadioButton");
-                var roofFlat_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofFlat_RadioButton");
-                var nearFloodZoneRadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NearFloodZoneRadioButton");            
-                var buildingIsMobileHome_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingIsMobileHome_RadioButton");
-                var buildingIsTownHouse_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingIsTownHouse_RadioButton");
-                var hasAsbestos_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HasAsbestos_RadioButton");
-                var extendedUnoccupied_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExtendedUnoccupied_RadioButton");
-                var doorsWindowsGoodRepair_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DoorsWindowsGoodRepair_RadioButton");
-                var otherOccupanciesOnPremises_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OtherOccupanciesOnPremises_RadioButton");
-                var totalSquareFootage_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TotalSquareFootage_Input");
-                var workingSmokeDetectorsInPlace_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.WorkingSmokeDetectorsInPlace_RadioButton");
-                var fireExtinguishersInPlace_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireExtinguishersInPlace_RadioButton");
-                var securitySystem2_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SecuritySystem2_RadioButton");
-                
+                var sprinklerSystem = _fileReader.GetOptionalValue(filePath, $"{profileKey}.BuildingDoesbuildinghavesprinklers");
+                var lessThan100Amp = _fileReader.GetOptionalValue(filePath, $"{profileKey}.bld_riLessThan100Amp_Radio");
+                var yearHeatSourceUpdated = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearHeatSourceUpdated");
+                var localPropertyManager = _fileReader.GetOptionalValue(filePath, $"{profileKey}.localPropertyManager");
+                var yearOfConstruction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearOfConstruction");
+                var valueListed100Percent = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ValueOfBuildingListed100Percent");
+                var roofPeaked = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofPeaked");
+                var portionOfRoofMaterial = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PortionOfRoofMaterial");
+                var nearFloodZone = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NearFloodzone");
+                var isMobileHome = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsMobileHome");
+                var isTownHouse = _fileReader.GetOptionalValue(filePath, $"{profileKey}.IsTownHouse");
+                var extendedUnoccupied = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ExtendedUnoccupied");
+                var hasAsbestos = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HasAsbestos");
+                var doorsWindowsGoodRepair = _fileReader.GetOptionalValue(filePath, $"{profileKey}.DoorsWindowsGoodRepair");
+                var otherOccupanciesOnPremises = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OtherOccupanciesOnPremises");
+                var totalSquareFootage2 = _fileReader.GetOptionalValue(filePath, $"{profileKey}.TotalSquareFootage_2");
+                var workingSmokeDetectors = _fileReader.GetOptionalValue(filePath, $"{profileKey}.WorkingSmokeDetectorsInPlace");
+                var fireExtinguishers = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireExtinguishersInPlace");
+                var securitySystem = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SecuritySystem2");
+                var heldForSale = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HeldForSale");
+
                 await Button.ClickButtonAsync(BuildingRatingInfo_Tab, ActionType.Click, true, 1);
-                await RadioButton.SelectRadioButtonAsync(Buildingsprinklers_RadioButton, buildingsprinklers_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(BuildingElectricalService_RadioButton,buildingElectricalService_RadioButton, true, 1);
-                await Checkbox.SelectCheckboxAsync(BuildingSourceOfHeat_CheckBox, true, true, 1);
-                await Checkbox.SelectCheckboxAsync(BuildingOccupancy_CheckBox, true, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(BuildingYearHeatSourceUpdated_Input, buildingYearHeatSourceUpdated_Input, true, 1);
-                await RadioButton.SelectRadioButtonAsync(BuildingPropertyManager_RadioButton,buildingPropertyManager_RadioButton, true, 1);
-                await RadioButton.SelectRadioButtonAsync(ValueOfBuilding_RadioButton,valueOfBuilding_RadioButton, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(BuildingYearOfConstruction_Input, buildingYearOfConstruction_Input, true, 1);
-                await RadioButton.SelectRadioButtonAsync(RoofPeaked_RadioButton, roofPeaked_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(RoofFlat_RadioButton,roofFlat_RadioButton, true, 1);
-                await RadioButton.SelectRadioButtonAsync(NearFloodZoneRadioButton, nearFloodZoneRadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(BuildingIsMobileHome_RadioButton, buildingIsMobileHome_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(BuildingIsTownHouse_RadioButton, buildingIsTownHouse_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(HasAsbestos_RadioButton, hasAsbestos_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(ExtendedUnoccupied_RadioButton, extendedUnoccupied_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(DoorsWindowsGoodRepair_RadioButton, doorsWindowsGoodRepair_RadioButton,true, 1);
-                await RadioButton.SelectRadioButtonAsync(OtherOccupanciesOnPremises_RadioButton, otherOccupanciesOnPremises_RadioButton,true, 1);
-                await InputField.SetTextAreaInputFieldAsync(TotalSquareFootage_Input, totalSquareFootage_Input, true, 1);
-                await RadioButton.SelectRadioButtonAsync(WorkingSmokeDetectorsInPlace_RadioButton,workingSmokeDetectorsInPlace_RadioButton, true, 1);
-                await RadioButton.SelectRadioButtonAsync(FireExtinguishersInPlace_RadioButton,fireExtinguishersInPlace_RadioButton, true, 1);
-                await RadioButton.SelectRadioButtonAsync(SecuritySystem2_RadioButton, securitySystem2_RadioButton, true, 1);
-                logger.WriteLine($"Retrieved Tradesman Cover BuildingRating data for:{buildingsprinklers_RadioButton} {securitySystem2_RadioButton}");
+                if (!string.IsNullOrEmpty(sprinklerSystem))
+                {
+                    var sprinklerRadio = string.Format(Buildingsprinklers_RadioButton, sprinklerSystem);
+                    await RadioButton.SelectRadioButtonAsync(sprinklerRadio, sprinklerSystem, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(lessThan100Amp))
+                {
+                    var ampRadio = string.Format(BuildingElectricalService_RadioButton, lessThan100Amp);
+                    await RadioButton.SelectRadioButtonAsync(ampRadio, lessThan100Amp, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(yearHeatSourceUpdated))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingYearHeatSourceUpdated_Input, yearHeatSourceUpdated, true, 1);
+                }
+
+                /*if (!string.IsNullOrEmpty(localPropertyManager))
+                {
+                    var managerRadio = string.Format(BuildingPropertyManager_RadioButton, localPropertyManager);
+                    await RadioButton.SelectRadioButtonAsync(managerRadio, localPropertyManager, true, 1);
+                }*/
+
+                if (!string.IsNullOrEmpty(yearOfConstruction))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(BuildingYearOfConstruction_Input, yearOfConstruction, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(valueListed100Percent))
+                {
+                    var valueListedRadio = string.Format(ValueOfBuilding_RadioButton, valueListed100Percent);
+                    await RadioButton.SelectRadioButtonAsync(valueListedRadio, valueListed100Percent, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(roofPeaked))
+                {
+                    var roofPeakedRadio = string.Format(RoofPeaked_RadioButton, roofPeaked);
+                    await RadioButton.SelectRadioButtonAsync(roofPeakedRadio, roofPeaked, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(portionOfRoofMaterial))
+                {
+                    var flatRoofRadio = string.Format(RoofFlat_RadioButton, portionOfRoofMaterial);
+                    await RadioButton.SelectRadioButtonAsync(flatRoofRadio, portionOfRoofMaterial, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(nearFloodZone))
+                {
+                    var floodZoneRadio = string.Format(NearFloodZoneRadioButton, nearFloodZone);
+                    await RadioButton.SelectRadioButtonAsync(floodZoneRadio, nearFloodZone, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(isMobileHome))
+                {
+                    var mobileHomeRadio = string.Format(BuildingIsMobileHome_RadioButton, isMobileHome);
+                    await RadioButton.SelectRadioButtonAsync(mobileHomeRadio, isMobileHome, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(isTownHouse))
+                {
+                    var townHouseRadio = string.Format(BuildingIsTownHouse_RadioButton, isTownHouse);
+                    await RadioButton.SelectRadioButtonAsync(townHouseRadio, isTownHouse, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(extendedUnoccupied))
+                {
+                    var unoccupiedRadio = string.Format(ExtendedUnoccupied_RadioButton, extendedUnoccupied);
+                    await RadioButton.SelectRadioButtonAsync(unoccupiedRadio, extendedUnoccupied, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(hasAsbestos))
+                {
+                    var asbestosRadio = string.Format(HasAsbestos_RadioButton, hasAsbestos);
+                    await RadioButton.SelectRadioButtonAsync(asbestosRadio, hasAsbestos, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(doorsWindowsGoodRepair))
+                {
+                    var doorsWindowsRadio = string.Format(DoorsWindowsGoodRepair_RadioButton, doorsWindowsGoodRepair);
+                    await RadioButton.SelectRadioButtonAsync(doorsWindowsRadio, doorsWindowsGoodRepair, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(otherOccupanciesOnPremises))
+                {
+                    var otherOccupanciesRadio = string.Format(OtherOccupanciesOnPremises_RadioButton, otherOccupanciesOnPremises);
+                    await RadioButton.SelectRadioButtonAsync(otherOccupanciesRadio, otherOccupanciesOnPremises, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(totalSquareFootage2))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(TotalSquareFootage_Input, totalSquareFootage2, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(workingSmokeDetectors))
+                {
+                    var smokeDetRadio = string.Format(WorkingSmokeDetectorsInPlace_RadioButton, workingSmokeDetectors);
+                    await RadioButton.SelectRadioButtonAsync(smokeDetRadio, workingSmokeDetectors, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(fireExtinguishers))
+                {
+                    var fireExtRadio = string.Format(FireExtinguishersInPlace_RadioButton, fireExtinguishers);
+                    await RadioButton.SelectRadioButtonAsync(fireExtRadio, fireExtinguishers, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(securitySystem))
+                {
+                    var securitySystemRadio = string.Format(SecuritySystem2_RadioButton, securitySystem);
+                    await RadioButton.SelectRadioButtonAsync(securitySystemRadio, securitySystem, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(heldForSale))
+                {
+                    var heldForSaleRadio = string.Format(HasAsbestos_RadioButton, heldForSale);
+                    await RadioButton.SelectRadioButtonAsync(heldForSaleRadio, heldForSale, true, 1);
+                }
 
                 // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
                 // with the page elements (Button, InputField, DropDown, etc.) once they are properly resolved
@@ -486,23 +906,51 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover Coverages information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\CoveragesData.json";
+                var filePath = "QuoteCoveragesPage\\QuoteCoveragesPage.json";
                 var numberOfOwners = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfOwners");
                 var numberOfFullTimeEmployees_Inp = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfFullTimeEmployees");
                 var numberOfPartTimeEmployees_Inp = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfPartTimeEmployees");
-                var snowRemoval_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SnowRemoval");
+                var snowRemoval_RadioButton = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SnowRemovalRadioButton");
                 var medicalPaymentsLimit_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.MedicalPaymentsLimit");
                 var fireLegalLimit_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireLegalLimit");
                 var liabilityLimit_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LiabilityLimit");
 
                 await Button.ClickButtonAsync(Coverages_Tab, ActionType.Click, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(NumberOfOwners, numberOfOwners, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(NumberOfFullTimeEmployees_Inp, numberOfFullTimeEmployees_Inp, true, 1);
-                await InputField.SetTextAreaInputFieldAsync(NumberOfPartTimeEmployees_Inp, numberOfPartTimeEmployees_Inp, true, 1);
-                await RadioButton.SelectRadioButtonAsync(SnowRemoval_RadioButton, snowRemoval_RadioButton,true, 1);
-                await DropDown.SelectDropDownAsync(MedicalPaymentsLimit_DropDown, medicalPaymentsLimit_DropDown, true, 1);
-                await DropDown.SelectDropDownAsync(FireLegalLimit_DropDown,fireLegalLimit_DropDown , true, 1);
-                await DropDown.SelectDropDownAsync(LiabilityLimit_DropDown, liabilityLimit_DropDown, true, 1);
+                if (!string.IsNullOrEmpty(numberOfOwners))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(NumberOfOwners, numberOfOwners, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(numberOfFullTimeEmployees_Inp))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(NumberOfFullTimeEmployees_Inp, numberOfFullTimeEmployees_Inp, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(numberOfPartTimeEmployees_Inp))
+                {
+                    await InputField.SetTextAreaInputFieldAsync(NumberOfPartTimeEmployees_Inp, numberOfPartTimeEmployees_Inp, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(snowRemoval_RadioButton))
+                {
+                    var snowRemovalRadioLocator = string.Format(SnowRemoval_RadioButton, snowRemoval_RadioButton);
+                    await RadioButton.SelectRadioButtonAsync(snowRemovalRadioLocator, snowRemoval_RadioButton, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(medicalPaymentsLimit_DropDown))
+                {
+                    await DropDown.SelectDropDownAsync(MedicalPaymentsLimit_DropDown, medicalPaymentsLimit_DropDown, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(fireLegalLimit_DropDown))
+                {
+                    await DropDown.SelectDropDownAsync(FireLegalLimit_DropDown, fireLegalLimit_DropDown, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(liabilityLimit_DropDown))
+                {
+                    await DropDown.SelectDropDownAsync(LiabilityLimit_DropDown, liabilityLimit_DropDown, true, 1);
+                }
 
                 logger.WriteLine($"Retrieved Tradesman Cover Coverages data for: {numberOfOwners} {liabilityLimit_DropDown}");
 
@@ -529,18 +977,37 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover Enhancement information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\TradesmanCoverData.json";
+                var filePath = "QuoteCoveragesPage\\QuoteCoveragesPage.json";
                 var commLiabEE_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CommLiabEE");
                 var premierCommLiabEE_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PremierCommLiabEE");
                 var commPropEE_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.CommPropEE");
                 var premierCommPropEE_Radio = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PremierCommPropEE");
                 
                 await Button.ClickButtonAsync(Enhancement_SubTab, ActionType.Click, true, 1);
-                await RadioButton.SelectRadioButtonAsync(CommLiabEE_Radio, commLiabEE_Radio, true, 1);
-                await RadioButton.SelectRadioButtonAsync(PremierCommLiabEE_Radio, premierCommLiabEE_Radio, true, 1);
-                await RadioButton.SelectRadioButtonAsync(CommPropEE_Radio, commPropEE_Radio, true, 1);
-                await RadioButton.SelectRadioButtonAsync(PremierCommPropEE_Radio, premierCommPropEE_Radio, true, 1);
-               
+                if (!string.IsNullOrEmpty(commLiabEE_Radio))
+                {
+                    var commLiabEELocator = string.Format(CommLiabEE_Radio, commLiabEE_Radio);
+                    await RadioButton.SelectRadioButtonAsync(commLiabEELocator, commLiabEE_Radio, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(premierCommLiabEE_Radio))
+                {
+                    var premierCommLiabEELocator = string.Format(PremierCommLiabEE_Radio, premierCommLiabEE_Radio);
+                    await RadioButton.SelectRadioButtonAsync(premierCommLiabEELocator, premierCommLiabEE_Radio, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(commPropEE_Radio))
+                {
+                    var commPropEELocator = string.Format(CommPropEE_Radio, commPropEE_Radio);
+                    await RadioButton.SelectRadioButtonAsync(commPropEELocator, commPropEE_Radio, true, 1);
+                }
+
+                if (!string.IsNullOrEmpty(premierCommPropEE_Radio))
+                {
+                    var premierCommPropEELocator = string.Format(PremierCommPropEE_Radio, premierCommPropEE_Radio);
+                    await RadioButton.SelectRadioButtonAsync(premierCommPropEELocator, premierCommPropEE_Radio, true, 1);
+                }
+
                 logger.WriteLine($"Retrieved Tradesman Cover Enhancement data for: {commLiabEE_Radio} {premierCommPropEE_Radio}");
 
                 // Note: Form filling implementation would go here using the same pattern as BasicInformationPage
@@ -591,19 +1058,24 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         public async Task SummaryInformationAsync()
         {
             await Button.ClickButtonAsync(Summary_Link, ActionType.Click, true, 1);
-            //await Button.ScrollIntoViewAsync(PremiumText, true, 1);
-            //Label.VerifyText(PremiumText, "Premium", true, 1);
+            await Button.ScrollIntoViewAsync(PremiumText, true, 1);
+            await Label.VerifyTextAsync(PremiumText, "Premium", true, 1);
         }
         public async Task EstimatedPremiumValidationAsync()
         {
-            /*string EstimatedPremiumText1 = Label.GetText(EstimatedPremiumText, true, 1);
-            Thread.Sleep(5000);
-            string EstimatedPremium = NumberExtractor.GetFirstNumber(EstimatedPremiumText1);
-            //_applicationLogger.WriteLine("Estimated Premium Value is:$" + EstimatedPremiumText1);
-            if (!EstimatedPremiumText1.Contains("$"))
+
+            var estimatedPremiumText1 = await Label.GetTextAsync(EstimatedPremiumText, true, 1);
+            await Task.Delay(5000);
+            var estimatedPremium = NumberExtractor.GetFirstNumber(estimatedPremiumText1);
+
+            // Optional: log the value if needed
+            // logger.WriteLine("Estimated Premium Value is:$" + estimatedPremiumText1);
+
+            if (string.IsNullOrEmpty(estimatedPremiumText1))
             {
                 throw new Exception("Estimated Premium has not generated");
-            }*/
+
+            }
         }
         public async Task LocationPremiumValidationAsync()
         {

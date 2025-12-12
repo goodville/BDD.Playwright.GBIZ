@@ -59,331 +59,144 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         /// Fills Property data using JSON file
         /// </summary>
         /// <param name="profileKey">Profile key to read from JSON file (default: "Property")</param>
-        public async Task PropertyDatafillAsync(string profileKey = "Property")
+        public async Task PropertyDatafillAsync(string profileKey)
         {
-            if (_fileReader == null)
+            var filePath = "QuotePropertyPage/QuotePropertyPage.json";
+
+            // PropertyLocatedFlood Radio
+            var propertyLocatedFloodValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PropertyLocatedFlood");
+            if (!string.IsNullOrEmpty(propertyLocatedFloodValue))
             {
-                throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter or call the method with explicit parameters.");
+                var locator = string.Format(PropertyLocatedFlood_Radio, propertyLocatedFloodValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
             }
 
-            try
+            // YearOfConstruction Input
+            var yearOfConstructionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearOfConstruction");
+            if (!string.IsNullOrEmpty(yearOfConstructionValue))
             {
-                logger.WriteLine($"=== Starting Property Data Fill using profile: {profileKey} ===");
-
-                var filePath = "Property\\PropertyData.json";
-
-                // Get values from JSON
-                var propertyLocatedFlood = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PropertyLocatedFlood");
-                var yearOfConstruction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.YearOfConstruction");
-                var numberOfFamilies = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfFamilies");
-                var constructionType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ConstructionType");
-                var underConstruction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UnderConstruction");
-                var uniqueConstruction = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UniqueConstruction");
-                var logHome = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LogHome");
-                var roofType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofType");
-                var historicRegisteredHome = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HistoricRegisteredHome");
-                var occupancyType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OccupancyType");
-                var fireDepartment = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireDepartment");
-                var protectionClass = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ProtectionClass");
-                var primaryHeatType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PrimaryHeatType");
-                var smokeDetector = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SmokeDetector");
-                var numBuiltInFireplaces = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumBuiltInFireplaces");
-                var liquidFuel = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LiquidFuel");
-
-                logger.WriteLine($"Retrieved property data - Year: {yearOfConstruction}, Construction Type: {constructionType}");
-
-                // Fill the form with JSON data
-                await PropertyDatafillAsync(
-                    propertyLocatedFlood,
-                    yearOfConstruction,
-                    numberOfFamilies,
-                    constructionType,
-                    underConstruction,
-                    uniqueConstruction,
-                    logHome,
-                    roofType,
-                    historicRegisteredHome,
-                    occupancyType,
-                    fireDepartment,
-                    protectionClass,
-                    primaryHeatType,
-                    smokeDetector,
-                    numBuiltInFireplaces,
-                    liquidFuel
-                );
-
-                logger.WriteLine($"✅ Successfully filled property information using profile: {profileKey}");
-                logger.WriteLine("=== Property Data Fill Completed ===");
+                await InputField.SetInputFieldAsync(YearOfConstruction_Input, yearOfConstructionValue, true, 1);
             }
-            catch (Exception ex)
+
+            // NumberOfFamilies Dropdown
+            var numberOfFamiliesValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumberOfFamilies");
+            if (!string.IsNullOrEmpty(numberOfFamiliesValue))
             {
-                logger.WriteLine($"❌ Error filling property data: {ex.Message}");
-                logger.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw new Exception($"Failed to fill property data using profile '{profileKey}': {ex.Message}", ex);
+                await DropDown.SelectDropDownAsync(NumberOfFamilies_DropDown, numberOfFamiliesValue, true, 1);
             }
+
+            // ConstructionType Radio
+            var constructionTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ConstructionType");
+            if (!string.IsNullOrEmpty(constructionTypeValue))
+            {
+                var locator = string.Format(ConstructionType_Radio, constructionTypeValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
+            }
+
+            // UnderConstruction Radio
+            var underConstructionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UnderConstruction");
+            if (!string.IsNullOrEmpty(underConstructionValue))
+            {
+                var locator = string.Format(UnderConstruction_Radio, underConstructionValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
+            }
+
+            // UniqueConstruction Radio
+            var uniqueConstructionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.UniqueConstruction");
+            if (!string.IsNullOrEmpty(uniqueConstructionValue))
+            {
+                var locator = string.Format(UniqueConstruction_Radio, uniqueConstructionValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
+            }
+
+            // LogHome Radio
+            var logHomeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LogHome");
+            if (!string.IsNullOrEmpty(logHomeValue))
+            {
+                var locator = string.Format(LogHome_Radio, logHomeValue);
+                await RadioButton.SelectRadioButtonAsync(locator,"value", true, 1);
+            }
+
+            // RoofType Radio
+            var roofTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.RoofType");
+            if (!string.IsNullOrEmpty(roofTypeValue))
+            {
+                var locator = string.Format(RoofType_Radio, roofTypeValue);
+                await RadioButton.SelectRadioButtonAsync(locator,"value",true, 1);
+            }
+
+            // HistoricRegisteredHome Radio
+            var historicRegisteredHomeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.HistoricRegisteredHome");
+            if (!string.IsNullOrEmpty(historicRegisteredHomeValue))
+            {
+                var locator = string.Format(HistoricRegisteredHome_Radio, historicRegisteredHomeValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
+            }
+
+            // OccupancyType Radio
+            var occupancyTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.OccupancyType");
+            if (!string.IsNullOrEmpty(occupancyTypeValue))
+            {
+                var locator = string.Format(OccupancyType_Radio, occupancyTypeValue);
+                await RadioButton.SelectRadioButtonAsync(locator, "value", true, 1);
+            }
+
+            // FireDepartment Input
+            var fireDepartmentValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.FireDepartment");
+            if (!string.IsNullOrEmpty(fireDepartmentValue))
+            {
+                await InputField.SetInputFieldAsync(FireDepartment_Input, fireDepartmentValue, true, 1);
+            }
+
+            // ProtectionClass DropDown
+            var protectionClassValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ProtectionClass");
+            if (!string.IsNullOrEmpty(protectionClassValue))
+            {
+                await DropDown.SelectDropDownAsync(ProtectionClass_DropDown, protectionClassValue, true, 1);
+            }
+
+            // PrimaryHeatType DropDown
+            var primaryHeatTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PrimaryHeatType");
+            if (!string.IsNullOrEmpty(primaryHeatTypeValue))
+            {
+                await DropDown.SelectDropDownAsync(PrimaryHeatType_DropDown, primaryHeatTypeValue, true, 1);
+            }
+
+            // SmokeDetector Checkbox
+            var smokeDetectorValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.SmokeDetector");
+            if (!string.IsNullOrEmpty(smokeDetectorValue) && smokeDetectorValue.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
+            {
+                await Checkbox.SelectCheckboxAsync(SmokeDetector_Input, true, true, 1, "SmokeDetector");
+            }
+
+            // NumBuiltInFireplaces Input
+            var numBuiltInFireplacesValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.NumBuiltInFireplaces");
+            if (!string.IsNullOrEmpty(numBuiltInFireplacesValue))
+            {
+                await InputField.SetInputFieldAsync(NumBuiltInFireplaces_Input, numBuiltInFireplacesValue, true, 1);
+            }
+
+            // LiquidFuel Checkbox
+            var liquidFuelValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.LiquidFuel");
+            if (!string.IsNullOrEmpty(liquidFuelValue) && liquidFuelValue.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
+            {
+                await Checkbox.SelectCheckboxAsync(LiquidFuel_Input, true, true, 1, "LiquidFuel");
+            }
+
+            // Click Continue button
+            await Button.ClickButtonAsync(ContinueCoverage, ActionType.Click, true, 1);
+            await Task.Delay(20000);
         }
-
         /// <summary>
         /// Fills Property data with explicit parameters
         /// </summary>
-        public async Task PropertyDatafillAsync(
-            string propertyLocatedFlood = null,
-            string yearOfConstruction = null,
-            string numberOfFamilies = null,
-            string constructionType = null,
-            string underConstruction = null,
-            string uniqueConstruction = null,
-            string logHome = null,
-            string roofType = null,
-            string historicRegisteredHome = null,
-            string occupancyType = null,
-            string fireDepartment = null,
-            string protectionClass = null,
-            string primaryHeatType = null,
-            string smokeDetector = null,
-            string numBuiltInFireplaces = null,
-            string liquidFuel = null)
-        {
-            try
-            {
-                logger.WriteLine("=== Starting Property Data Fill ===");
-
-                // Wait for page to be ready
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new PageWaitForLoadStateOptions
-                {
-                    Timeout = 30000
-                });
-
-                // Property Located in Flood Zone
-                if (!string.IsNullOrEmpty(propertyLocatedFlood))
-                {
-                    logger.WriteLine($"Setting Property Located Flood: {propertyLocatedFlood}");
-                    await SelectRadioButtonAsync(PropertyLocatedFlood_Radio, propertyLocatedFlood);
-                }
-
-                // Year of Construction
-                if (!string.IsNullOrEmpty(yearOfConstruction))
-                {
-                    logger.WriteLine($"Setting Year of Construction: {yearOfConstruction}");
-                    await InputField.SetInputFieldAsync(YearOfConstruction_Input, yearOfConstruction, true, 1);
-                }
-
-                // Number of Families
-                if (!string.IsNullOrEmpty(numberOfFamilies))
-                {
-                    logger.WriteLine($"Setting Number of Families: {numberOfFamilies}");
-                    await DropDown.SelectDropDownAsync(NumberOfFamilies_DropDown, numberOfFamilies, true, 1);
-                }
-
-                // Construction Type (1, 3, or 6)
-                if (!string.IsNullOrEmpty(constructionType))
-                {
-                    logger.WriteLine($"Setting Construction Type: {constructionType}");
-                    await SelectRadioButtonAsync(ConstructionType_Radio, constructionType);
-                }
-
-                // Under Construction
-                if (!string.IsNullOrEmpty(underConstruction))
-                {
-                    logger.WriteLine($"Setting Under Construction: {underConstruction}");
-                    await SelectRadioButtonAsync(UnderConstruction_Radio, underConstruction);
-                }
-
-                // Unique Construction
-                if (!string.IsNullOrEmpty(uniqueConstruction))
-                {
-                    logger.WriteLine($"Setting Unique Construction: {uniqueConstruction}");
-                    await SelectRadioButtonAsync(UniqueConstruction_Radio, uniqueConstruction);
-                }
-
-                // Log Home
-                if (!string.IsNullOrEmpty(logHome))
-                {
-                    logger.WriteLine($"Setting Log Home: {logHome}");
-                    await SelectRadioButtonAsync(LogHome_Radio, logHome);
-                }
-
-                // Roof Type
-                if (!string.IsNullOrEmpty(roofType))
-                {
-                    logger.WriteLine($"Setting Roof Type: {roofType}");
-                    await SelectRadioButtonAsync(RoofType_Radio, roofType);
-                }
-
-                // Historic Registered Home
-                if (!string.IsNullOrEmpty(historicRegisteredHome))
-                {
-                    logger.WriteLine($"Setting Historic Registered Home: {historicRegisteredHome}");
-                    await SelectRadioButtonAsync(HistoricRegisteredHome_Radio, historicRegisteredHome);
-                }
-
-                // Occupancy Type
-                if (!string.IsNullOrEmpty(occupancyType))
-                {
-                    logger.WriteLine($"Setting Occupancy Type: {occupancyType}");
-                    await SelectRadioButtonAsync(OccupancyType_Radio, occupancyType);
-                }
-
-                // Fire Department
-                if (!string.IsNullOrEmpty(fireDepartment))
-                {
-                    logger.WriteLine($"Setting Fire Department: {fireDepartment}");
-                    await InputField.SetInputFieldAsync(FireDepartment_Input, fireDepartment, true, 1);
-                }
-
-                // Protection Class
-                if (!string.IsNullOrEmpty(protectionClass))
-                {
-                    logger.WriteLine($"Setting Protection Class: {protectionClass}");
-                    await DropDown.SelectDropDownAsync(ProtectionClass_DropDown, protectionClass, true, 1);
-                }
-
-                // Primary Heat Type
-                if (!string.IsNullOrEmpty(primaryHeatType))
-                {
-                    logger.WriteLine($"Setting Primary Heat Type: {primaryHeatType}");
-                    await DropDown.SelectDropDownAsync(PrimaryHeatType_DropDown, primaryHeatType, true, 1);
-                }
-
-                // Smoke Detector
-                if (!string.IsNullOrEmpty(smokeDetector) && smokeDetector.Equals("Yes", StringComparison.OrdinalIgnoreCase))
-                {
-                    logger.WriteLine("Selecting Smoke Detector checkbox");
-                    await SelectCheckboxAsync(SmokeDetector_Input);
-                }
-
-                // Number of Built-in Fireplaces
-                if (!string.IsNullOrEmpty(numBuiltInFireplaces))
-                {
-                    logger.WriteLine($"Setting Number of Built-in Fireplaces: {numBuiltInFireplaces}");
-                    await InputField.SetInputFieldAsync(NumBuiltInFireplaces_Input, numBuiltInFireplaces, true, 1);
-                }
-
-                // Liquid Fuel
-                if (!string.IsNullOrEmpty(liquidFuel) && liquidFuel.Equals("Yes", StringComparison.OrdinalIgnoreCase))
-                {
-                    logger.WriteLine("Selecting Liquid Fuel checkbox");
-                    await SelectCheckboxAsync(LiquidFuel_Input);
-                }
-
-                // Click Continue button
-                logger.WriteLine("Clicking Continue Coverage button");
-                await ClickContinueButtonAsync();
-
-                logger.WriteLine("✅ Property data fill completed successfully");
-                logger.WriteLine("=== Property Data Fill Completed ===");
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"❌ Error filling Property data: {ex.Message}");
-                logger.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw new Exception($"Failed to fill Property data: {ex.Message}", ex);
-            }
-        }
-
+        
         #region Private Helper Methods
 
         /// <summary>
         /// Selects a radio button using dynamic locator with value
         /// </summary>
-        private async Task SelectRadioButtonAsync(string radioButtonTemplate, string value)
-        {
-            try
-            {
-                var radioButtonLocator = string.Format(radioButtonTemplate, value);
-                var radioButton = page.Locator(radioButtonLocator);
-
-                await radioButton.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Visible,
-                    Timeout = 10000
-                });
-
-                var isChecked = await radioButton.IsCheckedAsync();
-                if (!isChecked)
-                {
-                    await radioButton.ClickAsync();
-                    logger.WriteLine($"Radio button selected with value: {value}");
-                }
-                else
-                {
-                    logger.WriteLine($"Radio button already selected with value: {value}");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"Error selecting radio button with value '{value}': {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Selects a checkbox
-        /// </summary>
-        private async Task SelectCheckboxAsync(string checkboxLocator)
-        {
-            try
-            {
-                var checkbox = page.Locator(checkboxLocator);
-
-                await checkbox.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Visible,
-                    Timeout = 10000
-                });
-
-                var isChecked = await checkbox.IsCheckedAsync();
-                if (!isChecked)
-                {
-                    await checkbox.ClickAsync();
-                    logger.WriteLine($"Checkbox selected");
-                }
-                else
-                {
-                    logger.WriteLine($"Checkbox already selected");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"Error selecting checkbox: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Clicks the Continue Coverage button
-        /// </summary>
-        private async Task ClickContinueButtonAsync()
-        {
-            try
-            {
-                var continueButton = page.Locator(ContinueCoverage);
-
-                await continueButton.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Visible,
-                    Timeout = 10000
-                });
-
-                await continueButton.ClickAsync();
-
-                // Wait for page to load after clicking
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new PageWaitForLoadStateOptions
-                {
-                    Timeout = 30000
-                });
-
-                // Additional wait for page stability
-                await page.WaitForTimeoutAsync(5000);
-
-                logger.WriteLine("Continue Coverage button clicked successfully");
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"Error clicking Continue Coverage button: {ex.Message}");
-                throw;
-            }
-        }
+       
 
         #endregion
 
@@ -392,42 +205,11 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         /// <summary>
         /// Verifies if the Property page is visible
         /// </summary>
-        public async Task<bool> IsPropertyPageVisibleAsync()
-        {
-            try
-            {
-                var yearInput = page.Locator(YearOfConstruction_Input);
-                var isVisible = await yearInput.IsVisibleAsync();
-
-                logger.WriteLine($"Property page visible: {isVisible}");
-                return isVisible;
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"Error checking Property page visibility: {ex.Message}");
-                return false;
-            }
-        }
-
+       
         /// <summary>
         /// Gets the Year of Construction value
         /// </summary>
-        public async Task<string> GetYearOfConstructionAsync()
-        {
-            try
-            {
-                var yearInput = page.Locator(YearOfConstruction_Input);
-                var value = await yearInput.GetAttributeAsync("value");
-                logger.WriteLine($"Retrieved Year of Construction: {value}");
-                return value ?? string.Empty;
-            }
-            catch (Exception ex)
-            {
-                logger.WriteLine($"Error getting Year of Construction: {ex.Message}");
-                return string.Empty;
-            }
-        }
-
+        
         /// <summary>
         /// Gets the Fire Department value
         /// </summary>

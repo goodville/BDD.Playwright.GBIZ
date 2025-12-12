@@ -1,8 +1,17 @@
 {
-  " AddVehicle": {
-    "PolicyNumber": ""
-
-
-  }
-
+    "Agent_TC84": {
+        "VinNumber": "5XYPG4A51GG095667",
+        "VehicleType": "Private passenger",
+        "OverrideSymbolComp": "27",
+        "OverrideSymbolColl": "18",
+        "VehicleUse": "Drive to Work/School",
+        "AnnualMileageOverride": "No",
+        "TitlesNamedInsured": "No",
+        "ReconstructedSalvageTitle": "No",
+        "AssignDriverOverride": "None",
+        "IsGaragedAddress": "No",
+        "RegisteredState": "",
+        "PassiveRestraints": "",
+        "AntiTheftDevices": ""
+    }
 }

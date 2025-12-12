@@ -41,106 +41,41 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
         #endregion
 
         #region Home Owners Scheduled Info Fill
-        
+
         /// <summary>
         /// Main method to verify and fill the Scheduled Quotes Page
         /// Determines whether to use JSON data or scenario context data
         /// </summary>
-        public async Task VerifyScheduledQuotesPageAsync()
-        {
-            if (_fileReader != null)
-            {
-                await VerifyScheduledQuotesPageAsync("ScheduledProperty");
-            }
-            else
-            {
-                await VerifyScheduledQuotesPageWithContextDataAsync();
-            }
-        }
-
-        /// <summary>
-        /// Verifies and fills the Scheduled Quotes Page using JSON file data
-        /// </summary>
-        /// <param name="profileKey">Profile key in the JSON file (e.g., "ScheduledProperty", "Jewelry", etc.)</param>
         public async Task VerifyScheduledQuotesPageAsync(string profileKey)
         {
-            if (_fileReader == null)
+            var filePath = "ScheduledProperty\\ScheduledPropertyData.json";
+            await Button.ScrollIntoViewAsync(AddPersonalProperty_Link, true, 1);
+            await TextLink.ClickTextLinkAsync(AddPersonalProperty_Link, true, 1);
+
+            // PersonalPropertyType DropDown
+            var personalPropertyTypeValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyType");
+            if (!string.IsNullOrEmpty(personalPropertyTypeValue))
             {
-                throw new InvalidOperationException("FileReader is not available. Use constructor with IFileReader parameter.");
+                await DropDown.SelectDropDownAsync(PersonalPropertyType_DropDown, personalPropertyTypeValue, true, 1);
             }
 
-            try
+            // PersonalPropertyDescription Input
+            var personalPropertyDescriptionValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyDescription");
+            if (!string.IsNullOrEmpty(personalPropertyDescriptionValue))
             {
-                logger.WriteLine($"Starting to fill Scheduled Quotes Page using profile: {profileKey}");
-
-                var filePath = "JsonTestData\\ScheduledProperty\\ScheduledPropertyData.json";
-
-                // Get values from JSON
-                var personalPropertyType = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyType");
-                var personalPropertyDescription = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyDescription");
-                var personalPropertyLimit = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyLimit");
-
-                logger.WriteLine($"Retrieved scheduled property data - Type: {personalPropertyType}, Description: {personalPropertyDescription}, Limit: {personalPropertyLimit}");
-
-                // Store values in scenario context for later use if needed
-                if (!string.IsNullOrEmpty(personalPropertyType))
-                {
-                    _scenarioContext.Set(personalPropertyType, "PersonalPropertyType");
-                }
-
-                if (!string.IsNullOrEmpty(personalPropertyDescription))
-                {
-                    _scenarioContext.Set(personalPropertyDescription, "PersonalPropertyDescription");
-                }
-
-                if (!string.IsNullOrEmpty(personalPropertyLimit))
-                {
-                    _scenarioContext.Set(personalPropertyLimit, "PersonalPropertyLimit");
-                }
-
-                // Wait for page to load
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new PageWaitForLoadStateOptions
-                {
-                    Timeout = 30000
-                });
-
-                // Scroll to Add Personal Property link
-                await page.Locator(AddPersonalProperty_Link).ScrollIntoViewIfNeededAsync();
-                
-                // Click Add Personal Property link
-                await TextLink.ClickTextLinkAsync(AddPersonalProperty_Link, true, 1, "Add Personal Property");
-                
-                // Wait for form to appear
-                await page.WaitForTimeoutAsync(1000);
-
-                // Select Personal Property Type
-                await DropDown.SelectDropDownAsync(PersonalPropertyType_DropDown, personalPropertyType, true, 1, "Personal Property Type");
-
-                // Fill Personal Property Description
-                await InputField.SetTextAreaInputFieldAsync(PersonalPropertyDescription_Input, personalPropertyDescription, true, 1, "Personal Property Description");
-
-                // Fill Personal Property Limit
-                await InputField.SetTextAreaInputFieldAsync(PersonalPropertyLimit_Input, personalPropertyLimit, true, 1, "Personal Property Limit");
-
-                // Click Submit button
-                await Button.ClickButtonAsync(ScheduledSubmit_Button, ActionType.Click, true, 1, "Scheduled Submit");
-
-                // Wait for submission to complete
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new PageWaitForLoadStateOptions
-                {
-                    Timeout = 30000
-                });
-
-                logger.WriteLine($"Successfully filled and submitted Scheduled Quotes Page using profile: {profileKey}");
-                logger.WriteLine("Scheduled Quotes Page Details Entered Successfully from JSON Data");
+                await InputField.SetTextAreaInputFieldAsync(PersonalPropertyDescription_Input, personalPropertyDescriptionValue, true, 1);
             }
-            catch (Exception ex)
+
+            // PersonalPropertyLimit Input
+            var personalPropertyLimitValue = _fileReader.GetOptionalValue(filePath, $"{profileKey}.PersonalPropertyLimit");
+            if (!string.IsNullOrEmpty(personalPropertyLimitValue))
             {
-                logger.WriteLine($"Error filling Scheduled Quotes Page from JSON: {ex.Message}");
-                throw new Exception($"Failed to fill Scheduled Quotes Page using profile '{profileKey}': {ex.Message}", ex);
+                await InputField.SetTextAreaInputFieldAsync(PersonalPropertyLimit_Input, personalPropertyLimitValue, true, 1);
             }
+
+            // Submit Button
+            await Button.ClickButtonAsync(ScheduledSubmit_Button, ActionType.Click, true, 1);
         }
-
         /// <summary>
         /// Verifies and fills the Scheduled Quotes Page using data from scenario context
         /// </summary>

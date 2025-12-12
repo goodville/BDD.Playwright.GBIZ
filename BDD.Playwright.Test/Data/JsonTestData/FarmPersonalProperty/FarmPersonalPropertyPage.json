@@ -1,0 +1,123 @@
+{
+    "Agent_TC82": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+    "Agent_TC82_DE1": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+    "Agent_TC82_DE2": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300,000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+    "Agent_TC82_IL1": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+    "Agent_TC82_IL2": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+        "Agent_TC82_IN1": {
+            "Limitform": "50000",
+            "Formperil": "Basic",
+            "DeductIble": "500",
+            "Suffocation": "No",
+            "AddFarmPersonalProperty": "Add Farm Personal Property",
+            "Birds": "Birds",
+            "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+            "MedicalPaymentLimit": "3,000",
+            "Location": "1",
+            "Description": "Test"
+        },
+    "Agent_TC82_IN2": {
+        "Limitform": "50000",
+        "Formperil": "Basic",
+        "DeductIble": "500",
+        "Suffocation": "No",
+        "AddFarmPersonalProperty": "Add Farm Personal Property",
+        "Birds": "Birds",
+        "BodilyInjury&PropertyDamageLiabilityLimit": "300,000",
+        "MedicalPaymentLimit": "3,000",
+        "Location": "1",
+        "Description": "Test"
+    },
+        "Agent_TC82_KS1": {
+            "Limitform": "50000",
+            "Formperil": "Basic",
+            "DeductIble": "500",
+            "Suffocation": "No",
+            "AddFarmPersonalProperty": "Add Farm Personal Property",
+            "Birds": "Birds",
+            "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+            "MedicalPaymentLimit": "3,000",
+            "Location": "1",
+            "Description": "Test"
+        },
+        "Agent_TC82_KS2": {
+            "Limitform": "50000",
+            "Formperil": "Basic",
+            "DeductIble": "500",
+            "Suffocation": "No",
+            "AddFarmPersonalProperty": "Add Farm Personal Property",
+            "Birds": "Birds",
+            "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+            "MedicalPaymentLimit": "3,000",
+            "Location": "1",
+            "Description": "Test"
+        },
+        "Agent_TC82_OH1": {
+            "Limitform": "50000",
+            "Formperil": "Basic",
+            "DeductIble": "500",
+            "Suffocation": "No",
+            "AddFarmPersonalProperty": "Add Farm Personal Property",
+            "Birds": "Birds",
+            "BodilyInjury&PropertyDamageLiabilityLimit": "300000",
+            "MedicalPaymentLimit": "3,000",
+            "Location": "1",
+            "Description": "Test"
+        }
+
+}

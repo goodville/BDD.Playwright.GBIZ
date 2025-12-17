@@ -220,15 +220,25 @@ namespace GoodVille.GBIZ.Specflow.Automation.Steps.AgentsStepDefinition
             await Task.Delay(2000);
             await Button.ClickButtonAsync(_commonXpath.Save_btn, ActionType.Click, true, 1);
             await Task.Delay(5000);
-
             await Button.ClickButtonAsync(_commonXpath.MessageOverRides, ActionType.Click, true, 1);
             await _commonPage.CheckAllMessageOverrideCheckboxes1Async();
-            //await Button.ClickButtonAsync(_commonXpath.ApplyOverRides, ActionType.Click, true, 1);
-            //page.Dialog += async (_, dialog) => await dialog.AcceptAsync();
+            page.Dialog += async (_, dialog) =>
+            {
+                try
+                {
+                    await dialog.AcceptAsync();
+                }
+                catch (PlaywrightException ex)
+                {
+                    Console.WriteLine("Dialog already handled: " + ex.Message);
+                    logger.WriteLine("Dialog already handled: " + ex.Message);
+                }
+            };
+            await Button.ClickButtonAsync(_commonXpath.ApplyOverRides, ActionType.Click, true, 1);
             await Task.Delay(4000);
         }
 
-        [Then(@"Verify Policy Number is generated for the DwellingFire")]
+        [Then(@"Verify policy Number is generated for the DwellingFire")]
         public async Task ClicksBindPolicyWithPolicyAsync()
         {
             await Button.ClickButtonAsync(_commonXpath.BindPolicywithGoodVilleButton, ActionType.Click, true, 1);

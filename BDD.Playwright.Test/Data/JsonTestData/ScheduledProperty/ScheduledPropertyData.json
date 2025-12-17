@@ -8,5 +8,75 @@
         "PersonalPropertyType": "Bicycle",
         "PersonalPropertyDescription": "Test",
         "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_IL1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_IL2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_IN1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_IN2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_KS1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_KS2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_OH1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_OH2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_OK1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_OK2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_PA1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_PA2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_VA1": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
+    },
+    "Agent_TC83_VA2": {
+        "PersonalPropertyType": "Bicycle",
+        "PersonalPropertyDescription": "Test",
+        "PersonalPropertyLimit": "0"
     }
 }

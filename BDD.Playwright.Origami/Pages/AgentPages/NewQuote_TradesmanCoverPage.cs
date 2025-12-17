@@ -1033,7 +1033,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
             {
                 logger.WriteLine($"Starting to fill Tradesman Cover ToolsEquipment information using profile: {profileKey}");
 
-                var filePath = "TradesmanCover\\TradesmanCoverData.json";
+                var filePath = "QuoteCoveragesPage\\QuoteCoveragesPage.json";
                 var tools_EquipmentLimit_Input = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ToolsEquipmentLimit");
                 var tools_Equipment_Deductibles_DropDown = _fileReader.GetOptionalValue(filePath, $"{profileKey}.ToolsEquipmentDeductible");
 
@@ -1049,6 +1049,7 @@ namespace BDD.Playwright.GBIZ.Pages.AgentPages
                 logger.WriteLine($"Successfully filled Tradesman Cover ToolsEquipment information using profile: {profileKey}");
                 logger.WriteLine("Tradesman Cover ToolsEquipment Page Details Entered Successfully from JSON Data");
             }
+
             catch (Exception ex)
             {
                 logger.WriteLine($"Error filling Tradesman Cover ToolsEquipment data: {ex.Message}");
